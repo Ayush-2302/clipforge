@@ -1,0 +1,352 @@
+# ClipForge AI MCP Server
+
+A [Model Context Protocol](https://modelcontextprotocol.io) server for
+[ClipForge AI](https://clipforge.com) — turn long-form videos (YouTube links or
+direct URLs) into short, vertical, subtitled viral clips from any MCP client
+(Claude Desktop, Claude Code, Cursor, etc.).
+
+By default it talks to the **official hosted ClipForge AI API** at
+`https://api.clipforge.com`. Point it at your own deployment by setting
+`SUPOCLIP_API_URL`.
+
+## What it can do
+
+| Tool | Auth | Description |
+|------|:----:|-------------|
+| `clipforge_health` | – | API status + how this server is configured |
+| `clipforge_list_caption_templates` | – | Available caption styles (default, hormozi, mrbeast, …; animated ones too when dynamic edits are on) |
+| `clipforge_list_transitions` | – | Available transition effects |
+| `clipforge_broll_status` | – | Whether B-roll overlays are configured |
+| `clipforge_list_fonts` | ✓ | Subtitle fonts available to your account |
+| `clipforge_billing_summary` | ✓ | Plan, usage and remaining quota |
+| `clipforge_list_workflows` | ✓ | What your account can make (highlights, series, topic, recap, trailer) and each one's limits |
+| `clipforge_list_edit_styles` | ✓ | Whether your account has dynamic edits (intensity, sound effects, music, animated captions) and their options |
+| `clipforge_create_clip_task` | ✓ | Start clipping a video → returns a `task_id`; `workflow` picks what to make, `intensity` how hard it's edited |
+| `clipforge_list_tasks` | ✓ | List your tasks |
+| `clipforge_get_task` | ✓ | Task status, progress and clips |
+| `clipforge_wait_for_task` | ✓ | Poll until a task (or a queued clip edit, `clip_job_id`) finishes |
+| `clipforge_list_clips` | ✓ | List a task's generated clips |
+| `clipforge_download_clip` | ✓ | Save a clip's MP4 to disk |
+| `clipforge_export_clip` | ✓ | Re-encode + save with a platform preset (tiktok/reels/shorts) |
+| `clipforge_cancel_task` / `clipforge_resume_task` / `clipforge_delete_task` | ✓ | Manage tasks |
+
+Tools marked ✓ require an API key (or self-host credentials, see below).
+
+## Getting an API key
+
+1. Sign in at [clipforge.com](https://www.clipforge.com).
+2. Go to [**Settings → API Keys**](https://www.clipforge.com/settings/api-keys).
+3. Create a key and copy it (it's shown only once). It looks like `sk_…`.
+
+Making clips needs a paid plan (Pro or Creator). On a free account the
+discovery tools work, and creating a task returns a message with the upgrade
+link instead of a clip.
+
+## Connect to the hosted server
+
+The hosted server is at `https://mcp.clipforge.com/mcp` (Streamable HTTP). Send
+your key in the `Authorization` header. In every example below, replace
+`sk_...` with your own key, and put **only the URL** in a client's URL field.
+
+### Claude, ChatGPT, Grok and other apps with custom connectors
+
+Add `https://mcp.clipforge.com/mcp` as a custom connector. The app sends you to
+clipforge.com to sign in and allow access; no key to copy. Allowing creates an
+API key named after the app (for example "Claude connector"), listed at
+[Settings → API Keys](https://www.clipforge.com/settings/api-keys); revoke it
+there to disconnect. The connection uses your plan's minutes like any key.
+The same page has these steps under "Connect Claude, ChatGPT or Grok". None of
+these apps can prefill a server URL from a link, so paste it yourself.
+
+- **Claude** ([guide](https://claude.com/docs/connectors/custom/add-unlisted)):
+  [Customize → Connectors](https://claude.ai/customize/connectors) → Add → Add
+  custom connector, paste the URL, keep the settings marked Detected (if asked
+  how Claude identifies itself, choose Register automatically), Add, Connect.
+  Free (one custom connector), Pro, Max, Ultra, Team and Enterprise; on Team and
+  Enterprise an Owner adds it under Organization settings → Connectors first.
+- **ChatGPT** ([guide](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt)):
+  on the web, [Plugins](https://chatgpt.com/plugins) → + → Add custom MCP
+  server, paste the URL under Connection, OAuth, Create as a plugin, then
+  install it. OpenAI offers this on Business, Enterprise and Edu; Pro accounts
+  get read-only tools only, so they can't create tasks.
+- **Grok** ([guide](https://docs.x.ai/grok/connectors)):
+  [grok.com/connectors](https://grok.com/connectors) → New Connector → Custom,
+  paste the URL and sign in. xAI doesn't document which sign-in methods custom
+  connectors support, so this one is not confirmed end to end.
+- **Claude Code** can use the same sign-in instead of a pasted key:
+  `claude mcp add --transport http clipforge https://mcp.clipforge.com/mcp`, then
+  `claude mcp login clipforge` (or `/mcp` inside Claude Code).
+
+### Claude Code
+
+```bash
+claude mcp add --transport http clipforge https://mcp.clipforge.com/mcp --header "Authorization: Bearer sk_..."
+```
+
+### Cursor, Windsurf and other clients with remote URL support
+
+```json
+{
+  "mcpServers": {
+    "clipforge": {
+      "url": "https://mcp.clipforge.com/mcp",
+      "headers": {
+        "Authorization": "Bearer sk_..."
+      }
+    }
+  }
+}
+```
+
+Cursor reads this from `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project).
+
+### Claude Desktop
+
+Claude Desktop's config file starts local servers, so bridge to the hosted
+server with [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) (needs
+Node.js). Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "clipforge": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.clipforge.com/mcp",
+        "--header",
+        "Authorization:${SUPOCLIP_AUTH}"
+      ],
+      "env": {
+        "SUPOCLIP_AUTH": "Bearer sk_..."
+      }
+    }
+  }
+}
+```
+
+On the hosted server, `clipforge_download_clip` and `clipforge_export_clip` save
+files on the server, not on your computer. To get the MP4s locally, run the
+server locally (below) or download clips from the task page.
+
+### Older clients that only speak SSE
+
+Use `https://mcp.clipforge.com/sse` as the URL, with the same
+`Authorization: Bearer sk_...` header. Clients already configured with the
+`/sse` URL keep working; Streamable HTTP requests sent there are answered too.
+
+### If it doesn't connect
+
+The server answers errors in plain words. `401` with "Missing ClipForge AI API
+key" means the header didn't arrive; "placeholder" means `sk_...` (or
+`sk_your_clipforge_api_key`) was not replaced with a real key; "invalid or was
+revoked" means the key was deleted, so create a new one. Opening
+`https://mcp.clipforge.com/` in a browser shows the endpoints and setup.
+
+## Run it locally (stdio)
+
+Requires Python 3.10+ and [uv](https://docs.astral.sh/uv/). Clips you
+download are saved on your machine (`SUPOCLIP_DOWNLOAD_DIR`).
+
+```bash
+claude mcp add clipforge -e SUPOCLIP_API_KEY=sk_... \
+  -- uvx --from "git+https://github.com/FujiwaraChoki/clipforge#subdirectory=mcp" clipforge-mcp
+```
+
+Or in a client's JSON config:
+
+```json
+{
+  "mcpServers": {
+    "clipforge": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/FujiwaraChoki/clipforge#subdirectory=mcp", "clipforge-mcp"],
+      "env": {
+        "SUPOCLIP_API_KEY": "sk_..."
+      }
+    }
+  }
+}
+```
+
+From a checkout, use `"command": "uv", "args": ["--directory", "/absolute/path/to/clipforge/mcp", "run", "clipforge-mcp"]`
+instead. For a self-hosted backend, add `"SUPOCLIP_API_URL": "http://localhost:8000"` to `env`.
+
+## Configuration
+
+All configuration is via environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SUPOCLIP_API_KEY` | – | Your API key (stdio; recommended auth). |
+| `SUPOCLIP_API_URL` | `https://api.clipforge.com` | Backend base URL. Set for self-hosting. |
+| `SUPOCLIP_APP_URL` | `https://www.clipforge.com` | Web app, used in links to create keys and pick a plan. |
+| `SUPOCLIP_DOWNLOAD_DIR` | `./clipforge-downloads` | Where downloaded/exported clips are written. |
+| `SUPOCLIP_TIMEOUT` | `60` | HTTP timeout (seconds) for non-download requests. |
+| `SUPOCLIP_USER_ID` | – | Self-host only: authenticate by user id (see below). |
+| `SUPOCLIP_AUTH_SECRET` | – | Self-host only: backend `BACKEND_AUTH_SECRET` for HMAC signing. |
+| `SUPOCLIP_MCP_TRANSPORT` | `stdio` | `stdio`, or `http` to serve Streamable HTTP and SSE (`sse` and `streamable-http` mean the same as `http`). |
+| `SUPOCLIP_MCP_HOST` / `SUPOCLIP_MCP_PORT` | `127.0.0.1` / `9100` | Listen address for `http`. |
+| `SUPOCLIP_MCP_PUBLIC_URL` | `http://HOST:PORT` | Public base URL (including any mount path), shown in setup help and errors. |
+| `SUPOCLIP_MCP_REQUIRE_BEARER_AUTH` | `false` | Require each client's own API key as a Bearer token. |
+| `SUPOCLIP_MCP_MOUNT_PATH` | `/` | Serve every route under this prefix (OAuth discovery assumes `/`). |
+| `MCP_OAUTH_SECRET` | – | Shared with the backend. With bearer auth on, turns on OAuth sign-in for connectors. |
+
+### Self-hosting auth
+
+If you run your own backend you have three options:
+
+- **API key** (same as hosted): create a key and set `SUPOCLIP_API_KEY`.
+- **Signed headers**: set `SUPOCLIP_USER_ID` + `SUPOCLIP_AUTH_SECRET` (your
+  backend's `BACKEND_AUTH_SECRET`).
+- **Unsigned**: if the backend runs with `ALLOW_UNSIGNED_BACKEND_AUTH=true`,
+  just set `SUPOCLIP_USER_ID`.
+
+Auth precedence is: API key → signed headers → unsigned user id.
+
+## Hosting the HTTP server
+
+`SUPOCLIP_MCP_TRANSPORT=http` serves both transports from one process:
+
+| Path | What |
+|------|------|
+| `/mcp` | Streamable HTTP (current MCP spec) |
+| `/sse` + `/messages/` | Legacy HTTP+SSE. POST/DELETE, or a GET with `Mcp-Session-Id`, go to Streamable HTTP |
+| `/` | Same routing as `/sse`; a plain GET returns setup help as JSON |
+| `/health` | Liveness |
+| `/.well-known/oauth-protected-resource` (also `/mcp`, `/sse` suffixes), `/.well-known/oauth-authorization-server`, `/register`, `/authorize`, `/token` | OAuth for connectors, when `MCP_OAUTH_SECRET` is set (see [docs/mcp-oauth.md](../docs/mcp-oauth.md)) |
+
+```bash
+SUPOCLIP_API_URL=https://api.clipforge.com \
+SUPOCLIP_MCP_TRANSPORT=http \
+SUPOCLIP_MCP_HOST=0.0.0.0 \
+SUPOCLIP_MCP_PORT=9100 \
+SUPOCLIP_MCP_PUBLIC_URL=https://mcp.clipforge.com \
+SUPOCLIP_MCP_REQUIRE_BEARER_AUTH=true \
+clipforge-mcp
+```
+
+With `SUPOCLIP_MCP_REQUIRE_BEARER_AUTH=true` every path except `/`, `/health`
+and the help pages needs a ClipForge AI API key (`Authorization: Bearer sk_...`,
+or `x-api-key`), checked against the backend the same way on both transports.
+Behind a reverse proxy, pass the `Authorization` header through and turn off
+response buffering (`proxy_buffering off` in nginx) so streams flush.
+
+With Docker Compose, the `mcp` service runs this mode by default and binds to
+`127.0.0.1:9100` for a reverse proxy.
+
+## Workflows
+
+`clipforge_create_clip_task` makes highlights by default. Pass `workflow` for
+something else:
+
+| `workflow` | Makes | `clip_length` sets |
+|---|---|---|
+| `highlights` | The best standalone clips | Each clip |
+| `series` | One story as ordered, numbered parts (Part 1..N) that share exact cuts. `part_count`: 0 = auto, or 2–10 | Each part |
+| `topic` | Every strong standalone moment about `topic` (required, 2–120 characters with a letter or digit; one Chinese, Japanese or Korean character is enough) | Each clip |
+| `recap` | One short video covering the main points in order | Total length |
+| `trailer` | One short teaser that never reveals the payoff | Total length |
+
+`instructions` (up to 500 characters) steers any workflow, highlights included:
+"skip the sponsor read", "focus on the hiring story". Topic and instructions
+are normalized like the API does (invisible characters removed, spaces
+collapsed) before the length checks.
+
+Series need a video of at least 2 minutes, recaps and trailers 3 minutes, and
+topic search 1 minute. Bad arguments fail locally before anything is created,
+with the same rules as the API; `topic` with a workflow other than `topic`, or
+`part_count` with a workflow other than `series`, is an error rather than
+silently ignored.
+
+Workflows may be gated per account: call `clipforge_list_workflows` first. When
+it reports `enabled: false`, only plain highlights without instructions work
+(otherwise the API answers 403 `WORKFLOW_NOT_AVAILABLE`).
+
+A workflow that cannot deliver fails the task instead of padding it, and the
+minutes are refunded. `clipforge_get_task` then shows `status: "error"` and an
+`error_code`: `topic_not_found` (with `workflow_plan.error.details.suggested_topics`
+to try instead), `source_too_short`, `no_story`, `recap_unsupported`,
+`trailer_unbuildable`, `transcript_untimed`, or the retryable
+`analysis_incomplete`, `plan_failed` and `render_incomplete`
+(use `clipforge_resume_task`). Series clips carry `part_number`; every workflow
+clip carries `workflow_role` and `workflow_meta`.
+
+## Dynamic edits
+
+`intensity` on `clipforge_create_clip_task` edits the clips like a short-form
+editor would: the AI tags the moments that matter (hooks, punchlines, numbers,
+swears) and the intensity decides how hard each one hits.
+
+| `intensity` | Adds |
+|---|---|
+| `off` (default) | Nothing: the request is exactly what it was before dynamic edits |
+| `subtle` | Outlined subtitles, a reframe now and then, a steady music bed, almost no sound effects |
+| `bold` | Hormozi-style captions on a dark pill, punch-ins that hold, hits on some reframes, a quiet music bed |
+| `max` | Heavy outlined caps, reframes on almost every line, louder hits, a louder bed, the odd flash at a cut |
+
+Zooms are reframes that hold, transitions happen only at real cuts, sound
+effects only on visual events, and every clip ends at −14 LUFS. Camera shake,
+speed ramps and freeze frames are never placed automatically. With `censor` on,
+swear words are bleeped and the captions show them as `f***`.
+
+`edit_style` fine-tunes them with the API's keys, passed through as given:
+`sfx`, `music`, `zooms`, `shake`, `transitions`, `speed`, `grain`,
+`progress_bar`, `loop_ending`, `wait_for_it`, `reactions` (true/false),
+`music_mood` (`auto` lets the AI pick, or `hype`, `chill`, `dramatic`,
+`funny`, `inspiring`, `dark`, `aggressive`; 53 built-in beds across them), `censor` (`off`, `bleep`, `bleep_bar`, `bleep_pixelate`) and `grade`
+(`auto`, `none`, `punchy`, `warm`, `teal_orange`, `noir`, `vhs`, `dream`).
+`intensity` can go inside `edit_style` too; the argument wins when it isn't
+`off`. The request carries `edit_style` only when the intensity isn't `off`,
+and bad keys or values fail locally before anything is created.
+
+Animated caption templates (`highlighter_swipe`, `emoji_drop`,
+`behind_head`) go in `caption_template` and work with intensity `off` too.
+Words appear as they're spoken; the intensity sets the look (Subtle: podcast
+subtitles, Bold: Hormozi-style with the key word in a box, Max: big outlined
+caps). `behind_head` looks best with a face on camera. Older animated ids
+(`slam`, `stat_counter`, …) are no longer listed but still render on tasks
+that already use them.
+
+Dynamic edits may be gated per account: call `clipforge_list_edit_styles` first.
+`clipforge_list_caption_templates` lists the animated templates only when it
+says `enabled: true`. Otherwise turning edits on, or picking an animated
+template, is refused with 403 `DYNAMIC_EDITS_NOT_AVAILABLE` before anything is
+charged.
+
+Changing a task's look re-renders clips that have dynamic edits on the video
+worker: the API answers 202 with `{"status": "queued", "job_id", "kind"}`.
+Pass the `job_id` to `clipforge_wait_for_task` as `clip_job_id` to wait for it.
+
+## Example prompts
+
+- "Use clipforge to make clips from https://youtu.be/… with the hormozi caption template, then wait for it and download the top clip."
+- "Turn https://youtu.be/… into a 5-part series and download the parts in order."
+- "Find every moment about pricing in https://youtu.be/…; if the topic isn't covered, try the first suggested topic."
+- "Make a one-minute recap of https://youtu.be/… focused on the money advice."
+- "Clip https://youtu.be/… with bold edits and the highlighter captions, no music."
+- "List my recent clipforge tasks and show the virality scores of the latest one's clips."
+- "Export clip <id> from task <id> as a TikTok preset."
+
+## License
+
+[ClipForge AI Noncommercial Source License](LICENSE), issued by Shiori LLC. Individual creators may self-host for their own monetized channels; other commercial use, including by companies and agencies, requires prior written permission.
+
+Based on ClipForge AI. [Original repository](https://github.com/FujiwaraChoki/clipforge) · [Official website](https://www.clipforge.com/)
+
+### Clip length
+
+`clipforge_create_clip_task` accepts `clip_length`: `auto` (default, 15–60s),
+`short` (15–30s), `medium` (30–60s), or `long` (1–2 min). This controls the
+selection range and rendering limit. Removing pauses and filler words can
+shorten the finished clips. For a series it sets each part's length (auto
+45–150s, short 30–60s, medium 45–90s, long 90–175s); for a recap or trailer it
+sets the total (recap: auto scales with the video, short ~45s, medium ~75s,
+long ~2 min; trailer: auto ~30s, short ~20s, medium ~40s, long ~1 min).
+
+## Tests
+
+```bash
+cd mcp && uv run --with pytest pytest tests -q
+```

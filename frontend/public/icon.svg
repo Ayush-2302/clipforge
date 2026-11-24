@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0d18" />
+      <stop offset="50%" stop-color="#12162b" />
+      <stop offset="100%" stop-color="#181332" />
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="40%" stop-color="#a855f7" />
+      <stop offset="70%" stop-color="#ec4899" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <linearGradient id="wingPrimary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <linearGradient id="wingSecondary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f43f5e" />
+      <stop offset="60%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="playCore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e0e7ff" />
+    </linearGradient>
+    <filter id="auraGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="36" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="48" />
+    </filter>
+  </defs>
+
+  <!-- Base Squircle Shield with Cyber Border -->
+  <rect x="28" y="28" width="968" height="968" rx="260" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="16" />
+
+  <!-- Ambient Light Wells -->
+  <circle cx="340" cy="340" r="180" fill="#6366f1" opacity="0.25" filter="url(#softGlow)" />
+  <circle cx="680" cy="680" r="190" fill="#ec4899" opacity="0.2" filter="url(#softGlow)" />
+  <circle cx="512" cy="512" r="160" fill="#06b6d4" opacity="0.15" filter="url(#softGlow)" />
+
+  <g id="emblem-group" transform="translate(512, 512)">
+    <!-- Dynamic Clipping Reel Blades (Interlocking Symmetry) -->
+    <!-- Top-Left Orbit Blade -->
+    <path d="M -260,-60 C -260,-220 -180,-310 -20,-330 L 15,-245 C -105,-230 -180,-165 -180,-60 Z" fill="url(#wingPrimary)" opacity="0.95" />
+    <!-- Top-Right Orbit Blade -->
+    <path d="M 60,-260 C 220,-260 310,-180 330,-20 L 245,15 C 230,-105 165,-180 60,-180 Z" fill="url(#wingPrimary)" opacity="0.9" />
+    <!-- Bottom-Right Orbit Blade -->
+    <path d="M 260,60 C 260,220 180,310 20,330 L -15,245 C 105,230 180,165 180,60 Z" fill="url(#wingSecondary)" opacity="0.95" />
+    <!-- Bottom-Left Orbit Blade -->
+    <path d="M -60,260 C -220,260 -310,180 -330,20 L -245,-15 C -230,105 -165,180 -60,180 Z" fill="url(#wingSecondary)" opacity="0.9" />
+
+    <!-- AI Precision Forge Diamond (Center Starburst) -->
+    <path d="M 0,-175 Q 0,0 -175,0 Q 0,0 0,175 Q 0,0 175,0 Q 0,0 0,-175 Z" fill="#818cf8" opacity="0.32" filter="url(#auraGlow)" />
+
+    <!-- Sleek Sculpted Play Trigger Core -->
+    <path d="M -115,-190 L 195,0 L -115,190 C -155,140 -160,-140 -115,-190 Z" fill="url(#playCore)" filter="url(#auraGlow)" />
+
+    <!-- Precision Energy Sparks -->
+    <circle cx="210" cy="-145" r="18" fill="#38bdf8" filter="url(#auraGlow)" />
+    <polygon points="210,-185 215,-151 249,-145 215,-139 210,-105 205,-139 171,-145 205,-151" fill="#ffffff" />
+
+    <circle cx="-195" cy="165" r="14" fill="#f43f5e" filter="url(#auraGlow)" />
+    <polygon points="-195,130 -191,160 -161,165 -191,170 -195,200 -199,170 -229,165 -199,160" fill="#ffffff" />
+  </g>
+</svg>

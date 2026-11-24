@@ -1,0 +1,21 @@
+{
+  "metaTitle": "ClipForge AI Changelog",
+  "metaDescription": "New features, improvements, and fixes in ClipForge AI, from Twitch and Kick clipping to hosted pricing and the editor.",
+  "ogTitle": "ClipForge AI changelog",
+  "ogDescription": "What changed in ClipForge AI for people using the product. Newest updates first.",
+  "eyebrow": "Product updates",
+  "title": "Changelog",
+  "intro": "What changed for people using ClipForge AI. The newest updates are first.",
+  "hostedApp": "Hosted App",
+  "startClipping": "Start clipping",
+  "relatedChange": "Related change {label}",
+  "viewOnGitHub": "View the changelog on GitHub",
+  "discordUpdates": "Get updates on Discord",
+  "discordDescription": "Opt in to a ping when new release notes go live.",
+  "categories": {
+    "new": "New",
+    "improved": "Improved",
+    "fixed": "Fixed",
+    "underTheHood": "Under the hood"
+  }
+}

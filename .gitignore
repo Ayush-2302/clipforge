@@ -1,0 +1,126 @@
+# Environment files & secrets (NEVER commit these)
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+!.env.example
+
+# Credentials, tokens, keys & certificates
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+credentials.json
+token.json
+client_secret*.json
+service-account*.json
+
+# Dependencies
+node_modules/
+*/node_modules/
+.pnpm-store/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Python virtual environments & bytecode
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+*/.venv/
+venv/
+ENV/
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+*/coverage/
+frontend/playwright-report/
+frontend/test-results/
+frontend/e2e/.seed.json
+
+# Next.js build artifacts
+.next/
+*/.next/
+.next-polish/
+.next-wp17/
+out/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+frontend/src/generated/prisma/
+
+# Databases & local storage
+*.db
+*.sqlite
+*.sqlite3
+data/
+postgres_data/
+redis_data/
+
+# Logs & temp files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+temp/
+tmp/
+
+# Media cache & scratch demo files (large binaries)
+*.mp4
+*.m4a
+*.mp3
+*.wav
+*.webm
+*.avi
+*.mov
+backend/media/
+backend/storage/
+backend/downloads/
+backend/cache/
+backend/demo_clips/
+backend/demo_clips_*.log
+backend/run_demo.py
+
+# Provider research and private artifacts
+output/provider-guide*/
+docs/youtube-provider-registry*.json
+
+# Operating System & IDE artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+.cursor/
+.claude/
+.claude/worktrees/
