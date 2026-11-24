@@ -62,7 +62,7 @@ export async function SupoLiveArticle({ post }: { post: BlogPost }) {
    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
    <header className="border-b">
     <nav aria-label={t("shell.blogNav")} className="mx-auto flex max-w-4xl items-center justify-between gap-4 px-6 py-5">
-     <Link href="/" className="flex items-center gap-2.5 text-xl font-bold"><Image src="/logo.png" alt="" width={30} height={30} className="rounded-lg " />ClipForge AI</Link>
+     <Link href="/" className="flex items-center gap-2.5 text-xl font-bold"><Image src="/logo.svg" alt="" width={32} height={32} className="rounded-xl " />ClipForge AI</Link>
      <Link href="/blog" className="text-sm underline underline-offset-4">{t("shell.allArticles")}</Link>
     </nav>
    </header>

@@ -9,8 +9,8 @@ export async function AuthFrame({ children, footer }: { children: React.ReactNod
  return (
   <div className="grid min-h-dvh bg-background lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
    <div className="flex flex-col px-6 py-8 sm:px-12">
-        <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-          <Image src="/logo.png" alt="ClipForge AI" width={26} height={26} className="size-[26px] rounded-lg shadow-sm" priority />
+        <Link href="/" className="flex items-center gap-2.5 font-display text-lg font-bold tracking-tight">
+          <Image src="/logo.svg" alt="ClipForge AI" width={30} height={30} className="size-[30px] rounded-xl shadow-sm" priority />
           <span className="clipforge-gradient-text font-black text-xl">ClipForge AI</span>
         </Link>
     <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">

@@ -205,7 +205,7 @@ export default function LandingPage() {
      )}
     >
      <Link href="/" className="flex items-center gap-2">
-      <Image src="/logo.png" alt="ClipForge AI" width={28} height={28} className="rounded-lg shadow-sm" />
+      <Image src="/logo.svg" alt="ClipForge AI" width={32} height={32} className="rounded-xl shadow-md" />
       <span className="font-display text-[18px] font-black tracking-tight clipforge-gradient-text">ClipForge AI</span>
      </Link>
 
