@@ -2,7 +2,7 @@
 Bearer authentication for the hosted MCP server.
 
 Every HTTP transport (Streamable HTTP and legacy SSE) runs behind the same
-:class:`ClipForge AIAuthBackend` and :func:`require_auth` wrapper, so a request is
+:class:`ClipForgeAuthBackend` and :func:`require_auth` wrapper, so a request is
 accepted or refused the same way whichever endpoint it reaches. Refusals come
 back as JSON that says what was wrong and how to fix the client config.
 """
@@ -74,7 +74,7 @@ def extract_token(headers: Headers) -> Optional[str]:
     return api_key or None
 
 
-class ClipForge AIApiKeyVerifier:
+class ClipForgeApiKeyVerifier:
     """Validate MCP Bearer tokens against the configured ClipForge AI backend."""
 
     def __init__(self, api_url: str, timeout: float) -> None:
@@ -126,7 +126,7 @@ class ClipForge AIApiKeyVerifier:
         )
 
 
-class ClipForge AIAuthBackend(AuthenticationBackend):
+class ClipForgeAuthBackend(AuthenticationBackend):
     """Resolve the request's API key to an :class:`AuthenticatedUser`.
 
     It never refuses a request itself; :func:`require_auth` does that, so the

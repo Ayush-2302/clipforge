@@ -33,11 +33,11 @@ from .config import DEFAULT_APP_URL, Settings
 USER_AGENT = f"supoclip-mcp/{__version__}"
 
 
-class ClipForge AIError(Exception):
+class ClipForgeError(Exception):
     """A friendly, already-formatted error suitable for returning to the model."""
 
 
-class AuthNotConfiguredError(ClipForge AIError):
+class AuthNotConfiguredError(ClipForgeError):
     """Raised when an authenticated operation is attempted without credentials."""
 
 
@@ -52,7 +52,7 @@ def _signed_headers(user_id: str, secret: str) -> Dict[str, str]:
     }
 
 
-class ClipForge AIClient:
+class ClipForgeClient:
     """Async client wrapping the ClipForge AI REST API."""
 
     def __init__(self, settings: Settings):
@@ -103,11 +103,11 @@ class ClipForge AIClient:
                     method, url, params=params, json=json_body, headers=headers
                 )
         except httpx.TimeoutException as exc:
-            raise ClipForge AIError(
+            raise ClipForgeError(
                 f"Request to {path} timed out after {self.settings.timeout:g}s."
             ) from exc
         except httpx.HTTPError as exc:
-            raise ClipForge AIError(f"Could not reach ClipForge AI at {url}: {exc}") from exc
+            raise ClipForgeError(f"Could not reach ClipForge AI at {url}: {exc}") from exc
 
         return self._parse(response, path)
 
@@ -139,12 +139,12 @@ class ClipForge AIClient:
                         if response.is_redirect:
                             location = response.headers.get("location")
                             if not location:
-                                raise ClipForge AIError("Download redirect has no destination.")
+                                raise ClipForgeError("Download redirect has no destination.")
                             download_url = urljoin(download_url, location)
                             target = urlsplit(download_url)
                             same_backend = target[:2] == backend_origin
                             if target.scheme not in {"http", "https"} or (not same_backend and target.scheme != "https"):
-                                raise ClipForge AIError("Download redirect must use HTTPS for external storage.")
+                                raise ClipForgeError("Download redirect must use HTTPS for external storage.")
                             # HTTP clients do not automatically strip custom HMAC
                             # headers on a cross-origin redirect. Send no backend
                             # credentials to storage; the URL carries its own grant.
@@ -153,9 +153,9 @@ class ClipForge AIClient:
                             continue
                         if response.status_code not in {200, 206}:
                             if urlsplit(download_url)[:2] != backend_origin:
-                                raise ClipForge AIError(f"Storage download failed ({response.status_code}). Please retry.")
+                                raise ClipForgeError(f"Storage download failed ({response.status_code}). Please retry.")
                             body = (await response.aread()).decode("utf-8", "replace")
-                            raise ClipForge AIError(
+                            raise ClipForgeError(
                                 _error_message(response.status_code, body, path, self.settings.app_url)
                             )
                         with temporary.open("wb") as handle:
@@ -165,11 +165,11 @@ class ClipForge AIClient:
                         temporary.replace(dest_path)
                         break
                 else:
-                    raise ClipForge AIError("Download redirected too many times.")
+                    raise ClipForgeError("Download redirected too many times.")
         except httpx.HTTPError as exc:
             # Exceptions may contain signed storage URLs. Keep them out of the
             # user-visible error while retaining the exception type for support.
-            raise ClipForge AIError(f"Download from {path} failed ({type(exc).__name__}).") from exc
+            raise ClipForgeError(f"Download from {path} failed ({type(exc).__name__}).") from exc
         finally:
             temporary.unlink(missing_ok=True)
 
@@ -182,7 +182,7 @@ class ClipForge AIClient:
     # -- helpers ------------------------------------------------------------
     def _parse(self, response: httpx.Response, path: str) -> Any:
         if response.status_code >= 400:
-            raise ClipForge AIError(
+            raise ClipForgeError(
                 _error_message(response.status_code, response.text, path, self.settings.app_url)
             )
         if not response.content:

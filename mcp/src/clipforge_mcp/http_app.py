@@ -35,7 +35,7 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 from .oauth import resource_metadata_url
 from .auth import (
     AuthHelp,
-    ClipForge AIAuthBackend,
+    ClipForgeAuthBackend,
     backend_unavailable_response,
     require_auth,
 )
@@ -231,7 +231,7 @@ def build_http_app(
         middleware = [
             Middleware(
                 AuthenticationMiddleware,
-                backend=ClipForge AIAuthBackend(verifier),
+                backend=ClipForgeAuthBackend(verifier),
                 on_error=backend_unavailable_response,
             ),
             Middleware(AuthContextMiddleware),

@@ -107,7 +107,7 @@ class OAuthBackend:
         return "invalid_request", str(detail or response.text)
 
 
-class ClipForge AIOAuthProvider:
+class ClipForgeOAuthProvider:
     """``OAuthAuthorizationServerProvider`` backed by the ClipForge AI backend."""
 
     def __init__(self, backend: OAuthBackend, consent_url: str, verifier: Any) -> None:
@@ -349,7 +349,7 @@ def build_oauth_routes(
     """Discovery, registration, authorize and token routes for the MCP app."""
     base = public_url.rstrip("/")
     backend = OAuthBackend(api_url, secret)
-    provider = ClipForge AIOAuthProvider(backend, f"{app_url.rstrip('/')}/oauth/consent", verifier)
+    provider = ClipForgeOAuthProvider(backend, f"{app_url.rstrip('/')}/oauth/consent", verifier)
     routes = create_auth_routes(
         provider,
         issuer_url=AnyHttpUrl(base),

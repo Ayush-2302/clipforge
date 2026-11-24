@@ -36,14 +36,14 @@ try:  # Python 3.10 lacks typing.Literal niceties only in edge cases; import is 
 except ImportError:  # pragma: no cover
     from typing_extensions import Literal  # type: ignore
 
-from .auth import AuthHelp, ClipForge AIApiKeyVerifier
-from .client import AuthNotConfiguredError, ClipForge AIClient, ClipForge AIError
+from .auth import AuthHelp, ClipForgeApiKeyVerifier
+from .client import AuthNotConfiguredError, ClipForgeClient, ClipForgeError
 from .config import load_settings
 from .http_app import build_http_app
 from .oauth import build_oauth_routes
 
 SETTINGS = load_settings()
-CLIENT = ClipForge AIClient(SETTINGS)
+CLIENT = ClipForgeClient(SETTINGS)
 
 
 def _build_mcp() -> FastMCP:
@@ -63,7 +63,7 @@ def _public_url() -> str:
 def build_app(server: Optional[FastMCP] = None):
     """The ASGI app for ``SUPOCLIP_MCP_TRANSPORT=http`` (both transports)."""
     verifier = (
-        ClipForge AIApiKeyVerifier(SETTINGS.api_url, SETTINGS.timeout)
+        ClipForgeApiKeyVerifier(SETTINGS.api_url, SETTINGS.timeout)
         if SETTINGS.mcp_require_bearer_auth
         else None
     )
@@ -132,10 +132,10 @@ def _json(data: object) -> str:
     return json.dumps(data, indent=2, default=str, ensure_ascii=False)
 
 
-def _client() -> ClipForge AIClient:
+def _client() -> ClipForgeClient:
     access_token = get_access_token()
     if access_token and access_token.token:
-        return ClipForge AIClient(
+        return ClipForgeClient(
             replace(
                 SETTINGS,
                 api_key=access_token.token,
@@ -155,7 +155,7 @@ def tool_errors(func: Callable[..., Awaitable[str]]) -> Callable[..., Awaitable[
             return await func(*args, **kwargs)
         except AuthNotConfiguredError as exc:
             return f"Error: {exc}"
-        except ClipForge AIError as exc:
+        except ClipForgeError as exc:
             return f"Error: {exc}"
         except Exception as exc:  # pragma: no cover - defensive
             return f"Error: unexpected {type(exc).__name__}: {exc}"
@@ -190,7 +190,7 @@ def _workflow_fields(workflow: str, topic: str, part_count: int, instructions: s
     """
     workflow = (workflow or "highlights").strip().lower()
     if workflow not in WORKFLOWS:
-        raise ClipForge AIError("workflow must be highlights, series, topic, recap or trailer.")
+        raise ClipForgeError("workflow must be highlights, series, topic, recap or trailer.")
 
     fields: dict = {} if workflow == "highlights" else {"workflow": workflow}
     cleaned_topic = _normalize_text(topic, keep_newlines=False)
@@ -199,23 +199,23 @@ def _workflow_fields(workflow: str, topic: str, part_count: int, instructions: s
             len(cleaned_topic) >= TOPIC_MIN_CHARS or _ONE_CHARACTER_WORD.match(cleaned_topic)
         )
         if not searchable:
-            raise ClipForge AIError("topic is required for workflow='topic': name the subject to look for, e.g. 'pricing'.")
+            raise ClipForgeError("topic is required for workflow='topic': name the subject to look for, e.g. 'pricing'.")
         if len(cleaned_topic) > TOPIC_MAX_CHARS:
-            raise ClipForge AIError(f"topic must be at most {TOPIC_MAX_CHARS} characters.")
+            raise ClipForgeError(f"topic must be at most {TOPIC_MAX_CHARS} characters.")
         fields["workflow_options"] = {"topic": cleaned_topic}
     elif cleaned_topic:
-        raise ClipForge AIError("topic is only used with workflow='topic'.")
+        raise ClipForgeError("topic is only used with workflow='topic'.")
 
     if part_count:
         if workflow != "series":
-            raise ClipForge AIError("part_count is only used with workflow='series'.")
+            raise ClipForgeError("part_count is only used with workflow='series'.")
         if not SERIES_MIN_PARTS <= part_count <= SERIES_MAX_PARTS:
-            raise ClipForge AIError("part_count must be 0 (auto) or 2 to 10.")
+            raise ClipForgeError("part_count must be 0 (auto) or 2 to 10.")
         fields["workflow_options"] = {"part_count": int(part_count)}
 
     cleaned_instructions = _normalize_text(instructions, keep_newlines=True)
     if len(cleaned_instructions) > INSTRUCTIONS_MAX_CHARS:
-        raise ClipForge AIError(f"instructions must be at most {INSTRUCTIONS_MAX_CHARS} characters.")
+        raise ClipForgeError(f"instructions must be at most {INSTRUCTIONS_MAX_CHARS} characters.")
     if cleaned_instructions:
         fields["instructions"] = cleaned_instructions
     return fields
@@ -230,23 +230,23 @@ def _edit_style_field(intensity: str, edit_style: Optional[dict]) -> dict:
     API's canonical form: sorted, only the keys that differ from the defaults, ``intensity`` always present.
     """
     if edit_style is not None and not isinstance(edit_style, dict):
-        raise ClipForge AIError("edit_style must be an object, e.g. {\"intensity\": \"bold\", \"music\": false}.")
+        raise ClipForgeError("edit_style must be an object, e.g. {\"intensity\": \"bold\", \"music\": false}.")
     style = dict(EDIT_STYLE_DEFAULTS)
     for key, value in (edit_style or {}).items():
         if key not in EDIT_STYLE_DEFAULTS:
             known = ", ".join(sorted(EDIT_STYLE_DEFAULTS))
-            raise ClipForge AIError(f"edit_style has no key '{key}'. Known keys: {known}.")
+            raise ClipForgeError(f"edit_style has no key '{key}'. Known keys: {known}.")
         choices = _EDIT_STYLE_CHOICES.get(key)
         if choices is not None:
             if value not in choices:
-                raise ClipForge AIError(f"edit_style.{key} must be one of: {', '.join(choices)}.")
+                raise ClipForgeError(f"edit_style.{key} must be one of: {', '.join(choices)}.")
         elif not isinstance(value, bool):
-            raise ClipForge AIError(f"edit_style.{key} must be true or false.")
+            raise ClipForgeError(f"edit_style.{key} must be true or false.")
         style[key] = value
     shortcut = (intensity or "").strip().lower()
     if shortcut and shortcut != "off":
         if shortcut not in INTENSITIES:
-            raise ClipForge AIError("intensity must be off, subtle, bold or max.")
+            raise ClipForgeError("intensity must be off, subtle, bold or max.")
         style["intensity"] = shortcut
     if style["intensity"] == "off":
         return {}
@@ -261,7 +261,7 @@ async def _edit_styles_enabled(client: Any) -> bool:
     """Whether dynamic edits are on for this account (``GET /tasks/edit-styles``). Unauthenticated or any error: no."""
     try:
         info = await client.request("GET", "/tasks/edit-styles")
-    except ClipForge AIError:
+    except ClipForgeError:
         return False
     return isinstance(info, dict) and info.get("enabled") is True
 
@@ -555,10 +555,10 @@ async def supoclip_create_clip_task(
     """
     cleaned_url = (url or "").strip()
     if len(cleaned_url) < 4:
-        raise ClipForge AIError("url is required. Pass a YouTube URL or direct video URL.")
+        raise ClipForgeError("url is required. Pass a YouTube URL or direct video URL.")
 
     if clip_length not in {"auto", "short", "medium", "long"}:
-        raise ClipForge AIError("clip_length must be auto, short, medium, or long")
+        raise ClipForgeError("clip_length must be auto, short, medium, or long")
 
     workflow_fields = _workflow_fields(workflow, topic, part_count, instructions)
     edit_fields = _edit_style_field(intensity, edit_style)
@@ -802,7 +802,7 @@ async def supoclip_wait_for_task(
     job_id = (clip_job_id or "").strip().lower()
     if job_id:
         if not re.fullmatch(r"[0-9a-f]{32}", job_id):
-            raise ClipForge AIError("clip_job_id must be the 32-character job_id from a 202 response.")
+            raise ClipForgeError("clip_job_id must be the 32-character job_id from a 202 response.")
         return await _wait_for_clip_job(task_id, job_id, deadline, timeout_seconds, poll_interval_seconds, ctx)
     last: dict = {}
 
