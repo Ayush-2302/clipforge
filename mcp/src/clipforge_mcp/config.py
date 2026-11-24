@@ -69,44 +69,48 @@ class Settings:
         return self.auth_mode != "none"
 
 
+def _get(key: str) -> Optional[str]:
+    return _clean(os.getenv(f"CLIPFORGE_{key}") or os.getenv(f"SUPOCLIP_{key}"))
+
+
 def load_settings() -> Settings:
     """Build :class:`Settings` from the current environment."""
-    api_url = (_clean(os.getenv("SUPOCLIP_API_URL")) or DEFAULT_API_URL).rstrip("/")
-    download_dir = _clean(os.getenv("SUPOCLIP_DOWNLOAD_DIR")) or os.path.join(
-        os.getcwd(), "supoclip-downloads"
+    api_url = (_get("API_URL") or DEFAULT_API_URL).rstrip("/")
+    download_dir = _get("DOWNLOAD_DIR") or os.path.join(
+        os.getcwd(), "clipforge-downloads"
     )
 
-    raw_timeout = _clean(os.getenv("SUPOCLIP_TIMEOUT"))
+    raw_timeout = _get("TIMEOUT")
     try:
         timeout = float(raw_timeout) if raw_timeout else 60.0
     except ValueError:
         timeout = 60.0
 
-    raw_port = _clean(os.getenv("SUPOCLIP_MCP_PORT"))
+    raw_port = _get("MCP_PORT")
     try:
         mcp_port = int(raw_port) if raw_port else 9100
     except ValueError:
         mcp_port = 9100
 
-    transport = (_clean(os.getenv("SUPOCLIP_MCP_TRANSPORT")) or "stdio").lower()
+    transport = (_get("MCP_TRANSPORT") or "stdio").lower()
     transport = "http" if transport in HTTP_TRANSPORT_ALIASES else "stdio"
 
     return Settings(
         api_url=api_url,
-        app_url=(_clean(os.getenv("SUPOCLIP_APP_URL")) or DEFAULT_APP_URL).rstrip("/"),
+        app_url=(_get("APP_URL") or DEFAULT_APP_URL).rstrip("/"),
         mcp_oauth_secret=_clean(os.getenv("MCP_OAUTH_SECRET")),
-        api_key=_clean(os.getenv("SUPOCLIP_API_KEY")),
-        user_id=_clean(os.getenv("SUPOCLIP_USER_ID")),
-        auth_secret=_clean(os.getenv("SUPOCLIP_AUTH_SECRET")),
+        api_key=_get("API_KEY"),
+        user_id=_get("USER_ID"),
+        auth_secret=_get("AUTH_SECRET"),
         download_dir=download_dir,
         timeout=timeout,
         mcp_transport=transport,
-        mcp_host=_clean(os.getenv("SUPOCLIP_MCP_HOST")) or "127.0.0.1",
+        mcp_host=_get("MCP_HOST") or "127.0.0.1",
         mcp_port=mcp_port,
-        mcp_mount_path=_clean(os.getenv("SUPOCLIP_MCP_MOUNT_PATH")) or "/",
-        mcp_public_url=_clean(os.getenv("SUPOCLIP_MCP_PUBLIC_URL")),
+        mcp_mount_path=_get("MCP_MOUNT_PATH") or "/",
+        mcp_public_url=_get("MCP_PUBLIC_URL"),
         mcp_require_bearer_auth=(
-            (_clean(os.getenv("SUPOCLIP_MCP_REQUIRE_BEARER_AUTH")) or "").lower()
+            (_get("MCP_REQUIRE_BEARER_AUTH") or "").lower()
             in {"1", "true", "yes", "on"}
         ),
     )
