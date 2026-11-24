@@ -61,7 +61,7 @@ COPY transitions/ ./transitions/
 COPY fx_library/ ./fx_library/
 
 # Create necessary directories for video processing
-RUN mkdir -p /app/uploads /app/clips /app/logs /tmp
+RUN mkdir -p /app/uploads /app/clips /app/logs /app/transitions /tmp
 
 # Expose the port FastAPI will run on
 EXPOSE 8000
