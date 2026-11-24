@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.clipforge.ai">
-    <img src="assets/banner.jpg" alt="ClipForge AI dashboard with video input, caption controls, and recent clips" width="100%" />
+    <img src="frontend/public/blog/clipforge-open-source-clipping.webp" alt="AI-assisted video clipping workflow for ClipForge AI" width="100%" />
   </a>
 </p>
 
@@ -14,17 +14,6 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-ClipForge AI_Noncommercial-blue.svg" alt="ClipForge AI Noncommercial Source License" /></a>
   <a href="https://www.clipforge.ai"><img src="https://img.shields.io/badge/hosted-clipforge.ai-black.svg" alt="Hosted at clipforge.ai" /></a>
   <a href="docs/README.md"><img src="https://img.shields.io/badge/docs-docs%2F-green.svg" alt="Documentation" /></a>
-  <a href="https://discord.gg/Sz9ZD5REXg"><img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?logo=discord&amp;logoColor=white" alt="Join the ClipForge AI Discord community" /></a>
-</p>
-
-<p align="center">
-  <a href="https://apps.apple.com/us/app/clipforge/id6784760040">
-    <img src="frontend/public/app-store-badge.svg" alt="Download ClipForge AI on the App Store" height="40" />
-  </a>
-  &nbsp;
-  <a href="https://www.producthunt.com/products/clipforge?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-clipforge" target="_blank" rel="noopener noreferrer">
-    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1276786&theme=dark" alt="ClipForge AI on Product Hunt" height="40" />
-  </a>
 </p>
 
 ---
@@ -40,7 +29,6 @@ ClipForge AI is an open-source, AI-powered video clipping tool. Give it a long v
 | Option | Details |
 |---|---|
 | **Hosted web app** | [www.clipforge.ai](https://www.clipforge.ai) — no infrastructure to run |
-| **iOS app** | [ClipForge AI on the App Store](https://apps.apple.com/us/app/clipforge/id6784760040) — the same hosted pipeline, from your iPhone |
 | **Self-host** | Docker Compose setup below, or the step-by-step [self-hosting tutorial](https://www.clipforge.ai/blog/self-host-clipforge-docker) — free for noncommercial use and for individual creators on their own hardware |
 | **MCP server** | [`mcp/`](mcp/) — use ClipForge AI from Claude, Cursor, and other MCP clients |
 | **REST API** | API keys from `/settings/api-keys` authenticate the backend directly — see the [API reference](docs/api-reference.md) |
@@ -76,7 +64,7 @@ ClipForge AI gives you the same core pipeline without the leash:
 You need Docker, an [AssemblyAI](https://www.assemblyai.com/) API key for transcription, and one LLM provider key (Google, OpenAI, Anthropic, or a local Ollama).
 
 ```bash
-git clone https://github.com/ai-community/clipforge.git
+git clone https://github.com/Ayush-2302/clipforge.git
 cd clipforge
 ```
 
@@ -116,7 +104,7 @@ Everything beyond this page lives in [`docs/`](docs/README.md):
 
 ## Community
 
-Join the [ClipForge AI Discord](https://discord.gg/Sz9ZD5REXg) to share your clips, swap editing tips, ask for help with self-hosting, or suggest a feature.
+ClipForge AI is maintained in the [GitHub repository](https://github.com/Ayush-2302/clipforge). Use its Issues page for bug reports and feature requests.
 
 ## Development & Testing
 
@@ -144,8 +132,8 @@ Companies, agencies, and other organizations, including for internal use. Anyone
 Email support@clipforge.ai with who you are, who would use ClipForge AI, and what you want to do with it. Permission is given in writing.
 
 **What about the hosted plans at clipforge.ai?**
-The hosted web app and iOS app are separate from this license. Your subscription and the [terms of service](https://www.clipforge.ai/terms) cover how you can use clips you make there.
+The hosted web app is separate from this license. Your subscription and the [terms of service](https://www.clipforge.ai/terms) cover how you can use clips you make there.
 
-Based on ClipForge AI. [Original repository](https://github.com/ai-community/clipforge) · [Official website](https://www.clipforge.ai/)
+Based on SupoClip. [Original repository](https://github.com/FujiwaraChoki/supoclip) · [Official website](https://www.supoclip.com/)
 
 Contributions are accepted under the terms in [CONTRIBUTING.md](CONTRIBUTING.md), including a license grant that allows the project owner to sublicense and relicense contributed code.

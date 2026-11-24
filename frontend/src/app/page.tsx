@@ -51,7 +51,7 @@ export default async function HomePage() {
       legalName: COMPANY_NAME,
       url: siteUrl,
       logo: `${siteUrl}/logo.png`,
-      sameAs: ["https://github.com/ai-community/clipforge", APP_STORE_URL],
+      sameAs: ["https://github.com/Ayush-2302/clipforge", APP_STORE_URL],
     },
     {
       "@context": "https://schema.org",

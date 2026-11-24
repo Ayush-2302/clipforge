@@ -20,12 +20,12 @@ activated users (people who export a clip), not just visits.
 | Self-hosting guide | `https://www.clipforge.ai/blog/self-host-clipforge-docker` | r/selfhosted, developer communities |
 | ClipForge AI vs OpusClip | `https://www.clipforge.ai/blog/clipforge-vs-opusclip` | "OpusClip alternative" threads and questions |
 | Open-source clipper | `https://www.clipforge.ai/open-source-video-clipper` | Open-source communities |
-| GitHub | `https://github.com/ai-community/clipforge` | Hacker News, developer audiences |
+| GitHub | `https://github.com/Ayush-2302/clipforge` | Hacker News, developer audiences |
 
 **Visual assets in the repo**
 
-- `assets/banner.jpg`: README cover / social header
-- `frontend/public/blog/clipforge-editor.webp`: real editor screenshot (sample test footage)
+- `frontend/public/blog/clipforge-open-source-clipping.webp`: README cover illustration (AI-generated; label it as such)
+- `frontend/public/blog/clipforge-editor.webp`: editor screenshot (sample test footage)
 - `frontend/public/blog/clipforge-open-source-clipping.webp`: illustration (AI-generated, label it as such)
 - `frontend/public/clips/demo-{1,2}.mp4` + `.jpg`: demo clip previews
 
@@ -114,7 +114,7 @@ posting, and reply to comments for the first few hours.
 > Stack: Next.js, FastAPI, ARQ workers on Redis, Postgres, FFmpeg.
 > There's a paid hosted version for people who don't want to run it.
 >
-> Repo: https://github.com/ai-community/clipforge
+> Repo: https://github.com/Ayush-2302/clipforge
 > Demo: https://www.clipforge.ai/demo
 >
 > I'd love feedback on clip selection quality and the self-hosting experience.

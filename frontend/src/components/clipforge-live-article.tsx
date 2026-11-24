@@ -9,7 +9,7 @@ import { intlLocale } from "@/i18n/config";
 import { type BlogPost, getSiteUrl, HOSTED_APP_URL } from "@/lib/blog-posts";
 import { OPUSCLIP_COMPARISON_HREF, SELF_HOSTING_GUIDE_HREF } from "@/lib/marketing-links";
 
-const repository = "https://github.com/ai-community/clipforge";
+const repository = "https://github.com/Ayush-2302/clipforge";
 const workflowIcons = [Upload, Sparkles, ScanFace, Film];
 
 export async function SupoLiveArticle({ post }: { post: BlogPost }) {
