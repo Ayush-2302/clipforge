@@ -37,9 +37,9 @@ COPY pyproject.toml uv.lock* ./
 ARG BACKEND_CPU_ONLY=false
 RUN uv venv .venv && \
     if [ "$BACKEND_CPU_ONLY" = "true" ]; then \
-      uv sync --frozen --extra cpu; \
+      uv sync --extra cpu; \
     else \
-      uv sync --frozen --extra cuda; \
+      uv sync --extra cuda; \
     fi
 
 # yt-dlp and its PO-token plugin are installed from uv.lock above.
