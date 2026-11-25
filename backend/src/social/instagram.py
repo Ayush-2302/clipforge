@@ -205,8 +205,14 @@ class InstagramProvider(SocialProvider):
             )
         caption = build_caption(request.caption or request.title, request.hashtags, CAPTION_MAX_LENGTH)
 
+        is_meta_graph = access_token.startswith("EAA")
+        graph_base = f"https://graph.facebook.com/{API_VERSION}" if is_meta_graph else GRAPH_API
+        ig_user_id = (request.account_metadata or {}).get("ig_user_id") or "me"
+        target_path = f"{ig_user_id}/media" if is_meta_graph else "me/media"
+        publish_path = f"{ig_user_id}/media_publish" if is_meta_graph else "me/media_publish"
+
         create_response = self.http.post(
-            f"{GRAPH_API}/me/media",
+            f"{graph_base}/{target_path}",
             data={
                 "media_type": "REELS",
                 "video_url": request.public_media_url,
@@ -221,13 +227,13 @@ class InstagramProvider(SocialProvider):
         if not container_id:
             raise SocialProviderError("Instagram did not return a media container id")
 
-        self._wait_for_container(access_token, container_id)
+        self._wait_for_container(access_token, container_id, graph_base=graph_base)
 
         # The container is harmless until published; media_publish may create
         # the reel even if its response is lost.
         with ambiguous_outcome("publish the Instagram reel"):
             publish_response = self.http.post(
-                f"{GRAPH_API}/me/media_publish",
+                f"{graph_base}/{publish_path}",
                 data={"creation_id": container_id},
                 headers=self._auth_headers(access_token),
                 timeout=DEFAULT_HTTP_TIMEOUT,
@@ -240,7 +246,7 @@ class InstagramProvider(SocialProvider):
         permalink = None
         try:
             link_response = self.http.get(
-                f"{GRAPH_API}/{media_id}",
+                f"{graph_base}/{media_id}",
                 params={"fields": "permalink"},
                 headers=self._auth_headers(access_token),
                 timeout=DEFAULT_HTTP_TIMEOUT,
@@ -256,11 +262,13 @@ class InstagramProvider(SocialProvider):
             raw={"container_id": container_id},
         )
 
-    def _wait_for_container(self, access_token: str, container_id: str) -> None:
+    def _wait_for_container(
+        self, access_token: str, container_id: str, graph_base: str = GRAPH_API
+    ) -> None:
         deadline = time.monotonic() + CONTAINER_POLL_TIMEOUT_SECONDS
         while True:
             response = self.http.get(
-                f"{GRAPH_API}/{container_id}",
+                f"{graph_base}/{container_id}",
                 params={"fields": "status_code,status"},
                 headers=self._auth_headers(access_token),
                 timeout=DEFAULT_HTTP_TIMEOUT,
@@ -284,8 +292,10 @@ class InstagramProvider(SocialProvider):
     def fetch_metrics(
         self, access_token: str, external_post_id: str, account_metadata: Dict[str, Any]
     ) -> PostMetrics:
+        is_meta_graph = access_token.startswith("EAA")
+        graph_base = f"https://graph.facebook.com/{API_VERSION}" if is_meta_graph else GRAPH_API
         response = self.http.get(
-            f"{GRAPH_API}/{external_post_id}",
+            f"{graph_base}/{external_post_id}",
             params={"fields": "like_count,comments_count,permalink"},
             headers=self._auth_headers(access_token),
             timeout=DEFAULT_HTTP_TIMEOUT,
@@ -300,7 +310,7 @@ class InstagramProvider(SocialProvider):
 
         for metric_set in INSIGHT_METRIC_SETS:
             insight_response = self.http.get(
-                f"{GRAPH_API}/{external_post_id}/insights",
+                f"{graph_base}/{external_post_id}/insights",
                 params={"metric": metric_set},
                 headers=self._auth_headers(access_token),
                 timeout=DEFAULT_HTTP_TIMEOUT,
