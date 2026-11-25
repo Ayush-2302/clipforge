@@ -333,20 +333,38 @@ def get_video_transcript(
 
     if provider == "whisper":
         return _get_transcript_with_whisper(video_path, runtime_config)
+
     if provider == "youtube_captions":
-        if not source_url:
-            raise ValueError(
-                "youtube_captions provider requires a YouTube URL. "
-                "Pass source_url to get_video_transcript()."
-            )
+        if source_url:
+            try:
+                return _get_transcript_with_youtube_captions(source_url)
+            except Exception as e:
+                logger.warning(
+                    f"YouTube caption extraction failed ({e}), attempting fallback..."
+                )
+        else:
+            logger.info("Direct upload provided (no source_url); falling back from youtube_captions...")
+
+        if getattr(runtime_config, "assembly_ai_api_key", None):
+            try:
+                return _get_transcript_with_assemblyai(video_path, speech_model, runtime_config)
+            except Exception as e:
+                logger.warning(f"AssemblyAI fallback failed ({e}), falling back to Whisper...")
+
+        return _get_transcript_with_whisper(video_path, runtime_config)
+
+    # AssemblyAI (default) with automatic fallback to Whisper
+    if getattr(runtime_config, "assembly_ai_api_key", None):
         try:
-            return _get_transcript_with_youtube_captions(source_url)
+            return _get_transcript_with_assemblyai(video_path, speech_model, runtime_config)
         except Exception as e:
             logger.warning(
-                f"YouTube caption extraction failed ({e}), falling back to Whisper..."
+                f"AssemblyAI transcription failed ({e}), falling back to local Whisper..."
             )
             return _get_transcript_with_whisper(video_path, runtime_config)
-    return _get_transcript_with_assemblyai(video_path, speech_model, runtime_config)
+
+    logger.warning("No AssemblyAI API key configured; falling back to local Whisper...")
+    return _get_transcript_with_whisper(video_path, runtime_config)
 
 
 def _get_transcript_with_assemblyai(
