@@ -66,7 +66,7 @@ export function SiteFooter() {
     <div>
      <Link href="/" className="flex items-center gap-2">
       <Image src="/logo.png" alt="ClipForge AI" width={24} height={24} className="rounded-md " />
-      <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-syne), system-ui" }}>
+      <span className="text-sm font-semibold" style={{ fontFamily: "var(--font-display), system-ui" }}>
        ClipForge AI
       </span>
      </Link>

@@ -154,7 +154,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <Image src="/logo.png" alt="ClipForge AI" width={24} height={24} className="rounded-lg " />
       <span
        className="text-lg font-bold tracking-tight"
-       style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
+       style={{ fontFamily: "var(--font-display), var(--font-geist-sans), system-ui" }}
       >
        ClipForge AI
       </span>
@@ -196,7 +196,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
        </div>
        <h1
         className="max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
-        style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
+        style={{ fontFamily: "var(--font-display), var(--font-geist-sans), system-ui" }}
        >
         {post.title}
        </h1>
@@ -327,7 +327,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
          </p>
          <h2
           className="mt-2 text-2xl font-bold tracking-tight"
-          style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
+          style={{ fontFamily: "var(--font-display), var(--font-geist-sans), system-ui" }}
          >
           {t(`${key}.cta.title`)}
          </h2>

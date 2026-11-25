@@ -41,7 +41,7 @@ export default async function BlogIndexPage() {
       <Image src="/logo.png" alt="ClipForge AI" width={24} height={24} className="rounded-lg " />
       <span
        className="text-lg font-bold tracking-tight"
-       style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
+       style={{ fontFamily: "var(--font-display), var(--font-geist-sans), system-ui" }}
       >
        ClipForge AI
       </span>
@@ -77,7 +77,7 @@ export default async function BlogIndexPage() {
      <div className="max-w-3xl">
       <h1
        className="text-4xl font-extrabold tracking-tight sm:text-5xl"
-       style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
+       style={{ fontFamily: "var(--font-display), var(--font-geist-sans), system-ui" }}
       >
        {t("index.heading")}
       </h1>
@@ -103,7 +103,7 @@ export default async function BlogIndexPage() {
       </div>
       <h2
        className="text-3xl font-bold tracking-tight sm:text-4xl"
-       style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}
+       style={{ fontFamily: "var(--font-display), var(--font-geist-sans), system-ui" }}
       >
        {featuredPost.title}
       </h2>

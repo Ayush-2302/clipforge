@@ -86,7 +86,7 @@ export default async function DemoPage() {
    <section className="border-b bg-muted/35">
     <div className="mx-auto max-w-5xl px-6 py-14 md:py-20">
      <Badge variant="secondary">{t("demo.badge")}</Badge>
-     <h1 className="mt-5 max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ fontFamily: "var(--font-syne), var(--font-geist-sans), system-ui" }}>
+     <h1 className="mt-5 max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ fontFamily: "var(--font-display), var(--font-geist-sans), system-ui" }}>
       {t("demo.heading")}
      </h1>
      <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">{t("demo.intro")}</p>
