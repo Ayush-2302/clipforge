@@ -828,10 +828,12 @@ export default function LandingPage() {
          <Image src="/app-store-badge.svg" alt={t("hero.appStoreAlt")} width={135} height={40} className="h-12 w-auto" />
         </a>
        </div>
-       <a href={PRODUCT_HUNT_URL} target="_blank" rel="noopener noreferrer" className="mt-10 inline-block opacity-80 transition-opacity hover:opacity-100">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={PRODUCT_HUNT_BADGE_URL} alt={t("hero.productHuntAlt")} width={200} height={43} />
-       </a>
+       {PRODUCT_HUNT_BADGE_URL?.trim() && PRODUCT_HUNT_URL?.trim() ? (
+        <a href={PRODUCT_HUNT_URL} target="_blank" rel="noopener noreferrer" className="mt-10 inline-block opacity-80 transition-opacity hover:opacity-100">
+         {/* eslint-disable-next-line @next/next/no-img-element */}
+         <img src={PRODUCT_HUNT_BADGE_URL} alt={t("hero.productHuntAlt")} width={200} height={43} />
+        </a>
+       ) : null}
       </div>
      </div>
     </Reveal>
