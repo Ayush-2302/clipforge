@@ -204,9 +204,9 @@ export default function LandingPage() {
        : "border-transparent bg-transparent",
      )}
     >
-     <Link href="/" className="flex items-center gap-2">
-      <Image src="/logo.svg" alt="ClipForge AI" width={32} height={32} className="rounded-xl shadow-md" />
-      <span className="font-display text-[18px] font-black tracking-tight clipforge-gradient-text">ClipForge AI</span>
+     <Link href="/" className="flex items-center gap-2.5">
+      <Image src="/logo.svg" alt="ClipForge AI" width={32} height={32} className="rounded-xl shadow-md shrink-0" />
+      <span className="font-display text-[18px] font-black tracking-tight clipforge-gradient-text whitespace-nowrap">ClipForge AI</span>
      </Link>
 
      <div className="hidden items-center gap-1 xl:flex">

@@ -101,9 +101,9 @@ export function AppShell({ children, tour }: { children: React.ReactNode; /** Se
      compact ? "w-16 items-center px-2" : "w-60 px-3",
     )}
    >
-    <Link href="/" className={cn("flex h-14 items-center gap-2 font-display text-lg font-bold tracking-tight", compact ? "justify-center" : "px-2")}>
-     <Image src="/logo.svg" alt="ClipForge AI" width={28} height={28} className="size-[28px] rounded-lg shadow-sm" priority />
-     {!compact && <span className="clipforge-gradient-text font-black text-xl tracking-tight">ClipForge AI</span>}
+    <Link href="/" className={cn("flex h-14 items-center gap-2.5 font-display text-lg font-bold tracking-tight", compact ? "justify-center" : "px-2")}>
+     <Image src="/logo.svg" alt="ClipForge AI" width={32} height={32} className="size-8 rounded-xl shadow-md shrink-0" priority />
+     {!compact && <span className="clipforge-gradient-text font-black text-xl tracking-tight whitespace-nowrap">ClipForge AI</span>}
     </Link>
 
     <WorkspaceSwitcher compact={compact} className="mb-3" />
@@ -144,7 +144,7 @@ export function AppShell({ children, tour }: { children: React.ReactNode; /** Se
    <div className={cn(user && "flex min-w-0 flex-1 flex-col", user && !immersive && "pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0")}>
     {user && !immersive ? <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur md:hidden">
      <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-      <Image src="/logo.svg" alt="ClipForge AI" width={26} height={26} className="size-[26px] rounded-md shadow-sm" /><span className="clipforge-gradient-text font-black text-lg">ClipForge AI</span>
+      <Image src="/logo.svg" alt="ClipForge AI" width={28} height={28} className="size-7 rounded-lg shadow-sm shrink-0" /><span className="clipforge-gradient-text font-black text-lg whitespace-nowrap">ClipForge AI</span>
      </Link>
      <div className="flex items-center gap-1">
       <WorkspaceSwitcher compact className="size-9 border-0 bg-transparent" />
