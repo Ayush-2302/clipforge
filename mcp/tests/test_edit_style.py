@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from supoclip_mcp import server
-from supoclip_mcp.client import AuthNotConfiguredError, SupoClipError
+from clipforge_mcp import server
+from clipforge_mcp.client import AuthNotConfiguredError, ClipForgeError
 
 URL = "https://youtu.be/abcdefghijk"
 JOB = "0123456789abcdef0123456789abcdef"
@@ -22,7 +22,7 @@ LEGACY_BODY_KEYS = [
 def _create(monkeypatch, **kwargs):
     request = AsyncMock(return_value={"task_id": "task-1"})
     monkeypatch.setattr(server, "_client", lambda: SimpleNamespace(request=request))
-    result = asyncio.run(server.supoclip_create_clip_task(url=URL, **kwargs))
+    result = asyncio.run(server.clipforge_create_clip_task(url=URL, **kwargs))
     return request, result
 
 
@@ -106,7 +106,7 @@ def test_list_edit_styles(monkeypatch):
     info = {"enabled": True, "intensities": ["off", "subtle", "bold", "max"], "templates": ["emoji_drop"]}
     request = AsyncMock(return_value=info)
     monkeypatch.setattr(server, "_client", lambda: SimpleNamespace(request=request))
-    result = asyncio.run(server.supoclip_list_edit_styles())
+    result = asyncio.run(server.clipforge_list_edit_styles())
     assert request.await_args.args == ("GET", "/tasks/edit-styles")
     assert '"enabled": true' in result
 
@@ -128,7 +128,7 @@ def _templates_client(edit_styles):
 def test_caption_templates_include_fx_only_when_enabled(monkeypatch):
     calls, client = _templates_client({"enabled": True})
     monkeypatch.setattr(server, "_client", lambda: client)
-    asyncio.run(server.supoclip_list_caption_templates())
+    asyncio.run(server.clipforge_list_caption_templates())
     assert calls[0][1] == "/tasks/edit-styles"
     assert calls[1] == ("GET", "/caption-templates", {"params": {"include": "fx"}, "authenticated": False})
 
@@ -140,13 +140,13 @@ def test_caption_templates_include_fx_only_when_enabled(monkeypatch):
         {"enabled": "true"},
         {},
         AuthNotConfiguredError("No credentials configured."),
-        SupoClipError("Not found (404)"),
+        ClipForgeError("Not found (404)"),
     ],
 )
 def test_caption_templates_stay_legacy_otherwise(monkeypatch, edit_styles):
     calls, client = _templates_client(edit_styles)
     monkeypatch.setattr(server, "_client", lambda: client)
-    result = asyncio.run(server.supoclip_list_caption_templates())
+    result = asyncio.run(server.clipforge_list_caption_templates())
     assert calls[-1] == ("GET", "/caption-templates", {"authenticated": False})
     assert "Error" not in result
 
@@ -166,7 +166,7 @@ def test_wait_for_a_clip_job_then_refetches_the_task(monkeypatch):
 
     monkeypatch.setattr(server, "_client", lambda: SimpleNamespace(request=request))
     monkeypatch.setattr(server.asyncio, "sleep", AsyncMock())
-    result = asyncio.run(server.supoclip_wait_for_task(task_id="task-1", clip_job_id=JOB.upper(), poll_interval_seconds=2))
+    result = asyncio.run(server.clipforge_wait_for_task(task_id="task-1", clip_job_id=JOB.upper(), poll_interval_seconds=2))
     assert paths == [f"/tasks/task-1/clip-jobs/{JOB}", f"/tasks/task-1/clip-jobs/{JOB}", "/tasks/task-1"]
     assert '"status": "done"' in result
     assert '"task"' in result
@@ -175,7 +175,7 @@ def test_wait_for_a_clip_job_then_refetches_the_task(monkeypatch):
 def test_wait_for_a_failed_clip_job(monkeypatch):
     request = AsyncMock(return_value={"status": "failed", "kind": "captions", "progress": 0, "error": {"code": "WORKER_UNAVAILABLE"}})
     monkeypatch.setattr(server, "_client", lambda: SimpleNamespace(request=request))
-    result = asyncio.run(server.supoclip_wait_for_task(task_id="task-1", clip_job_id=JOB))
+    result = asyncio.run(server.clipforge_wait_for_task(task_id="task-1", clip_job_id=JOB))
     assert '"status": "failed"' in result
     assert "WORKER_UNAVAILABLE" in result
     request.assert_awaited_once()
@@ -184,6 +184,6 @@ def test_wait_for_a_failed_clip_job(monkeypatch):
 def test_wait_rejects_a_bad_clip_job_id(monkeypatch):
     request = AsyncMock()
     monkeypatch.setattr(server, "_client", lambda: SimpleNamespace(request=request))
-    result = asyncio.run(server.supoclip_wait_for_task(task_id="task-1", clip_job_id="../../tasks"))
+    result = asyncio.run(server.clipforge_wait_for_task(task_id="task-1", clip_job_id="../../tasks"))
     assert "clip_job_id must be" in result
     request.assert_not_awaited()

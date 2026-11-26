@@ -36,7 +36,7 @@ def test_typescript_mood_type_and_list():
 
 
 def test_mcp_music_moods():
-    server = _read("mcp/src/supoclip_mcp/server.py")
+    server = _read("mcp/src/clipforge_mcp/server.py")
     (listed,) = re.findall(r"MUSIC_MOODS = \(([^)]+)\)", server)
     assert tuple(_quoted(listed)) == ("auto", *MOODS)
 

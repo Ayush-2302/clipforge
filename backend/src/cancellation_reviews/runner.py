@@ -1,6 +1,6 @@
 """The cron job: fold new Stripe events, investigate due reviews, deliver reports.
 
-Runs every minute on the cron worker (``supoclip_cron`` queue, one copy at a
+Runs every minute on the cron worker (``clipforge_cron`` queue, one copy at a
 time), never on the render queue. Each step is idempotent and resumable:
 
 - events are folded once (``folded_at``); a fold error is stored and retried

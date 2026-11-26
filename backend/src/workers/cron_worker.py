@@ -2,7 +2,7 @@
 
 Video renders share a few CPU slots and can run for hours. Cron jobs used to
 be appended to that same queue, so a busy worker accumulated one new copy of
-each schedule every time it came due. This worker drains ``supoclip_cron``
+each schedule every time it came due. This worker drains ``clipforge_cron``
 only. Each schedule uses one stable job id: while that job is queued or
 running, arq refuses another copy.
 
@@ -21,7 +21,7 @@ tidy with ``maintain_local_scratch``.
 import os
 
 os.environ["CLIPFORGE_SERVICE"] = "cron-worker"
-os.environ["SUPOCLIP_SERVICE"] = "cron-worker"
+os.environ["CLIPFORGE_SERVICE"] = "cron-worker"
 
 from arq import cron  # noqa: E402
 
@@ -39,7 +39,7 @@ from .tasks import (  # noqa: E402
 
 configure_logging()
 
-CRON_QUEUE_NAME = "supoclip_cron"
+CRON_QUEUE_NAME = "clipforge_cron"
 
 
 def scheduled(coroutine, **kwargs):

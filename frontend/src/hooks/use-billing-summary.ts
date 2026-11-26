@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-export const WORKSPACE_CHANGED_EVENT = "supoclip:workspace-changed";
+export const WORKSPACE_CHANGED_EVENT = "clipforge:workspace-changed";
 
 export interface BillingSummary {
   monetization_enabled: boolean;

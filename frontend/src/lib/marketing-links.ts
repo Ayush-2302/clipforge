@@ -18,8 +18,8 @@ export interface MarketingLink {
   related: string[];
 }
 
-export const SELF_HOSTING_GUIDE_HREF = "/blog/self-host-supoclip-docker";
-export const OPUSCLIP_COMPARISON_HREF = "/blog/supoclip-vs-opusclip";
+export const SELF_HOSTING_GUIDE_HREF = "/blog/self-host-clipforge-docker";
+export const OPUSCLIP_COMPARISON_HREF = "/blog/clipforge-vs-opusclip";
 
 export const marketingLinks: MarketingLink[] = [
   {
@@ -95,10 +95,10 @@ export const marketingLinks: MarketingLink[] = [
     title: "Free OpusClip alternative: costs and tradeoffs",
     label: "Self-hosted OpusClip alternative",
     description: "Understand the compute, provider costs, and maintenance behind a self-hosted workflow.",
-    related: [OPUSCLIP_COMPARISON_HREF, SELF_HOSTING_GUIDE_HREF, "/blog/supoclip-vs-supo-live"],
+    related: [OPUSCLIP_COMPARISON_HREF, SELF_HOSTING_GUIDE_HREF, "/blog/clipforge-vs-supo-live"],
   },
   {
-    href: "/blog/supoclip-vs-supo-live",
+    href: "/blog/clipforge-vs-supo-live",
     group: "comparison",
     eyebrow: "Comparison",
     title: "ClipForge AI vs supo.live: open-source control",

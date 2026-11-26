@@ -77,10 +77,10 @@ def workflows_for_all():
     ("headers", "expected"),
     [
         ({}, "web"),
-        ({"x-supoclip-client": "ios"}, "ios"),
-        ({"X-SupoClip-Client": " iOS "}, "ios"),
-        ({"x-supoclip-client": "web"}, "web"),
-        ({"x-supoclip-client": "android"}, "web"),
+        ({"x-clipforge-client": "ios"}, "ios"),
+        ({"X-ClipForge-Client": " iOS "}, "ios"),
+        ({"x-clipforge-client": "web"}, "web"),
+        ({"x-clipforge-client": "android"}, "web"),
         ({"authorization": "Bearer sk_test"}, "web"),
     ],
 )

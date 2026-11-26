@@ -13,8 +13,8 @@ from .redis_settings import arq_redis_settings, use_socket_options
 logger = logging.getLogger(__name__)
 
 # Queue names
-DEFAULT_QUEUE_NAME = "supoclip_tasks"
-FAST_QUEUE_NAME = "supoclip_fast"
+DEFAULT_QUEUE_NAME = "clipforge_tasks"
+FAST_QUEUE_NAME = "clipforge_fast"
 
 
 class DuplicateJobError(RuntimeError):

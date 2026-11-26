@@ -1,7 +1,7 @@
 # Production monitoring
 
 Run `python3 scripts/monitor-production.py` from an operator checkout with
-`SUPOCLIP_PROD_SSH_HOST` set to the production server's SSH alias (a `Host`
+`CLIPFORGE_PROD_SSH_HOST` set to the production server's SSH alias (a `Host`
 entry in your own `~/.ssh/config`; the name is not recorded in this repository). It reads production health, containers, recent
 job states, effective provider settings and OpenRouter balances. Credentials are
 read only inside the production backend container and are never returned.
@@ -26,3 +26,5 @@ do not generate repeated alerts. Access failures and recoveries are reported.
 This is an operator-workstation monitor. Keep Codex running and the workstation
 awake for scheduled checks. This is not an independent always-on uptime service.
 Purchases, deployments, refunds and customer communications require approval.
+
+`CLIPFORGE_PROD_SSH_HOST` remains accepted as a legacy environment variable.

@@ -1670,5 +1670,5 @@
   ],
   "title": "FxScene",
   "type": "object",
-  "$id": "https://supoclip.com/schemas/fx/fx_scene.schema.json"
+  "$id": "https://clipforge.ai/schemas/fx/fx_scene.schema.json"
 }

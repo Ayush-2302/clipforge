@@ -126,8 +126,8 @@ class TaskCompletionEmailService:
                 "Team ClipForge AI"
             ),
             inline_images=(
-                ((InlineImage("source@supoclip", previews.source),) if previews.source else ())
-                + tuple(InlineImage(f"clip{i}@supoclip", clip.image) for i, clip in enumerate(previews.clips))
+                ((InlineImage("source@clipforge", previews.source),) if previews.source else ())
+                + tuple(InlineImage(f"clip{i}@clipforge", clip.image) for i, clip in enumerate(previews.clips))
             ),
         )
 
@@ -139,7 +139,7 @@ class TaskCompletionEmailService:
             return ""
         return (
             f'<a style="display:block;margin:0 0 24px;" href="{escape(task_url)}" target="_blank">'
-            f'<img src="cid:source@supoclip" width="{_SOURCE_WIDTH}" '
+            f'<img src="cid:source@clipforge" width="{_SOURCE_WIDTH}" '
             f'alt="{escape((source_title or "").strip() or "Your video")}" '
             f'style="display:block;width:100%;max-width:{_SOURCE_WIDTH}px;height:auto;border:0;border-radius:8px;"></a>'
         )
@@ -160,7 +160,7 @@ class TaskCompletionEmailService:
                 # Percentage cells so three clips shrink to fit narrow phone screens.
                 f'<td width="33%" valign="top" style="width:33%;padding:0 10px 0 0;">'
                 f'<a style="display:block;" href="{escape(task_url)}" target="_blank">'
-                f'<img src="cid:clip{i}@supoclip" width="{_CLIP_WIDTH}" '
+                f'<img src="cid:clip{i}@clipforge" width="{_CLIP_WIDTH}" '
                 f'alt="{escape((clip.title or "").strip() or f"Clip {i + 1}")}" '
                 f'style="display:block;width:100%;max-width:{_CLIP_WIDTH}px;height:auto;border:0;border-radius:8px;"></a>'
                 f"{title}</td>"

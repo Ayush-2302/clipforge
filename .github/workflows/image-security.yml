@@ -34,13 +34,13 @@ jobs:
       - name: Build the deployable image with refreshed base layers
         run: >-
           docker build --pull ${{ matrix.options }}
-          --tag supoclip-security:${{ matrix.service }}
+          --tag clipforge-security:${{ matrix.service }}
           --file ${{ matrix.service }}/Dockerfile ${{ matrix.context }}
       - name: Self-test the dynamic-edits renderer offline (ffmpeg 7.1 + baked deno cache)
         if: matrix.service == 'backend'
         run: >-
           docker run --rm --network none
-          supoclip-security:backend
+          clipforge-security:backend
           .venv/bin/python -m src.media.fx_selftest
       - name: Reject fixable critical vulnerabilities in the final image
         run: >-
@@ -49,4 +49,4 @@ jobs:
           aquasec/trivy:0.76.1 image
           --scanners vuln --severity CRITICAL --ignore-unfixed
           --exit-code 1 --timeout 15m
-          supoclip-security:${{ matrix.service }}
+          clipforge-security:${{ matrix.service }}

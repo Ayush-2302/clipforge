@@ -48,7 +48,7 @@ async def test_long_video_rejected_before_task_or_queue_creation(monkeypatch, cr
 async def test_accepted_task_sends_task_created_without_the_url(monkeypatch, creation):
     request, _service, _queue, billing = creation
     billing["plan"] = "pro"
-    request.headers = {"x-supoclip-client": "ios"}
+    request.headers = {"x-clipforge-client": "ios"}
     events = []
     monkeypatch.setattr(tasks, "capture_event", lambda *args: events.append(args))
     monkeypatch.setattr(tasks, "async_get_youtube_video_info", AsyncMock(return_value={"duration": 600.4, "title": "T"}))

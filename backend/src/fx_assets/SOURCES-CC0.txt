@@ -1,4 +1,4 @@
-SupoClip dynamic-edit sound effects (sfx/*.wav)
+ClipForge dynamic-edit sound effects (sfx/*.wav)
 ===============================================
 
 License: CC0-1.0 (Creative Commons Zero 1.0 Universal, public domain dedication).

@@ -155,9 +155,9 @@ def test_json_payload_is_signed_over_timestamp_and_body():
     assert payload["type"] == "feedback.created" and payload["version"] == 1 and payload["delivery_id"] == "del-1"
     assert payload["submission"]["user"] == {"id": "user-1", "email": "ana@example.com"}
     assert payload["submission"]["created_at"] == "2026-11-17T09:30:00Z"
-    assert headers["X-SupoClip-Delivery"] == "del-1" and headers["X-SupoClip-Event"] == "feedback.created"
+    assert headers["X-ClipForge-Delivery"] == "del-1" and headers["X-ClipForge-Event"] == "feedback.created"
     expected = hmac.new(b"whsec_test", b"1700000000." + body, hashlib.sha256).hexdigest()
-    assert headers["X-SupoClip-Signature"] == f"t=1700000000,v1={expected}"
+    assert headers["X-ClipForge-Signature"] == f"t=1700000000,v1={expected}"
 
 
 @pytest.mark.asyncio
@@ -262,7 +262,7 @@ async def test_immediate_delivery_overflow_is_left_for_cron(monkeypatch):
 
 # --- Hermes assistant (server-configured) -------------------------------------------
 
-HERMES = {"kind": "hermes", "url": "http://127.0.0.1:8644/p/supoclip/webhooks/feedback-supoclip", "secret": "route-secret"}
+HERMES = {"kind": "hermes", "url": "http://127.0.0.1:8644/p/clipforge/webhooks/feedback-clipforge", "secret": "route-secret"}
 DELIVERY_ID = "0f2d8a52-3c1e-4c3b-9d7e-5b2f1a6c9e10"
 
 
@@ -272,13 +272,13 @@ def test_hermes_request_uses_the_gateway_v2_signature():
     expected = hmac.new(b"route-secret", b"1700000000." + body, hashlib.sha256).hexdigest()
     assert headers["X-Webhook-Signature-V2"] == expected
     assert headers["X-Request-ID"] == DELIVERY_ID and headers["Content-Type"] == "application/json"
-    assert not any(name.startswith("X-SupoClip") for name in headers)
+    assert not any(name.startswith("X-ClipForge") for name in headers)
 
 
 def test_hermes_payload_is_exactly_what_the_route_accepts():
     body, _ = delivery.build_request(HERMES, delivery.EVENT_CREATED, DELIVERY_ID, SUBMISSION, now=1700000000)
     assert json.loads(body) == {
-        "type": "supoclip.feedback",
+        "type": "clipforge.feedback",
         "version": 1,
         "delivery_id": DELIVERY_ID,
         "submission": {
@@ -296,7 +296,7 @@ def test_hermes_payload_is_exactly_what_the_route_accepts():
 @pytest.mark.parametrize(
     ("status", "answer", "ok", "retryable"),
     [
-        (202, b'{"status":"accepted","route":"feedback-supoclip"}', True, False),
+        (202, b'{"status":"accepted","route":"feedback-clipforge"}', True, False),
         (200, b'{"status":"duplicate","delivery_id":"x"}', True, False),
         (200, b'{"status":"delivered"}', True, False),
         (200, b'{"status":"ignored","reason":"script"}', False, True),
@@ -355,8 +355,8 @@ async def test_hermes_without_its_environment_is_retried_unsent(monkeypatch):
 
 @pytest.mark.parametrize("kind", ["json", "discord"])
 def test_admin_entered_urls_still_cannot_reach_the_gateway(kind):
-    for url in (HERMES["url"], "https://127.0.0.1:8644/p/supoclip/webhooks/feedback-supoclip",
-                "https://host.docker.internal/p/supoclip/webhooks/feedback-supoclip"):
+    for url in (HERMES["url"], "https://127.0.0.1:8644/p/clipforge/webhooks/feedback-clipforge",
+                "https://host.docker.internal/p/clipforge/webhooks/feedback-clipforge"):
         with pytest.raises(UnsafeWebhookUrl):
             validate_webhook_url(url, kind)
 

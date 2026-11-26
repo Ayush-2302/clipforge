@@ -80,7 +80,7 @@ export const seoPages: SeoPage[] = [
         ],
         links: [
           { href: "/youtube-shorts-clipper", label: "Step-by-step: turn a YouTube video into Shorts" },
-          { href: "/blog/self-host-supoclip-docker", label: "Run the pipeline yourself with Docker" },
+          { href: "/blog/self-host-clipforge-docker", label: "Run the pipeline yourself with Docker" },
         ],
       },
       {
@@ -90,7 +90,7 @@ export const seoPages: SeoPage[] = [
           "Self-hosting gives technical teams the application source and control over the processing stack. You provide compute, storage, updates, and the transcription and language-model configuration. Local Whisper and Ollama can be used, while external providers bring their own usage costs and data handling. Self-hosting has no license fee for noncommercial use or for individual creators, including on monetized channels. Companies, agencies, client work, and paid hosting require prior written permission from Shiori LLC. Use the real examples above to judge the output, then choose the operating model that fits how you work.",
         ],
         links: [
-          { href: "/blog/supoclip-vs-opusclip", label: "How ClipForge AI compares with OpusClip" },
+          { href: "/blog/clipforge-vs-opusclip", label: "How ClipForge AI compares with OpusClip" },
           { href: "/open-source-video-clipper", label: "Why teams choose an open-source clipper" },
         ],
       },
@@ -162,7 +162,7 @@ export const seoPages: SeoPage[] = [
           "Configure access, protect secrets, and maintain the deployed application",
           "Check jobs, provider usage, and output quality as your workload changes",
         ],
-        links: [{ href: "/blog/self-host-supoclip-docker", label: "Production checklist in the self-hosting guide" }],
+        links: [{ href: "/blog/self-host-clipforge-docker", label: "Production checklist in the self-hosting guide" }],
       },
       {
         heading: "Choose a complete app or integrate a smaller tool",
@@ -171,8 +171,8 @@ export const seoPages: SeoPage[] = [
           "Test a recording you have permission to use and know well. Check complete thoughts, speaker changes, proper nouns, visual context, and final exports. Record setup effort separately from processing time, and include human review and provider costs in your decision. You can use paid hosted ClipForge AI to focus on creating clips or self-host to control the application and its configuration. Both routes benefit from checking the real output before adopting a repeatable workflow.",
         ],
         links: [
-          { href: "/blog/self-host-supoclip-docker", label: "Self-host ClipForge AI with Docker Compose" },
-          { href: "/blog/supoclip-vs-opusclip", label: "Self-hosted ClipForge AI vs hosted OpusClip" },
+          { href: "/blog/self-host-clipforge-docker", label: "Self-host ClipForge AI with Docker Compose" },
+          { href: "/blog/clipforge-vs-opusclip", label: "Self-hosted ClipForge AI vs hosted OpusClip" },
         ],
       },
     ],
@@ -246,7 +246,7 @@ export const seoPages: SeoPage[] = [
           "Choose the YouTube Shorts export preset and render the finished video. Watch the exported file with audio, then once without sound to check that the captions and framing carry the idea. Write a title that describes what the viewer will learn. When YouTube publishing is enabled for your account, Pro supports posting immediately and Creator adds scheduled posting. Availability also depends on the deployment’s social integration; exporting remains a separate workflow.",
           "Keep the original episode link and source timestamp with each clip. Publish distinct takeaways rather than multiple cuts that repeat the same answer. For a weekly batch, finish editorial review before filling the calendar, then confirm that scheduled posts actually appear on the intended channel. Use real audience viewing and responses to choose the next topics. ClipForge AI’s selection scores help prioritize review; they do not guarantee reach, and no recording is guaranteed to produce a fixed number of useful Shorts.",
         ],
-        links: [{ href: "/blog/supoclip-vs-opusclip", label: "Choosing between ClipForge AI and OpusClip" }],
+        links: [{ href: "/blog/clipforge-vs-opusclip", label: "Choosing between ClipForge AI and OpusClip" }],
       },
     ],
     faqs: [

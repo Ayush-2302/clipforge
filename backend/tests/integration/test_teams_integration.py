@@ -36,12 +36,12 @@ def _sign(user_id: str, team_id: str | None = None, *, secret: str = "test-backe
     payload = f"{user_id}:{team_id}:{ts}" if team_id else f"{user_id}:{ts}"
     sig = hmac.new(secret.encode("utf-8"), payload.encode("utf-8"), hashlib.sha256).hexdigest()
     headers = {
-        "x-supoclip-user-id": user_id,
-        "x-supoclip-ts": ts,
-        "x-supoclip-signature": sig,
+        "x-clipforge-user-id": user_id,
+        "x-clipforge-ts": ts,
+        "x-clipforge-signature": sig,
     }
     if team_id:
-        headers["x-supoclip-team-id"] = team_id
+        headers["x-clipforge-team-id"] = team_id
     return headers
 
 
@@ -160,9 +160,9 @@ async def test_team_task_library_and_cross_tenant_isolation_http(client, db_sess
     forged_team = await client.get("/tasks/", headers=_sign(uid_outsider, team_a))
     assert forged_team.status_code == 403
 
-    # 4. Tampering with signed x-supoclip-team-id header is rejected with 401.
+    # 4. Tampering with signed x-clipforge-team-id header is rejected with 401.
     tampered = _sign(uid_editor, team_a)
-    tampered["x-supoclip-team-id"] = team_b
+    tampered["x-clipforge-team-id"] = team_b
     tampered_res = await client.get("/tasks/", headers=tampered)
     assert tampered_res.status_code == 401
 
@@ -319,7 +319,7 @@ async def test_team_pooled_billing_ai_edits_and_usage_endpoint_real_postgres(cli
             "recipient_email": "new@example.com",
             "team_name": "Billing Crew",
             "role": "member",
-            "invite_url": "https://supoclip.example.com/invite/tok",
+            "invite_url": "https://clipforge.example.com/invite/tok",
         },
         headers=_sign(uid_member, team_id),
     )

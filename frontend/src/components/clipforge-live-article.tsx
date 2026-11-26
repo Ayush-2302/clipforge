@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ClipForgeEditorScreenshot } from "@/components/clipforge-editor-screenshot";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowRight, Captions, Check, Code2, Film, Github, ScanFace, Server, Sparkles, Upload } from "lucide-react";
 import { formatArticleDate } from "@/components/articles/article-shell";
@@ -41,7 +42,7 @@ export async function SupoLiveArticle({ post }: { post: BlogPost }) {
     dateModified: post.updatedAt,
     author: { "@type": "Organization", name: post.author },
     publisher: { "@type": "Organization", name: "ClipForge AI", url: siteUrl, logo: { "@type": "ImageObject", url: `${siteUrl}/logo.png` } },
-    image: post.image ? [`${siteUrl}${post.image.src}`, `${siteUrl}/blog/supoclip-editor.webp`] : undefined,
+    image: post.image ? [`${siteUrl}${post.image.src}`] : undefined,
     articleSection: post.category,
     inLanguage: intlLocale(locale),
     mainEntityOfPage: `${siteUrl}/blog/${post.slug}`,
@@ -107,9 +108,9 @@ export async function SupoLiveArticle({ post }: { post: BlogPost }) {
     <div className="mx-auto max-w-3xl space-y-6 leading-8 [&_h2]:pt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-semibold [&_a]:underline [&_a]:underline-offset-4 [&_p]:text-muted-foreground">
      <p>{t(`${slug}.body.p1`)}</p>
      <p>{t(`${slug}.body.p2`)}</p>
-     <h2>{t(`${slug}.body.whatSupoclip`)}</h2>
+     <h2>{t(`${slug}.body.whatClipForge`)}</h2>
      <p>
-      {t.rich(`${slug}.body.whatSupoclipBody`, { repo: (chunks) => <a href={repository}>{chunks}</a> })}
+      {t.rich(`${slug}.body.whatClipForgeBody`, { repo: (chunks) => <a href={repository}>{chunks}</a> })}
      </p>
      <h2>{t(`${slug}.body.whatSupo`)}</h2>
      <p>
@@ -130,7 +131,7 @@ export async function SupoLiveArticle({ post }: { post: BlogPost }) {
         {(["deployment", "source", "usecase", "customization", "usage"] as const).map((row) => (
          <tr key={row} className="border-t">
           <th scope="row" className="p-4 align-top">{t(`${slug}.comparison.rows.${row}.label`)}</th>
-          <td className="p-4 align-top">{t(`${slug}.comparison.rows.${row}.supoclip`)}</td>
+          <td className="p-4 align-top">{t(`${slug}.comparison.rows.${row}.clipforge`)}</td>
           <td className="p-4 align-top">{t(`${slug}.comparison.rows.${row}.supolive`)}</td>
          </tr>
         ))}
@@ -155,9 +156,7 @@ export async function SupoLiveArticle({ post }: { post: BlogPost }) {
       <figcaption className="mt-4 text-xs leading-5 text-muted-foreground">{t(`${slug}.workflow.caption`)}</figcaption>
      </figure>
      <figure className="overflow-hidden rounded-2xl border">
-      <a href="/blog/clipforge-editor.webp" aria-label={t(`${slug}.editor.aria`)}>
-       <Image src="/blog/clipforge-editor.webp" alt={t(`${slug}.editor.alt`)} width={1800} height={1109} sizes="(max-width: 768px) 100vw, 768px" className="h-auto w-full" />
-      </a>
+      <ClipForgeEditorScreenshot alt={t(`${slug}.editor.alt`)} />
       <figcaption className="bg-muted/25 px-5 py-4 text-sm leading-6 text-muted-foreground">{t(`${slug}.editor.caption`)}</figcaption>
      </figure>
      <h2 id="control" className="scroll-mt-8">{t(`${slug}.control.heading`)}</h2>

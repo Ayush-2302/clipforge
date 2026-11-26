@@ -14,26 +14,26 @@ const STDIO_SOURCE = `git+${GITHUB_URL}#subdirectory=mcp`;
 /** Copy-paste config for each kind of MCP client. Only the URL ever goes in a URL field. */
 export function mcpSnippets(url: string, key: string) {
   return {
-    claudeCode: `claude mcp add --transport http supoclip ${url} --header "Authorization: Bearer ${key}"`,
+    claudeCode: `claude mcp add --transport http clipforge ${url} --header "Authorization: Bearer ${key}"`,
     json: JSON.stringify(
-      { mcpServers: { supoclip: { url, headers: { Authorization: `Bearer ${key}` } } } },
+      { mcpServers: { clipforge: { url, headers: { Authorization: `Bearer ${key}` } } } },
       null,
       2,
     ),
     claudeDesktop: JSON.stringify(
       {
         mcpServers: {
-          supoclip: {
+          clipforge: {
             command: "npx",
-            args: ["-y", "mcp-remote", url, "--header", "Authorization:${SUPOCLIP_AUTH}"],
-            env: { SUPOCLIP_AUTH: `Bearer ${key}` },
+            args: ["-y", "mcp-remote", url, "--header", "Authorization:${CLIPFORGE_AUTH}"],
+            env: { CLIPFORGE_AUTH: `Bearer ${key}` },
           },
         },
       },
       null,
       2,
     ),
-    stdio: `claude mcp add supoclip -e SUPOCLIP_API_KEY=${key} -- uvx --from "${STDIO_SOURCE}" supoclip-mcp`,
+    stdio: `claude mcp add clipforge -e CLIPFORGE_API_KEY=${key} -- uvx --from "${STDIO_SOURCE}" clipforge-mcp`,
   };
 }
 

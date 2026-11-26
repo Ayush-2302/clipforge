@@ -386,7 +386,7 @@ def create_optimized_clip(
             logger.info(f"Successfully created clip (stream copy): {output_path}")
             return True
 
-        with tempfile.TemporaryDirectory(prefix="supoclip_render_") as temp_dir:
+        with tempfile.TemporaryDirectory(prefix="clipforge_render_") as temp_dir:
             temp_root = Path(temp_dir)
             source_clip_path = temp_root / "source.mp4"
             final_clip_path = temp_root / "final.mp4"
@@ -838,7 +838,7 @@ def _capture_fx_event(event: str, properties: Dict[str, Any]) -> None:
         user_id = get_user_id()
         if not user_id:
             props["$process_person_profile"] = False
-        client.capture(event, distinct_id=str(user_id or "supoclip-worker"), properties=props)
+        client.capture(event, distinct_id=str(user_id or "clipforge-worker"), properties=props)
     except Exception as exc:  # noqa: BLE001 - analytics never breaks a render
         logger.debug("Could not capture %s: %s", event, exc)
 

@@ -143,7 +143,7 @@ export async function POST(request: Request) {
       const customer = await stripe.customers.create({
         email: session.user.email,
         name: session.user.name || undefined,
-        metadata: { userId: session.user.id, app: "supoclip" },
+        metadata: { userId: session.user.id, app: "clipforge" },
       });
       customerId = customer.id;
 
@@ -222,7 +222,7 @@ export async function POST(request: Request) {
       customer: customerId,
       metadata: {
         userId: session.user.id,
-        app: "supoclip",
+        app: "clipforge",
         plan: billingPlan.id,
         interval,
         ...(offer ? { creator_code: offer.code } : {}),

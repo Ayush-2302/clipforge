@@ -36,7 +36,7 @@ describe("/api/upload/authorization", () => {
     }));
     await expect(response.json()).resolves.toEqual(payload);
     expect(fetchMock).toHaveBeenCalledWith("http://backend:8000/upload/authorize", expect.objectContaining({
-      headers: expect.objectContaining({ "x-supoclip-user-id": "owner" }),
+      headers: expect.objectContaining({ "x-clipforge-user-id": "owner" }),
     }));
   });
 
@@ -79,9 +79,9 @@ describe("/api/upload/authorization", () => {
       directUpload: true,
       uploadUrl: "https://api.clipforge.ai/upload",
       headers: {
-        "x-supoclip-user-id": "user-1",
-        "x-supoclip-ts": "1700000000",
-        "x-supoclip-signature":
+        "x-clipforge-user-id": "user-1",
+        "x-clipforge-ts": "1700000000",
+        "x-clipforge-signature":
           "cceb65b01012f5596122712d023d1def6663579f457362796a52133b3875c545",
       },
     });

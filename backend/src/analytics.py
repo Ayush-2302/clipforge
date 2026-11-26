@@ -31,7 +31,7 @@ Client = Literal["web", "ios", "api_key", "mcp"]
 SourceKind = Literal["youtube", "twitch", "kick", "upload", "video_url", "unknown"]
 
 UPLOAD_URL_PREFIX = "upload://"
-MCP_USER_AGENT_PREFIX = "supoclip-mcp"
+MCP_USER_AGENT_PREFIXES = ("clipforge-mcp",)
 
 
 def capture_event(
@@ -72,7 +72,7 @@ def request_client(request: Any) -> Client:
 
         user_agent = (request.headers.get("user-agent") or "").strip()
         if extract_api_key(request):
-            return "mcp" if user_agent.lower().startswith(MCP_USER_AGENT_PREFIX) else "api_key"
+            return "mcp" if user_agent.lower().startswith(MCP_USER_AGENT_PREFIXES) else "api_key"
         if client_platform(request) == "ios" or client_label(user_agent) != "web":
             return "ios"
     except Exception:  # noqa: BLE001

@@ -26,7 +26,7 @@ class TrialTests(unittest.TestCase):
         cls.r = redis.Redis(**cls.redis_args)
 
     def setUp(self):
-        self.prefix = 'supoclip:proxy-trial:test:' + uuid.uuid4().hex
+        self.prefix = 'clipforge:proxy-trial:test:' + uuid.uuid4().hex
         self.owned = [self.prefix, self.prefix + ':jobs']
         self.r.hset(self.prefix, mapping={'status': 'active', 'admitted': 0})
 

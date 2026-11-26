@@ -16,11 +16,11 @@ def load_script():
 
 
 def test_requires_ssh_host_from_environment(monkeypatch):
-    monkeypatch.delenv("SUPOCLIP_PROD_SSH_HOST", raising=False)
+    monkeypatch.delenv("CLIPFORGE_PROD_SSH_HOST", raising=False)
     module = load_script()
     monkeypatch.setattr(module.subprocess, "run", pytest.fail)
     monkeypatch.setattr(module.urllib.request, "urlopen", pytest.fail)
-    with pytest.raises(SystemExit, match="SUPOCLIP_PROD_SSH_HOST"):
+    with pytest.raises(SystemExit, match="CLIPFORGE_PROD_SSH_HOST"):
         module.main()
 
 
@@ -29,7 +29,7 @@ def _offline(*args, **kwargs):
 
 
 def test_ssh_uses_configured_host(monkeypatch, capsys):
-    monkeypatch.setenv("SUPOCLIP_PROD_SSH_HOST", "prod.example")
+    monkeypatch.setenv("CLIPFORGE_PROD_SSH_HOST", "prod.example")
     module = load_script()
     calls = []
 

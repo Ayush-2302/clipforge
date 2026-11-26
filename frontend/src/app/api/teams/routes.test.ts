@@ -122,7 +122,7 @@ describe("Next.js Team API routes", () => {
     expect(res.status).toBe(201);
     const body = await res.json();
     expect(body.team).toMatchObject({ id: "team-new", role: "owner", seatLimit: 3, occupiedSeats: 1 });
-    expect(res.headers.get("set-cookie")).toContain("supoclip_team_id=team-new");
+    expect(res.headers.get("set-cookie")).toContain("clipforge_team_id=team-new");
   });
 
   it("keeps team creation closed on a hosted install without Team prices", async () => {
@@ -159,7 +159,7 @@ describe("Next.js Team API routes", () => {
   it("drops a workspace cookie the caller no longer has a membership for", async () => {
     const { cookies } = await import("next/headers");
     vi.mocked(cookies).mockResolvedValue({
-      get: () => ({ name: "supoclip_team_id", value: "team-gone-1" }),
+      get: () => ({ name: "clipforge_team_id", value: "team-gone-1" }),
     } as never);
     prismaMock.teamMember.findMany.mockResolvedValue([]);
     getVerifiedActiveTeamIdMock.mockResolvedValue(null);
@@ -167,7 +167,7 @@ describe("Next.js Team API routes", () => {
     const res = await teamsRoute.GET();
     expect(res.status).toBe(200);
     expect(await res.json()).toMatchObject({ activeTeamId: null, teams: [], available: true });
-    expect(res.headers.get("set-cookie")).toContain("supoclip_team_id=;");
+    expect(res.headers.get("set-cookie")).toContain("clipforge_team_id=;");
   });
 
   it("prevents switching into a team the user does not belong to and clears cookie on Personal switch", async () => {
@@ -178,11 +178,11 @@ describe("Next.js Team API routes", () => {
     prismaMock.teamMember.findUnique.mockResolvedValueOnce({ team_id: "t1", role: "member" });
     const switched = await activeRoute.POST(jsonReq({ teamId: "t1" }));
     expect(switched.status).toBe(200);
-    expect(switched.headers.get("set-cookie")).toContain("supoclip_team_id=t1");
+    expect(switched.headers.get("set-cookie")).toContain("clipforge_team_id=t1");
 
     const personal = await activeRoute.POST(jsonReq({ teamId: null }));
     expect(personal.status).toBe(200);
-    expect(personal.headers.get("set-cookie")).toContain("supoclip_team_id=;");
+    expect(personal.headers.get("set-cookie")).toContain("clipforge_team_id=;");
   });
 
   it("hides pending invitations from non-manager members on GET /api/teams/[teamId]", async () => {
@@ -264,7 +264,7 @@ describe("Next.js Team API routes", () => {
       "/social/connections",
       expect.objectContaining({ method: "DELETE", teamId: "t1" }),
     );
-    expect(deleted.headers.get("set-cookie")).toContain("supoclip_team_id=;");
+    expect(deleted.headers.get("set-cookie")).toContain("clipforge_team_id=;");
   });
 
   it("creates invitation and returns inviteUrl even if SES email delivery fails", async () => {
@@ -322,7 +322,7 @@ describe("Next.js Team API routes", () => {
       ctx({ teamId: "t1", memberUserId: "u-member" }),
     );
     expect(leaveRes.status).toBe(200);
-    expect(leaveRes.headers.get("set-cookie")).toContain("supoclip_team_id=;");
+    expect(leaveRes.headers.get("set-cookie")).toContain("clipforge_team_id=;");
   });
 
   it("looks up invitations publicly and sets workspace cookie upon acceptance", async () => {
@@ -368,7 +368,7 @@ describe("Next.js Team API routes", () => {
 
     const accepted = await inviteAcceptRoute.POST(new Request("http://localhost", { method: "POST" }), ctx({ token }));
     expect(accepted.status).toBe(200);
-    expect(accepted.headers.get("set-cookie")).toContain("supoclip_team_id=t1");
+    expect(accepted.headers.get("set-cookie")).toContain("clipforge_team_id=t1");
   });
 
   it("updates and clears per-member generation limits via PATCH member route", async () => {

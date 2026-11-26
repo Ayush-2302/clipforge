@@ -757,7 +757,7 @@ export default function LandingPage() {
        <pre className="overflow-x-auto p-6 font-mono text-[13px] leading-8">
         <code>
          <span className="text-muted-foreground">$ </span>git clone https://github.com/Ayush-2302/clipforge{"\n"}
-         <span className="text-muted-foreground">$ </span>cd supoclip && cp .env.example .env{"\n"}
+         <span className="text-muted-foreground">$ </span>cd clipforge && cp .env.example .env{"\n"}
          <span className="text-muted-foreground">{t("openSource.comment")}</span>{"\n"}
          <span className="text-muted-foreground">$ </span>docker compose up -d --build{"\n"}
          <span className="text-emerald-400">✓</span> <span className="text-muted-foreground">{t("openSource.ready")}</span>

@@ -7,7 +7,7 @@ approve on www.clipforge.ai; the access token is an ordinary ClipForge AI API ke
 Plain API key Bearer auth keeps working unchanged.
 
 OAuth is on when `MCP_OAUTH_SECRET` is set on both the backend and the MCP
-server (and `SUPOCLIP_MCP_REQUIRE_BEARER_AUTH=true`). Without it the server
+server (and `CLIPFORGE_MCP_REQUIRE_BEARER_AUTH=true`). Without it the server
 behaves as before: API keys only, OAuth discovery answers a JSON 404.
 
 ## Flow
@@ -79,7 +79,7 @@ exact redirect URI protect the code.
 ## Operating it
 
 - Set the same `MCP_OAUTH_SECRET` (`openssl rand -hex 32`) for the `backend` and
-  `mcp` services, and `SUPOCLIP_APP_URL` for the MCP server if the web app is not
+  `mcp` services, and `CLIPFORGE_APP_URL` for the MCP server if the web app is not
   `https://www.clipforge.ai`.
 - `/internal/mcp-oauth/*` is reachable wherever the backend is; it refuses
   callers without the secret. A reverse proxy may block `/internal/` on the

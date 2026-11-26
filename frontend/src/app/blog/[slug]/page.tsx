@@ -85,13 +85,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
  const locale = await getLocale();
  const post = applyBlogCopy(basePost, (key) => t(key));
 
- if (slug === "supoclip-vs-supo-live" || slug === "clipforge-vs-supo-live") {
+ if (slug === "clipforge-vs-supo-live" || slug === "clipforge-vs-supo-live") {
   return <SupoLiveArticle post={post} />;
  }
- if (slug === "supoclip-vs-opusclip" || slug === "clipforge-vs-opusclip") {
+ if (slug === "clipforge-vs-opusclip" || slug === "clipforge-vs-opusclip") {
   return <OpusClipComparisonArticle post={post} />;
  }
- if (slug === "self-host-supoclip-docker" || slug === "self-host-clipforge-docker") {
+ if (slug === "self-host-clipforge-docker" || slug === "self-host-clipforge-docker") {
   return <SelfHostingGuideArticle post={post} />;
  }
 
@@ -277,7 +277,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         })}
        </p>
 
-       <h2 id="supoclip-vs-opusclip">{t(`${key}.compare.heading`)}</h2>
+       <h2 id="clipforge-vs-opusclip">{t(`${key}.compare.heading`)}</h2>
        <p>
         {t.rich(`${key}.compare.body`, {
          comparison: (chunks) => <Link href={OPUSCLIP_COMPARISON_HREF}>{chunks}</Link>,
@@ -297,7 +297,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
           {t(`${key}.table.rows.${index}.feature`)}
          </div>
-         <div className="border-l p-4 leading-6 text-muted-foreground">{t(`${key}.table.rows.${index}.supoclip`)}</div>
+         <div className="border-l p-4 leading-6 text-muted-foreground">{t(`${key}.table.rows.${index}.clipforge`)}</div>
          <div className="border-l p-4 leading-6 text-muted-foreground">{t(`${key}.table.rows.${index}.opusclip`)}</div>
         </div>
        ))}
@@ -406,7 +406,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
          <a href="#quick-verdict" className="block text-muted-foreground hover:text-foreground">
           {t(`${key}.toc.verdict`)}
          </a>
-         <a href="#supoclip-vs-opusclip" className="block text-muted-foreground hover:text-foreground">
+         <a href="#clipforge-vs-opusclip" className="block text-muted-foreground hover:text-foreground">
           {t(`${key}.toc.comparison`)}
          </a>
          <a href="#faq" className="block text-muted-foreground hover:text-foreground">

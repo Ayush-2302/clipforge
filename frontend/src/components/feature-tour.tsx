@@ -13,9 +13,9 @@ import { crossesPages, dueTours, FEATURE_TOURS, TOUR_COOLDOWN_MS, type FeatureTo
 import type { Workflow } from "@/lib/workflows";
 import { WorkflowGlyph } from "@/components/workflow-picker";
 
-const LAST_SHOWN_KEY = "supoclip.featureTour.lastShown";
-const SEEN_KEY = "supoclip.featureTour.seen";
-const HANDOFF_KEY = "supoclip.featureTour.handoff";
+const LAST_SHOWN_KEY = "clipforge.featureTour.lastShown";
+const SEEN_KEY = "clipforge.featureTour.seen";
+const HANDOFF_KEY = "clipforge.featureTour.handoff";
 const START_DELAY_MS = 900;
 /** How long a page gets to show what a step points at before the step is passed over. */
 const TARGET_WAIT_MS = 4000;

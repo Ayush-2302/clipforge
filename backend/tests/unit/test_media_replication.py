@@ -135,7 +135,7 @@ def scratch_files(client):
 def hold(store, body, key=KEY):
     """Put a revision in a store the way a verified upload leaves it."""
     store.objects[key] = body
-    store.metadata[key] = {"ContentType": "video/mp4", "Metadata": {"supoclip-sha256": sha(body)}}
+    store.metadata[key] = {"ContentType": "video/mp4", "Metadata": {"clipforge-sha256": sha(body)}}
 
 
 def crashed_upload(client, body=b"video"):
@@ -584,7 +584,7 @@ def test_unreadable_ledger_keeps_playback_on_the_default_order(mirrored, tmp_pat
     upload(mirrored, tmp_path)
     monkeypatch.setattr(media_replication, "_ledger_warning_at", float("-inf"))
     credential = uuid.uuid4().hex
-    mirrored.ledger.routing = Mock(side_effect=ConnectionError(f"postgresql://app:{credential}@database.internal/supoclip"))
+    mirrored.ledger.routing = Mock(side_effect=ConnectionError(f"postgresql://app:{credential}@database.internal/clipforge"))
     params = {"Bucket": "original", "Key": KEY}
     with caplog.at_level(logging.WARNING, logger="src.media_replication"):
         assert mirrored._read_names(KEY) == ["primary", "fallback"]
@@ -690,7 +690,7 @@ def test_existing_objects_are_copied_verified_and_never_rewrite_primary(mirrored
     assert mirrored.pending_status()["pending"] == 0
     assert primary.uploads == 0
     assert fallback.objects == primary.objects
-    assert fallback.metadata[key]["Metadata"]["supoclip-sha256"] == sha(b"historical-video")
+    assert fallback.metadata[key]["Metadata"]["clipforge-sha256"] == sha(b"historical-video")
     assert mirrored.mirror_existing(key, verify=True) == "verified"
     assert fallback.uploads == 1
 
@@ -810,7 +810,7 @@ def test_legacy_upload_no_store_received_is_sent_from_its_payload(mirrored):
     directory = legacy_entry(mirrored, KEY, {"operation": "upload", "pending": ["primary", "fallback"]}, payload=b"video")
     mirrored.import_legacy_outbox()
     assert primary.objects == {KEY: b"video"}
-    assert primary.metadata[KEY] == {"ContentType": "video/mp4", "Metadata": {"supoclip-sha256": sha(b"video")}}
+    assert primary.metadata[KEY] == {"ContentType": "video/mp4", "Metadata": {"clipforge-sha256": sha(b"video")}}
     assert mirrored.ledger.get(KEY)["pending"] == ["fallback"]
     assert not list(directory.glob("*.payload")) and not (directory / "pending.json").exists()
     fallback.failure = None

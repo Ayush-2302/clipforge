@@ -65,7 +65,7 @@ async def test_a_long_wait_reports_once_with_depth_and_no_account():
         interval_seconds=900,
         client=client,
         rate_limit_key="queue_delay_alert:test-long",
-        queue_name="supoclip_tasks",
+        queue_name="clipforge_tasks",
     )
     second = await maybe_report_queue_delay(
         redis,
@@ -85,7 +85,7 @@ async def test_a_long_wait_reports_once_with_depth_and_no_account():
     assert properties["fingerprint"] == QUEUE_DELAY_FINGERPRINT
     assert properties["queue_depth"] == 284
     assert properties["wait_seconds"] == 4850
-    assert properties["queue"] == "supoclip_tasks"
+    assert properties["queue"] == "clipforge_tasks"
     assert "user" not in properties
     assert exc.__class__.__name__ == "QueueDelayExceeded"
     assert redis.sets[0][1] is True

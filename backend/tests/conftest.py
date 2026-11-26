@@ -125,9 +125,9 @@ def auth_headers():
     ).hexdigest()
 
     return {
-        "x-supoclip-user-id": user_id,
-        "x-supoclip-ts": timestamp,
-        "x-supoclip-signature": signature,
+        "x-clipforge-user-id": user_id,
+        "x-clipforge-ts": timestamp,
+        "x-clipforge-signature": signature,
     }
 
 

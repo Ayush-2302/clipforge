@@ -46,7 +46,7 @@ go to the logs.
 |----------|---------|
 | `POSTHOG_PROJECT_TOKEN` | Project token (`phc_...`). Empty disables PostHog. |
 | `POSTHOG_HOST` | Ingest host, default `https://eu.i.posthog.com`. |
-| `SUPOCLIP_SERVICE` | `backend`, `worker`, or `cron-worker`; set by docker-compose. |
+| `CLIPFORGE_SERVICE` | `backend`, `worker`, or `cron-worker`; set by docker-compose. |
 
 A video-queue job that waits longer than `QUEUE_DELAY_ALERT_SECONDS` (default
 10 minutes) before a worker starts it sends one PostHog exception,

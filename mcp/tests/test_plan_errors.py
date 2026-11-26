@@ -8,11 +8,11 @@ import sys
 import httpx
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from supoclip_mcp import server
-from supoclip_mcp.client import SupoClipClient, _error_message
-from supoclip_mcp.config import Settings
+from clipforge_mcp import server
+from clipforge_mcp.client import ClipForgeClient, _error_message
+from clipforge_mcp.config import Settings
 
-APP = "https://www.supoclip.test"
+APP = "https://www.clipforge.test"
 
 
 def _body(detail):
@@ -84,12 +84,12 @@ def test_create_task_tool_returns_the_plain_message(monkeypatch):
 
     original = httpx.AsyncClient
     monkeypatch.setattr(httpx, "AsyncClient", lambda **kw: original(transport=httpx.MockTransport(handler), **kw))
-    client = SupoClipClient(Settings(
-        api_url="https://api.supoclip.test", api_key="sk_free_user", user_id=None, auth_secret=None,
+    client = ClipForgeClient(Settings(
+        api_url="https://api.clipforge.test", api_key="sk_free_user", user_id=None, auth_secret=None,
         download_dir="downloads", timeout=5, mcp_transport="stdio", mcp_host="127.0.0.1", mcp_port=9100,
         mcp_mount_path="/", mcp_public_url=None, mcp_require_bearer_auth=False, app_url=APP,
     ))
     monkeypatch.setattr(server, "_client", lambda: client)
-    result = asyncio.run(server.supoclip_create_clip_task(url="https://youtu.be/abcdefghijk"))
-    assert result.startswith("Error: This SupoClip account has no paid plan")
+    result = asyncio.run(server.clipforge_create_clip_task(url="https://youtu.be/abcdefghijk"))
+    assert result.startswith("Error: This ClipForge account has no paid plan")
     assert f"{APP}/settings#plan" in result

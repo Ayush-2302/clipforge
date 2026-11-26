@@ -2,7 +2,7 @@ import { Prisma } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 
 const REPAIR_COMMAND =
-  "docker compose exec -T postgres psql -U supoclip -d supoclip < scripts/selfhost-schema-repair.sql";
+  "docker compose exec -T postgres psql -U clipforge -d clipforge < scripts/selfhost-schema-repair.sql";
 
 type ModelColumns = { table: string; columns: string[] };
 

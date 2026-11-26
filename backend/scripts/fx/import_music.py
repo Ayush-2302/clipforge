@@ -120,7 +120,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{out.name}: {period.shape[0] / SR:.2f} s, gain {gain:+.1f} dB", flush=True)
 
     (music / "beds.json").write_text(json.dumps(beds, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    lines = ["SupoClip dynamic-edit music beds (music/*.mp3)", "=" * 46, "",
+    lines = ["ClipForge dynamic-edit music beds (music/*.mp3)", "=" * 46, "",
              "License: CC0-1.0 (Creative Commons Zero 1.0 Universal, public domain dedication).",
              "https://creativecommons.org/publicdomain/zero/1.0/", "",
              "Every bed was cut from a track its author released under CC0 1.0. The dedication was read on each",

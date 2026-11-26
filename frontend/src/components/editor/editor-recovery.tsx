@@ -36,7 +36,7 @@ export async function downloadPreviousDraft(endpoint: string, clipId: string) {
   const backup = await editorRequest<unknown>(`${endpoint}/backup`);
   downloadBlob(
     new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }),
-    `supoclip-previous-draft-${clipId}.json`,
+    `clipforge-previous-draft-${clipId}.json`,
   );
 }
 

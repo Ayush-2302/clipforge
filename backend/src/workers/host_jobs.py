@@ -21,7 +21,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-HOST_JOBS_PREFIX = "supoclip:render-host-jobs:"
+HOST_JOBS_PREFIX = "clipforge:render-host-jobs:"
 # A job older than this cannot still be running (job_timeout is 3 h).
 STALE_AFTER_SECONDS = 10800 + 600
 

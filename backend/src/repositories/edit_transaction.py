@@ -8,8 +8,8 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..media_storage import media_work
 
-_EDIT_TASK = "supoclip_edit_task"
-_LONG_EDIT = "supoclip_long_edit"
+_EDIT_TASK = "clipforge_edit_task"
+_LONG_EDIT = "clipforge_long_edit"
 
 
 def allow_long_edit(db: AsyncSession) -> None:

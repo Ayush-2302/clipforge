@@ -82,13 +82,13 @@ def test_capture_never_raises(monkeypatch):
     ("headers", "expected"),
     [
         ({}, "web"),
-        ({"x-supoclip-client": "ios"}, "ios"),
-        ({"user-agent": "SupoClip supoclip-ios/12"}, "ios"),
+        ({"x-clipforge-client": "ios"}, "ios"),
+        ({"user-agent": "ClipForge clipforge-ios/12"}, "ios"),
         ({"authorization": "Bearer sk_test"}, "api_key"),
         ({"x-api-key": "sk_test", "user-agent": "python-httpx/0.28"}, "api_key"),
-        ({"authorization": "Bearer sk_test", "user-agent": "supoclip-mcp/0.1.0"}, "mcp"),
+        ({"authorization": "Bearer sk_test", "user-agent": "clipforge-mcp/0.1.0"}, "mcp"),
         # Only API-key traffic can be MCP; a forged user agent alone is web.
-        ({"user-agent": "supoclip-mcp/0.1.0"}, "web"),
+        ({"user-agent": "clipforge-mcp/0.1.0"}, "web"),
     ],
 )
 def test_request_client(headers, expected):

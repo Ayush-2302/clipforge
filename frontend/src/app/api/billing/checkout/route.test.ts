@@ -94,7 +94,7 @@ describe("/api/billing/checkout", () => {
     expect(stripe.checkout.sessions.create).toHaveBeenCalledWith(
       expect.objectContaining({
         line_items: [{ price: "price_scale", quantity: 1 }],
-        metadata: { app: "supoclip", userId: "user-1", plan: "scale", interval: "month" },
+        metadata: { app: "clipforge", userId: "user-1", plan: "scale", interval: "month" },
       }),
     );
     await expect(response.json()).resolves.toEqual({ url: "https://checkout.example/scale" });
@@ -120,7 +120,7 @@ describe("/api/billing/checkout", () => {
     expect(stripe.checkout.sessions.create).toHaveBeenCalledWith(
       expect.objectContaining({
         line_items: [{ price: "price_pro_annual", quantity: 1 }],
-        metadata: { app: "supoclip", userId: "user-1", plan: "pro", interval: "year" },
+        metadata: { app: "clipforge", userId: "user-1", plan: "pro", interval: "year" },
       }),
     );
   });
@@ -187,7 +187,7 @@ describe("/api/billing/checkout", () => {
       const params = stripe.checkout.sessions.create.mock.calls[0][0];
       expect(params).toMatchObject({
         discounts: [{ promotion_code: "promo_maya" }],
-        metadata: { app: "supoclip", userId: "user-1", plan: "pro", creator_code: "MAYA" },
+        metadata: { app: "clipforge", userId: "user-1", plan: "pro", creator_code: "MAYA" },
       });
       expect(params.subscription_data).toBeUndefined();
     });

@@ -6,7 +6,7 @@ import { draft } from "../src/lib/editor/document.test-fixture";
 
 /**
  * Recovery paths in the clip studio: a session whose editing copy lost part
- * of the clip, and a browser whose storage for SupoClip is full.
+ * of the clip, and a browser whose storage for ClipForge is full.
  */
 const generation = { id: "one", user_id: "user", source_title: "A conversation worth sharing", status: "completed", source_type: "youtube", clips_count: 1 };
 const clips = [{ id: "clip1", filename: "clip1.mp4", clip_order: 1, duration: 36.5, text: "Hello world today", video_url: "/tasks/one/clips/clip1/file" }];
@@ -101,23 +101,23 @@ test("a truncated editing copy is explained and rebuilt after confirmation", asy
   await page.getByRole("button", { name: "More", exact: true }).click();
   const download = page.waitForEvent("download");
   await page.getByRole("menuitem", { name: "Download previous draft" }).click();
-  expect((await download).suggestedFilename()).toBe("supoclip-previous-draft-clip1.json");
+  expect((await download).suggestedFilename()).toBe("clipforge-previous-draft-clip1.json");
 });
 
 test("a full browser storage explains itself and frees only saved copies", async ({ page }) => {
   // Another clip's unsaved changes, and an old full-history copy the server already has.
   await page.addInitScript(([doc]) => {
     const old = JSON.stringify(doc);
-    localStorage.setItem("supoclip-editor:/api/tasks/old/clips/a/editor", JSON.stringify({
+    localStorage.setItem("clipforge-editor:/api/tasks/old/clips/a/editor", JSON.stringify({
       basis: "a.mp4", revision: 2, saved: old, history: { past: Array.from({ length: 50 }, () => doc), present: doc, future: [] },
     }));
-    localStorage.setItem("supoclip-editor:/api/tasks/old/clips/b/editor", JSON.stringify({
+    localStorage.setItem("clipforge-editor:/api/tasks/old/clips/b/editor", JSON.stringify({
       v: 2, basis: "b.mp4", revision: 2, history: { past: [], present: { ...doc, volume: 0.4 }, future: [] },
     }));
     // From now on the browser refuses new studio backups, as a full quota does.
     const setItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key: string, value: string) {
-      if (key === "supoclip-editor:/api/tasks/one/clips/clip1/editor") throw new DOMException("full", "QuotaExceededError");
+      if (key === "clipforge-editor:/api/tasks/one/clips/clip1/editor") throw new DOMException("full", "QuotaExceededError");
       return setItem.call(this, key, value);
     };
   }, [draft]);
@@ -131,13 +131,13 @@ test("a full browser storage explains itself and frees only saved copies", async
     return r.fallback();
   });
   await page.getByLabel("Word 1", { exact: true }).fill("Changed");
-  await expect(page.getByText("This browser's storage for SupoClip is full")).toBeVisible();
+  await expect(page.getByText("This browser's storage for ClipForge is full")).toBeVisible();
   await capture(page, "3-storage-full.png");
 
   // Before warning, the studio already freed the copy the server has, and
   // kept the other clip's unsaved changes.
-  expect(await page.evaluate(() => localStorage.getItem("supoclip-editor:/api/tasks/old/clips/a/editor"))).toBeNull();
-  expect(await page.evaluate(() => localStorage.getItem("supoclip-editor:/api/tasks/old/clips/b/editor"))).not.toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("clipforge-editor:/api/tasks/old/clips/a/editor"))).toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("clipforge-editor:/api/tasks/old/clips/b/editor"))).not.toBeNull();
 
   await page.getByRole("button", { name: "See what's stored" }).click();
   const dialog = page.getByRole("dialog", { name: "Browser backups of your drafts" });
@@ -151,13 +151,13 @@ test("a full browser storage explains itself and frees only saved copies", async
   await dialog.getByRole("button", { name: "Done" }).click();
   await expect(page.getByRole("status").filter({ hasText: "All changes saved" })).toBeVisible();
   // Saved to the account: no backup is needed, so the warning goes away.
-  await expect(page.getByText("This browser's storage for SupoClip is full")).toHaveCount(0);
+  await expect(page.getByText("This browser's storage for ClipForge is full")).toHaveCount(0);
 });
 
 test("browser backups can be reviewed and saved copies removed from the menu", async ({ page }) => {
   await page.addInitScript(([doc]) => {
     for (const clip of ["a", "b"])
-      localStorage.setItem(`supoclip-editor:/api/tasks/old/clips/${clip}/editor`, JSON.stringify({
+      localStorage.setItem(`clipforge-editor:/api/tasks/old/clips/${clip}/editor`, JSON.stringify({
         v: 2, basis: `${clip}.mp4`, revision: 2, unsaved: clip === "b", at: 1,
         history: { past: [], present: { ...doc, volume: clip === "b" ? 0.4 : 1 }, future: [] },
       }));
@@ -171,5 +171,5 @@ test("browser backups can be reviewed and saved copies removed from the menu", a
   await expect(summary).toContainText("1 has changes that aren't in your account yet");
   await dialog.getByRole("button", { name: "Remove saved copies" }).click();
   await expect(summary).toContainText("1 clip has a browser backup");
-  expect(await page.evaluate(() => localStorage.getItem("supoclip-editor:/api/tasks/old/clips/b/editor"))).not.toBeNull();
+  expect(await page.evaluate(() => localStorage.getItem("clipforge-editor:/api/tasks/old/clips/b/editor"))).not.toBeNull();
 });

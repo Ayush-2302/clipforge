@@ -3,10 +3,10 @@
 Skipped unless these are set (the backend and MCP server share MCP_OAUTH_SECRET,
 the user exists with a verified email):
 
-    SUPOCLIP_E2E_MCP_URL=http://127.0.0.1:19100
-    SUPOCLIP_E2E_API_URL=http://127.0.0.1:18000
-    SUPOCLIP_E2E_BACKEND_AUTH_SECRET=...   # backend BACKEND_AUTH_SECRET
-    SUPOCLIP_E2E_USER_ID=...
+    CLIPFORGE_E2E_MCP_URL=http://127.0.0.1:19100
+    CLIPFORGE_E2E_API_URL=http://127.0.0.1:18000
+    CLIPFORGE_E2E_BACKEND_AUTH_SECRET=...   # backend BACKEND_AUTH_SECRET
+    CLIPFORGE_E2E_USER_ID=...
 
 The consent step calls the backend the way the web app's /api/oauth proxy does
 (signed session headers), standing in for the browser.
@@ -25,21 +25,21 @@ from urllib.parse import parse_qs, urlsplit
 import httpx
 import pytest
 
-MCP = os.getenv("SUPOCLIP_E2E_MCP_URL", "").rstrip("/")
-API = os.getenv("SUPOCLIP_E2E_API_URL", "").rstrip("/")
-AUTH_SECRET = os.getenv("SUPOCLIP_E2E_BACKEND_AUTH_SECRET", "")
-USER_ID = os.getenv("SUPOCLIP_E2E_USER_ID", "")
+MCP = os.getenv("CLIPFORGE_E2E_MCP_URL", "").rstrip("/")
+API = os.getenv("CLIPFORGE_E2E_API_URL", "").rstrip("/")
+AUTH_SECRET = os.getenv("CLIPFORGE_E2E_BACKEND_AUTH_SECRET", "")
+USER_ID = os.getenv("CLIPFORGE_E2E_USER_ID", "")
 REDIRECT = "http://127.0.0.1:33418/callback"
 
 pytestmark = pytest.mark.skipif(
-    not (MCP and API and AUTH_SECRET and USER_ID), reason="set SUPOCLIP_E2E_* to run against live services"
+    not (MCP and API and AUTH_SECRET and USER_ID), reason="set CLIPFORGE_E2E_* to run against live services"
 )
 
 
 def signed():
     ts = str(int(time.time()))
     signature = hmac.new(AUTH_SECRET.encode(), f"{USER_ID}:{ts}".encode(), hashlib.sha256).hexdigest()
-    return {"x-supoclip-user-id": USER_ID, "x-supoclip-ts": ts, "x-supoclip-signature": signature}
+    return {"x-clipforge-user-id": USER_ID, "x-clipforge-ts": ts, "x-clipforge-signature": signature}
 
 
 def pkce():
@@ -52,7 +52,7 @@ def start(http, client, challenge, state):
     response = http.get(f"{MCP}/authorize", params={
         "response_type": "code", "client_id": client["client_id"], "redirect_uri": REDIRECT,
         "code_challenge": challenge, "code_challenge_method": "S256", "state": state,
-        "scope": "supoclip", "resource": f"{MCP}/mcp",
+        "scope": "clipforge", "resource": f"{MCP}/mcp",
     })
     assert response.status_code == 302, response.text
     location = urlsplit(response.headers["location"])
@@ -127,13 +127,13 @@ def test_register_authorize_consent_token_and_call_a_tool():
                 async with ClientSession(streams[0], streams[1]) as session:
                     await session.initialize()
                     tools = {tool.name for tool in (await session.list_tools()).tools}
-                    before = (await session.call_tool("supoclip_billing_summary", {})).content[0].text
+                    before = (await session.call_tool("clipforge_billing_summary", {})).content[0].text
                     # Revoking the key in settings disconnects the connector.
                     assert http.delete(f"{API}/api-keys/{key['id']}", headers=signed()).status_code == 200
-                    after = (await session.call_tool("supoclip_billing_summary", {})).content[0].text
+                    after = (await session.call_tool("clipforge_billing_summary", {})).content[0].text
                     return tools, before, after
 
     tools, before, after = asyncio.run(use_token())
-    assert "supoclip_create_clip_task" in tools
+    assert "clipforge_create_clip_task" in tools
     assert '"plan"' in before
     assert after.startswith("Error: Authentication failed (401)")

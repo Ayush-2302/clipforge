@@ -50,12 +50,12 @@ def _signed_headers(secret: str, user_id: str, team_id: str | None = None) -> di
     payload = f"{user_id}:{team_id}:{ts}" if team_id else f"{user_id}:{ts}"
     sig = hmac.new(secret.encode("utf-8"), payload.encode("utf-8"), hashlib.sha256).hexdigest()
     headers = {
-        "x-supoclip-user-id": user_id,
-        "x-supoclip-ts": ts,
-        "x-supoclip-signature": sig,
+        "x-clipforge-user-id": user_id,
+        "x-clipforge-ts": ts,
+        "x-clipforge-signature": sig,
     }
     if team_id:
-        headers["x-supoclip-team-id"] = team_id
+        headers["x-clipforge-team-id"] = team_id
     return headers
 
 
@@ -90,14 +90,14 @@ def test_signed_team_header_accepts_valid_and_rejects_tampering():
 
     # Tampering with team_id invalidates the HMAC signature.
     tampered = _signed_headers("team-secret", "user-1", "team-alpha")
-    tampered["x-supoclip-team-id"] = "team-beta"
+    tampered["x-clipforge-team-id"] = "team-beta"
     with pytest.raises(HTTPException) as exc:
         get_signed_identity(_request(tampered), config)
     assert exc.value.status_code == 401
 
     # Attaching an unsigned team header to a user-only signature fails.
     user_only = _signed_headers("team-secret", "user-1")
-    user_only["x-supoclip-team-id"] = "team-alpha"
+    user_only["x-clipforge-team-id"] = "team-alpha"
     with pytest.raises(HTTPException) as exc:
         get_signed_identity(_request(user_only), config)
     assert exc.value.status_code == 401
@@ -422,13 +422,13 @@ def test_team_email_service_builds_invitation_email():
         team_name="Demo Clip Crew",
         inviter_name="Alex",
         role="admin",
-        invite_url="https://supoclip.example.com/invite/sample-token",
+        invite_url="https://clipforge.example.com/invite/sample-token",
     )
     assert "Demo Clip Crew" in content.subject
     assert "Alex" in content.html
     assert "an admin" in content.html
-    assert "https://supoclip.example.com/invite/sample-token" in content.html
-    assert "https://supoclip.example.com/invite/sample-token" in content.text
+    assert "https://clipforge.example.com/invite/sample-token" in content.html
+    assert "https://clipforge.example.com/invite/sample-token" in content.text
 
 
 # ---------------------------------------------------------------------------

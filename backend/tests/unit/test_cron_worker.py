@@ -14,7 +14,7 @@ from src.workers.tasks import WorkerSettings
 
 def test_cron_jobs_are_not_on_the_video_worker():
     assert WorkerSettings.cron_jobs == []
-    assert WorkerSettings.queue_name == "supoclip_tasks"
+    assert WorkerSettings.queue_name == "clipforge_tasks"
     assert CronWorkerSettings.queue_name == CRON_QUEUE_NAME
     assert CronWorkerSettings.queue_name != WorkerSettings.queue_name
     jobs = CronWorkerSettings.cron_jobs
@@ -62,7 +62,7 @@ async def test_a_pending_cron_id_is_not_enqueued_twice():
         assert second is None
         assert await redis.zscore(CRON_QUEUE_NAME, job_id) is not None
         # The video queue is not where this job sits.
-        assert await redis.zscore("supoclip_tasks", job_id) is None
+        assert await redis.zscore("clipforge_tasks", job_id) is None
     finally:
         await redis.delete(job_key_prefix + job_id)
         await redis.zrem(CRON_QUEUE_NAME, job_id)

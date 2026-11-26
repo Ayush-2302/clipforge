@@ -48,7 +48,7 @@ async function seedFeedback(prisma: PrismaClient) {
       INSERT INTO feedback_submissions (id, user_id, email, category, message, status, platform, page_url, locale,
         user_agent, app_version, resolved_at, created_at, updated_at)
       VALUES (${id}, ${user?.id ?? null}, ${user?.email ?? null}, ${category}, ${message}, ${status}, ${platform}, ${page}, 'en',
-        ${platform === "ios" ? "SupoClip/2.4 CFNetwork Darwin" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) Chrome/131.0"},
+        ${platform === "ios" ? "ClipForge/2.4 CFNetwork Darwin" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_6) Chrome/131.0"},
         ${platform === "ios" ? "2.4.0" : null}, ${status === "resolved" ? minutesAgo(age - 30) : null},
         ${minutesAgo(age)}, ${minutesAgo(age)})`;
   }
@@ -134,7 +134,7 @@ test("admins triage feedback and manage its webhooks", async ({ page }) => {
   await expect(page.getByRole("alert").filter({ hasText: "public internet address" })).toBeVisible();
   await page.screenshot({ path: `${shots}/webhook-refused.png` });
 
-  await page.getByLabel(/Webhook URL/).fill("https://example.com/hooks/supoclip-demo");
+  await page.getByLabel(/Webhook URL/).fill("https://example.com/hooks/clipforge-demo");
   await page.getByLabel("Cancellation reason").uncheck();
   await page.getByRole("button", { name: "Save webhook" }).click();
   await expect(page.getByText(/Signing secret for Internal tools/)).toBeVisible();

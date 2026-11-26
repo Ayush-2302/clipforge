@@ -33,7 +33,7 @@ needs_ffmpeg = pytest.mark.skipif(not shutil.which("ffmpeg"), reason="ffmpeg not
 def email_config(**extra):
     return SimpleNamespace(
         aws_region="eu-west-1", aws_access_key_id="k", aws_secret_access_key="s",
-        ses_from_email="SupoClip <f@x.test>", app_base_url="https://app.test", **extra,
+        ses_from_email="ClipForge <f@x.test>", app_base_url="https://app.test", **extra,
     )
 
 
@@ -119,11 +119,11 @@ def test_completion_email_embeds_previews_inline():
             source=b"src", clips=(ClipPreview(b"c0", "Why <this> works"), ClipPreview(b"c1")),
         ),
     )
-    assert 'src="cid:source@supoclip"' in content.html and 'src="cid:clip1@supoclip"' in content.html
+    assert 'src="cid:source@clipforge"' in content.html and 'src="cid:clip1@clipforge"' in content.html
     assert 'alt="Talk"' in content.html and 'alt="Clip 2"' in content.html
     assert "Why &lt;this&gt; works" in content.html and "- Why <this> works" in content.text
     assert [image.content_id for image in content.inline_images] == [
-        "source@supoclip", "clip0@supoclip", "clip1@supoclip",
+        "source@clipforge", "clip0@clipforge", "clip1@clipforge",
     ]
 
 
@@ -140,7 +140,7 @@ def test_inline_images_are_sent_as_related_mime():
     service._client = MagicMock()
     service._send("to@x.test", EmailContent(
         "Clips ready ✂", "<p>x</p>", "x", headers=(("X-Test", "1"),),
-        inline_images=(InlineImage("clip0@supoclip", b"jpg"),),
+        inline_images=(InlineImage("clip0@clipforge", b"jpg"),),
     ))
     kwargs = service._client.send_email.call_args.kwargs
     message = email.message_from_bytes(kwargs["Content"]["Raw"]["Data"], policy=email.policy.default)
@@ -151,7 +151,7 @@ def test_inline_images_are_sent_as_related_mime():
     assert (text.get_content_type(), related.get_content_type(), html.get_content_type()) == (
         "text/plain", "multipart/related", "text/html",
     )
-    assert image["Content-ID"] == "<clip0@supoclip>" and image.get_content() == b"jpg"
+    assert image["Content-ID"] == "<clip0@clipforge>" and image.get_content() == b"jpg"
     assert image.get_content_disposition() == "inline"
 
 

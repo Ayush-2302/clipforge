@@ -288,7 +288,7 @@ async def test_plan_queues_the_draft_words_on_the_ai_worker(studio):
     assert request["clip_seconds"] == 10 and request["user_id"] == "owner"
     assert all(w["start"] < 5 or w["start"] >= 20 for w in request["words"]) and request["words"][0]["id"] == "w0"
     assert studio.enqueue.await_args.args == ("edit_fx_plan_job", job_id)
-    assert studio.enqueue.await_args.kwargs["_queue_name"] == "supoclip_ai"
+    assert studio.enqueue.await_args.kwargs["_queue_name"] == "clipforge_ai"
     status = await studio.http.get(f"{BASE}/fx/plan/{job_id}")
     assert status.json()["status"] == "queued"
     studio.pool.data[ai.fx_plan_result_key(job_id)] = json.dumps({"status": "done", "beats": {"beats": []}})

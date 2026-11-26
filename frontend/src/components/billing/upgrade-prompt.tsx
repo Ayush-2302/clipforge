@@ -397,7 +397,7 @@ export function UpgradeDialog({ open, onOpenChange, reason, billing, source }: U
 
           {!state?.isPaid && !state?.needsPayment && !isTeamWorkspace && (
             <Link
-              href="/blog/self-host-supoclip-docker"
+              href="/blog/self-host-clipforge-docker"
               className="mt-3 inline-flex items-center gap-1 self-start text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
               {text.t("selfHostLink")} <ArrowRight className="size-3" />

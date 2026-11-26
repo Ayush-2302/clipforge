@@ -417,7 +417,7 @@ describe("task page dynamic edits", () => {
     await waitFor(() => expect(screen.getByText("40%")).toBeInTheDocument(), { timeout: 4000 });
     await waitFor(() => expect(screen.queryByText("Rendering edits…")).not.toBeInTheDocument(), { timeout: 5000 });
     expect(taskFetches).toBeGreaterThan(fetchesBefore);
-    expect(window.sessionStorage.getItem("supoclip.clipJob.task-1")).toBeNull();
+    expect(window.sessionStorage.getItem("clipforge.clipJob.task-1")).toBeNull();
   }, 15000);
 
   it("keeps the stored style out of the body when only the font changed", async () => {
@@ -475,7 +475,7 @@ describe("task page dynamic edits", () => {
   }, 15000);
 
   it("follows a job queued before a reload", async () => {
-    window.sessionStorage.setItem("supoclip.clipJob.task-1", JSON.stringify({ id: JOB, kind: "settings", clipIds: "all" }));
+    window.sessionStorage.setItem("clipforge.clipJob.task-1", JSON.stringify({ id: JOB, kind: "settings", clipIds: "all" }));
     jobStates = [{ status: "done", kind: "settings", progress: 1 }];
     serveFx(task(), [clip(1)]);
     renderPage();

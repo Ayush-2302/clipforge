@@ -10,7 +10,7 @@ is sent again.
 
 Discord webhooks get an embed like the one before the inbox. Generic JSON webhooks
 get the payload documented in docs/feedback.md, signed with HMAC-SHA256. The Hermes
-webhook (server-configured) gets ``supoclip.feedback`` signed with Hermes' V2 scheme,
+webhook (server-configured) gets ``clipforge.feedback`` signed with Hermes' V2 scheme,
 and only counts as delivered when the gateway says it filed it.
 """
 
@@ -54,7 +54,7 @@ MAX_RETRY_AFTER = 3600
 BATCH_SIZE = 25
 # 4xx answers that may succeed later; any other 4xx is a configuration error and is not retried.
 RETRYABLE_4XX = {408, 409, 425, 429}
-HERMES_PAYLOAD_TYPE = "supoclip.feedback"
+HERMES_PAYLOAD_TYPE = "clipforge.feedback"
 HERMES_FIELDS = ("id", "category", "message", "user_id", "email", "page_url", "platform", "app_version", "created_at")
 # Enough for the gateway's {"status": ...} answer; anything longer is not read.
 MAX_RESPONSE_BYTES = 4096
@@ -406,7 +406,7 @@ async def deliver_due(db: AsyncSession, *, submission_id: str | None = None, lim
 
 
 async def deliver_feedback_webhooks(ctx: dict[str, Any] | None = None) -> dict[str, int]:
-    """Cron job (every minute, ``supoclip_cron``): send due deliveries until none are left."""
+    """Cron job (every minute, ``clipforge_cron``): send due deliveries until none are left."""
     from ..database import AsyncSessionLocal
 
     totals: dict[str, int] = {}

@@ -407,6 +407,15 @@ export function ClipPublishButton({
       // A late response must never replace edits or a newer form's draft.
       if (request === captionRequest.current && revision === captionRevision.current) {
         setCaption(data.caption);
+        if (Array.isArray(data.hashtags) && data.hashtags.length > 0) {
+          const formatted = data.hashtags
+            .filter((tag: unknown): tag is string => typeof tag === "string" && tag.trim().length > 0)
+            .map((tag: string) => `#${tag.trim().replace(/^#+/, "")}`)
+            .join(" ");
+          if (formatted) {
+            setHashtags((current) => (current.trim() ? current : formatted));
+          }
+        }
       }
     } catch (err) {
       if (request === captionRequest.current) {

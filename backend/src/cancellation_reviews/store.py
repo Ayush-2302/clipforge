@@ -53,7 +53,7 @@ async def insert_event(db: AsyncSession, account_id: str, event: CancellationEve
     return result.rowcount == 1
 
 
-async def is_supoclip_customer(db: AsyncSession, account_id: str, customer_id: str) -> bool:
+async def is_clipforge_customer(db: AsyncSession, account_id: str, customer_id: str) -> bool:
     """For an account shared with other products: only ClipForge AI customers are kept."""
     params = {"customer": customer_id, "account": account_id}
     if await has_column(db, "users", "stripe_account_id"):

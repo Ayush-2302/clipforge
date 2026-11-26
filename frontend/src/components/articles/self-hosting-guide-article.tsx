@@ -12,7 +12,7 @@ const tocIds = ["stack", "requirements", "install", "local", "verify", "producti
 
 export async function SelfHostingGuideArticle({ post }: { post: BlogPost }) {
   const t = await getTranslations("blog");
-  const slug = "self-host-supoclip-docker";
+  const slug = "self-host-clipforge-docker";
   const code = (chunks: React.ReactNode) => <code>{chunks}</code>;
   const strong = (chunks: React.ReactNode) => <strong>{chunks}</strong>;
   const faqs: ArticleFaq[] = [0, 1, 2, 3, 4].map((index) => ({
@@ -78,7 +78,7 @@ export async function SelfHostingGuideArticle({ post }: { post: BlogPost }) {
       <h3>{t(`${slug}.install.clone`)}</h3>
       <CodeBlock label={t(`${slug}.install.labelTerminal`)}>{`
 git clone https://github.com/Ayush-2302/clipforge.git
-cd supoclip
+cd clipforge
 cp .env.example .env
 `}</CodeBlock>
       <h3>{t.rich(`${slug}.install.providersHeading`, { code })}</h3>
@@ -191,18 +191,18 @@ services:
       POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}
   frontend:
     environment:
-      DATABASE_URL: postgresql://supoclip:\${POSTGRES_PASSWORD}@postgres:5432/supoclip
+      DATABASE_URL: postgresql://clipforge:\${POSTGRES_PASSWORD}@postgres:5432/clipforge
   backend:
     environment:
-      DATABASE_URL: postgresql+asyncpg://supoclip:\${POSTGRES_PASSWORD}@postgres:5432/supoclip
+      DATABASE_URL: postgresql+asyncpg://clipforge:\${POSTGRES_PASSWORD}@postgres:5432/clipforge
   worker:
     environment:
-      DATABASE_URL: postgresql+asyncpg://supoclip:\${POSTGRES_PASSWORD}@postgres:5432/supoclip
+      DATABASE_URL: postgresql+asyncpg://clipforge:\${POSTGRES_PASSWORD}@postgres:5432/clipforge
 `}</CodeBlock>
       <p>{t.rich(`${slug}.production.existing`, { code })}</p>
       <CodeBlock label={t(`${slug}.production.labelExisting`)}>{`
-docker compose exec -T postgres psql -U supoclip -d supoclip \\
-  -c "ALTER USER supoclip PASSWORD 'your_new_password'"
+docker compose exec -T postgres psql -U clipforge -d clipforge \\
+  -c "ALTER USER clipforge PASSWORD 'your_new_password'"
 docker compose up -d
 `}</CodeBlock>
       <p>
@@ -215,7 +215,7 @@ docker compose up -d
       <h2 id="upgrade">{t(`${slug}.upgrade.heading`)}</h2>
       <p>{t.rich(`${slug}.upgrade.intro`, { code })}</p>
       <CodeBlock label={t(`${slug}.install.labelTerminal`)}>{`
-docker compose exec -T postgres pg_dump -U supoclip supoclip > supoclip-$(date +%F).sql
+docker compose exec -T postgres pg_dump -U clipforge clipforge > clipforge-$(date +%F).sql
 docker compose stop frontend backend worker
 old=$(git rev-parse HEAD)
 git pull
@@ -224,7 +224,7 @@ git diff --name-only --diff-filter=A "$old" HEAD -- \\
 `}</CodeBlock>
       <p>{t(`${slug}.upgrade.apply`)}</p>
       <CodeBlock label={t(`${slug}.install.labelTerminal`)}>{`
-docker compose exec -T postgres psql -U supoclip -d supoclip -v ON_ERROR_STOP=1 -1 \\
+docker compose exec -T postgres psql -U clipforge -d clipforge -v ON_ERROR_STOP=1 -1 \\
   < frontend/prisma/migrations/<new_migration>/migration.sql
 docker compose up -d --build
 `}</CodeBlock>

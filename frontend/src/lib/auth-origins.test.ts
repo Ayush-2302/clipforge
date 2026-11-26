@@ -16,7 +16,7 @@ describe("authentication browser origins", () => {
       NEXT_PUBLIC_SELF_HOST: "false", NEXT_PUBLIC_APP_URL: "https://www.clipforge.ai",
       BETTER_AUTH_URL: "https://www.clipforge.ai",
     })).toEqual([
-      "https://www.clipforge.ai", "http://localhost:3107", "http://sp.localhost:3107", "http://supoclip.localhost:3107",
+      "https://www.clipforge.ai", "http://localhost:3107", "http://sp.localhost:3107", "http://clipforge.localhost:3107",
     ]);
   });
 

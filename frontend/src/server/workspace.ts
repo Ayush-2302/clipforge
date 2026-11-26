@@ -1,6 +1,6 @@
 import { getPrismaClient } from "@/server/prisma";
 
-export const WORKSPACE_COOKIE = "supoclip_team_id";
+export const WORKSPACE_COOKIE = "clipforge_team_id";
 const TEAM_ID_PATTERN = /^[A-Za-z0-9_-]{8,64}$/;
 
 /** Read the active team id from the request cookie store (or null for personal workspace). */

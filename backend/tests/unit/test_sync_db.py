@@ -78,7 +78,7 @@ def fake(monkeypatch):
 
 
 def test_connects_where_the_configured_engine_points_never_the_environment(fake, monkeypatch):
-    monkeypatch.setenv("DATABASE_URL", f"postgresql+asyncpg://prod:{uuid.uuid4().hex}@production/supoclip")
+    monkeypatch.setenv("DATABASE_URL", f"postgresql+asyncpg://prod:{uuid.uuid4().hex}@production/clipforge")
     assert sync_db.fetchval("SELECT 1") == "clips"
     options = fake.pools[0].options
     assert {name: options[name] for name in ("host", "port", "user", "password", "database", "ssl")} == {

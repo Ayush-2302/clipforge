@@ -1,4 +1,4 @@
-SupoClip dynamic-edit music beds (music/*.mp3)
+ClipForge dynamic-edit music beds (music/*.mp3)
 ==============================================
 
 License: CC0-1.0 (Creative Commons Zero 1.0 Universal, public domain dedication).

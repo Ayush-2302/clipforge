@@ -14,8 +14,8 @@ def email_config(**extra):
         aws_region="eu-west-1",
         aws_access_key_id="k",
         aws_secret_access_key="s",
-        ses_from_email="SupoClip <no-reply@supoclip.com>",
-        app_base_url="https://app.supoclip.com",
+        ses_from_email="ClipForge <no-reply@clipforge.ai>",
+        app_base_url="https://app.clipforge.ai",
         **extra,
     )
 
@@ -42,12 +42,12 @@ def test_builds_publish_email_with_live_link_and_escaped_fields():
     assert "<strong>YouTube Shorts</strong> (Ada&#x27;s Channel (@adacodes))" in content.html
     assert 'href="https://www.youtube.com/shorts/abc123"' in content.html
     assert "View on YouTube Shorts" in content.html
-    assert 'href="https://app.supoclip.com/tasks/task-42"' in content.html
-    assert 'href="https://app.supoclip.com/settings"' in content.html
+    assert 'href="https://app.clipforge.ai/tasks/task-42"' in content.html
+    assert 'href="https://app.clipforge.ai/settings"' in content.html
     assert 'Your clip "Why <hooks> win" has been published to YouTube Shorts' in content.text
     assert "View on YouTube Shorts: https://www.youtube.com/shorts/abc123" in content.text
-    assert "Open in SupoClip: https://app.supoclip.com/tasks/task-42" in content.text
-    assert "Notification settings: https://app.supoclip.com/settings" in content.text
+    assert "Open in ClipForge: https://app.clipforge.ai/tasks/task-42" in content.text
+    assert "Notification settings: https://app.clipforge.ai/settings" in content.text
 
 
 def test_builds_publish_email_without_external_url_or_title():
@@ -66,9 +66,9 @@ def test_builds_publish_email_without_external_url_or_title():
     assert "javascript:" not in content.html
     assert "javascript:" not in content.text
     assert "<strong>TikTok</strong> (@creator)" in content.html
-    assert 'href="https://app.supoclip.com/analytics"' in content.html
-    assert "Open in SupoClip" in content.html
-    assert 'href="https://app.supoclip.com/settings"' in content.html
+    assert 'href="https://app.clipforge.ai/analytics"' in content.html
+    assert "Open in ClipForge" in content.html
+    assert 'href="https://app.clipforge.ai/settings"' in content.html
 
 
 @pytest.mark.asyncio

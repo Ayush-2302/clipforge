@@ -13,7 +13,7 @@ def test_wraps_fragment_with_logo_and_styled_paragraphs():
 def test_plain_http_hosts_get_a_text_wordmark_and_their_own_link():
     html = render_email_html("<p>x</p>", app_url="http://clips.lan:3107")
     assert "<img" not in html and "@font-face" not in html
-    assert 'href="http://clips.lan:3107"' in html and "supoclip.com" not in html
+    assert 'href="http://clips.lan:3107"' in html and "clipforge.ai" not in html
 
 
 def test_button_escapes_and_keeps_its_own_style():

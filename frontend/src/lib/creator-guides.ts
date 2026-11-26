@@ -310,9 +310,9 @@ export const creatorGuides: CreatorGuide[] = [
         ] },
       },
       {
-        id: "supoclip", heading: "ClipForge AI: a clipping workflow with an interface",
+        id: "clipforge", heading: "ClipForge AI: a clipping workflow with an interface",
         paragraphs: ["ClipForge AI accepts supported source links and uploaded video, proposes segments from speech, and gives you an editor for cuts, captions, framing, and exports. You can use the paid hosted service, or self-host for noncommercial use or as an individual creator posting to your own monetized channels. Other commercial use of the self-hosted software, such as by companies, agencies, or for client work, requires prior written permission from Shiori LLC. The public demo shows actual generated clips with linked source moments.", "Self-hosting means operating the application, worker, database, media storage, and your chosen transcription and model providers. A local Whisper and Ollama configuration is available; using external providers changes where data is processed and what usage costs you incur. Choose the hosted service if your main goal is publishing rather than maintaining that stack."],
-        links: [{ href: "/demo", label: "Inspect real ClipForge AI output" }, { href: "/blog/self-host-supoclip-docker", label: "Read the setup requirements" }],
+        links: [{ href: "/demo", label: "Inspect real ClipForge AI output" }, { href: "/blog/self-host-clipforge-docker", label: "Read the setup requirements" }],
       },
       {
         id: "alternatives", heading: "Clips AI and Auto-Editor: building blocks for different jobs",
@@ -332,7 +332,7 @@ export const creatorGuides: CreatorGuide[] = [
       { question: "Were all three tools tested on the same video?", answer: "No. This comparison uses official documentation and ClipForge AI's own implementation and demo. Use the test checklist to evaluate output on your recording; no cross-tool benchmark results are claimed here." },
     ],
     cta: { title: "Try the complete ClipForge AI workflow", body: "Use the paid hosted app to start with a recording, or follow the self-hosting guide if you want to operate the application yourself.", label: "Start with ClipForge AI" },
-    related: ["/open-source-video-clipper", "/blog/self-host-supoclip-docker", "/blog/supoclip-vs-opusclip"],
+    related: ["/open-source-video-clipper", "/blog/self-host-clipforge-docker", "/blog/clipforge-vs-opusclip"],
   },
 ];
 

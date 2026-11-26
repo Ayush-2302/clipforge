@@ -149,10 +149,10 @@ class ReplicatedMediaClient:
         """Write one revision to one store and check that the store holds it."""
         client, bucket = self.stores[name]
         extra = dict(extra or {})
-        extra["Metadata"] = {**extra.get("Metadata", {}), "supoclip-sha256": digest}
+        extra["Metadata"] = {**extra.get("Metadata", {}), "clipforge-sha256": digest}
         client.upload_file(str(path), bucket, key, ExtraArgs=extra, Config=TRANSFER)
         head = client.head_object(Bucket=bucket, Key=key)
-        if head["ContentLength"] != size or head.get("Metadata", {}).get("supoclip-sha256") != digest:
+        if head["ContentLength"] != size or head.get("Metadata", {}).get("clipforge-sha256") != digest:
             raise OSError("Replica verification failed")
 
     def _holds(self, name, row):
@@ -163,7 +163,7 @@ class ReplicatedMediaClient:
             if _missing(error):
                 return False
             raise
-        return head["ContentLength"] == row["size"] and head.get("Metadata", {}).get("supoclip-sha256") == row["sha256"]
+        return head["ContentLength"] == row["size"] and head.get("Metadata", {}).get("clipforge-sha256") == row["sha256"]
 
     def _acknowledge(self, row, name):
         try:
@@ -637,16 +637,16 @@ class ReplicatedMediaClient:
                 if not _missing(exc):
                     raise
                 target = None
-            digest = source.get("Metadata", {}).get("supoclip-sha256")
+            digest = source.get("Metadata", {}).get("clipforge-sha256")
             same = target and target["ContentLength"] == source["ContentLength"] and (
-                (digest and target.get("Metadata", {}).get("supoclip-sha256") == digest)
-                or target.get("Metadata", {}).get("supoclip-source-etag") == source["ETag"]
+                (digest and target.get("Metadata", {}).get("clipforge-sha256") == digest)
+                or target.get("Metadata", {}).get("clipforge-source-etag") == source["ETag"]
             )
             if same:
                 if verify:
                     if not self.replica_matches({"Key": key, **source}, {"Key": key, **target}):
-                        self._verify_remote(fallback, target_bucket, key, target["Metadata"]["supoclip-sha256"])
-                        self._record_verification(key, source, target, target["Metadata"]["supoclip-sha256"])
+                        self._verify_remote(fallback, target_bucket, key, target["Metadata"]["clipforge-sha256"])
+                        self._record_verification(key, source, target, target["Metadata"]["clipforge-sha256"])
                 return "verified" if verify else "unchanged"
             with self._scratch() as temporary:
                 self._require_space(source["ContentLength"])
@@ -660,7 +660,7 @@ class ReplicatedMediaClient:
                 if primary.head_object(Bucket=source_bucket, Key=key)["ETag"] != source["ETag"]:
                     return "changed"
                 extra = {name: source[name] for name in COPIED_HEADERS if name in source}
-                extra["Metadata"] = {**extra.get("Metadata", {}), "supoclip-source-etag": source["ETag"]}
+                extra["Metadata"] = {**extra.get("Metadata", {}), "clipforge-source-etag": source["ETag"]}
                 # Nothing is recorded in the ledger: a failure raises and the
                 # operator's script, which is restartable, copies the object again.
                 self._put("fallback", temporary, key, extra, digest, size)

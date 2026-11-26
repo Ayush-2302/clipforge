@@ -1,4 +1,4 @@
-const INSTALLED = Symbol.for("supoclip.domTranslationGuard");
+const INSTALLED = Symbol.for("clipforge.domTranslationGuard");
 
 export type SkippedDomOperation = "removeChild" | "insertBefore";
 

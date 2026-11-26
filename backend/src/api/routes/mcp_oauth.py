@@ -4,7 +4,7 @@ OAuth for the hosted MCP server.
 Two groups of routes:
 
 * ``/internal/mcp-oauth/*``: called only by the MCP server, authenticated with
-  the shared ``MCP_OAUTH_SECRET`` (``x-supoclip-mcp-secret``). The MCP server is
+  the shared ``MCP_OAUTH_SECRET`` (``x-clipforge-mcp-secret``). The MCP server is
   the authorization server connectors talk to; these routes hold its state.
 * ``/oauth/requests/*``: the consent page on the web app, authenticated with the
   frontend's signed session headers (never an API key, so a leaked key cannot
@@ -31,7 +31,7 @@ from .api_keys import notify_api_key_created
 
 logger = logging.getLogger(__name__)
 
-INTERNAL_SECRET_HEADER = "x-supoclip-mcp-secret"
+INTERNAL_SECRET_HEADER = "x-clipforge-mcp-secret"
 
 internal_router = APIRouter(prefix="/internal/mcp-oauth", tags=["mcp-oauth"], include_in_schema=False)
 consent_router = APIRouter(prefix="/oauth", tags=["mcp-oauth"])
@@ -141,7 +141,7 @@ async def exchange_code(body: ExchangeBody, service: McpOAuthService = Depends(g
         return _error(exc)
     await notify_api_key_created(user, created)
     logger.info("MCP OAuth issued API key %s to client %s for user %s", created.get("id"), body.client_id, user.id)
-    return {"access_token": created["key"], "scope": "supoclip", "key_id": created.get("id")}
+    return {"access_token": created["key"], "scope": "clipforge", "key_id": created.get("id")}
 
 
 @internal_router.post("/rate-limit", dependencies=[Depends(require_mcp_server)])

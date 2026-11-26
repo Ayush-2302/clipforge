@@ -15,6 +15,7 @@ Metrics: ``/{media_id}?fields=like_count,comments_count`` plus
 from __future__ import annotations
 
 import logging
+import os
 import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
@@ -71,7 +72,11 @@ class InstagramProvider(SocialProvider):
 
     @property
     def is_configured(self) -> bool:
-        return bool(self.config.instagram_app_id and self.config.instagram_app_secret)
+        return bool(
+            (self.config.instagram_app_id and self.config.instagram_app_secret)
+            or getattr(self.config, "ig_token", None)
+            or os.environ.get("IG_TOKEN")
+        )
 
     # -- OAuth ----------------------------------------------------------
     def build_authorize_url(

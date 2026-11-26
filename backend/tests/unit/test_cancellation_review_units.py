@@ -122,7 +122,7 @@ def test_scheduled_cancellation_is_captured_with_survey_answer():
 
 def test_snapshot_marks_migration_and_synthetic_metadata():
     snap = subscription_snapshot(
-        subscription(metadata={"billing_migration_operation": "op1", "supoclip_synthetic_test": "true"}), None)
+        subscription(metadata={"billing_migration_operation": "op1", "clipforge_synthetic_test": "true"}), None)
     assert snap["migration_operation"] == "op1" and snap["synthetic_test"] is True
 
 
@@ -334,7 +334,7 @@ def test_a_customer_comment_with_a_colon_is_still_quoted():
 def test_involuntary_and_unlinked_customer():
     text = render(review=review_row(kind="immediate", ended_at=T0, snapshot={
         **review_row()["snapshot"], "cancellation_reason": "payment_failed"}), context=None)
-    assert "Involuntary cancellation" in text and "no SupoClip account matches" in text
+    assert "Involuntary cancellation" in text and "no ClipForge account matches" in text
 
 
 def test_updates_and_plan_names():

@@ -18,13 +18,7 @@ export function buildBackendAuthHeaders(
   if (!secret) {
     return {
       "x-clipforge-user-id": userId,
-      "x-supoclip-user-id": userId,
-      ...(normalizedTeamId
-        ? {
-            "x-clipforge-team-id": normalizedTeamId,
-            "x-supoclip-team-id": normalizedTeamId,
-          }
-        : {}),
+      ...(normalizedTeamId ? { "x-clipforge-team-id": normalizedTeamId } : {}),
     };
   }
 
@@ -36,16 +30,8 @@ export function buildBackendAuthHeaders(
 
   return {
     "x-clipforge-user-id": userId,
-    "x-supoclip-user-id": userId,
-    ...(normalizedTeamId
-      ? {
-          "x-clipforge-team-id": normalizedTeamId,
-          "x-supoclip-team-id": normalizedTeamId,
-        }
-      : {}),
+    ...(normalizedTeamId ? { "x-clipforge-team-id": normalizedTeamId } : {}),
     "x-clipforge-ts": timestamp,
-    "x-supoclip-ts": timestamp,
     "x-clipforge-signature": signature,
-    "x-supoclip-signature": signature,
   };
 }

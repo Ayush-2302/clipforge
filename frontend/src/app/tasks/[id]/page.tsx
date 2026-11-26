@@ -139,7 +139,7 @@ type ClipJob = {
 };
 /** The edit toggles the restyle sheet offers (the create screen has the full set). */
 const SHEET_FX_TOGGLES = ["sfx", "music", "zooms", "transitions", "progress_bar"] as const satisfies readonly (keyof EditStyle)[];
-const clipJobStorageKey = (taskId: string) => `supoclip.clipJob.${taskId}`;
+const clipJobStorageKey = (taskId: string) => `clipforge.clipJob.${taskId}`;
 
 function readStoredClipJob(taskId: string): ClipJob | null {
   try {

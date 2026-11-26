@@ -22,9 +22,9 @@ def _headers_for(user_id: str) -> dict[str, str]:
     payload = f"{user_id}:{timestamp}".encode("utf-8")
     signature = hmac.new(b"test-backend-auth-secret", payload, hashlib.sha256).hexdigest()
     return {
-        "x-supoclip-user-id": user_id,
-        "x-supoclip-ts": timestamp,
-        "x-supoclip-signature": signature,
+        "x-clipforge-user-id": user_id,
+        "x-clipforge-ts": timestamp,
+        "x-clipforge-signature": signature,
     }
 
 

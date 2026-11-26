@@ -11,7 +11,7 @@ vi.mock("@/server/backend-api", async () => {
 const params = { params: Promise.resolve({ id: "req/1" }) };
 
 function post(body: string, contentType = "application/json") {
-  return new Request("https://www.supoclip.test/api/oauth/requests/req/decision", {
+  return new Request("https://www.clipforge.test/api/oauth/requests/req/decision", {
     method: "POST",
     headers: { "Content-Type": contentType },
     body,

@@ -18,9 +18,9 @@ def headers_for(user_id: str) -> dict[str, str]:
         b"test-backend-auth-secret", f"{user_id}:{timestamp}".encode(), hashlib.sha256
     ).hexdigest()
     return {
-        "x-supoclip-user-id": user_id,
-        "x-supoclip-ts": timestamp,
-        "x-supoclip-signature": signature,
+        "x-clipforge-user-id": user_id,
+        "x-clipforge-ts": timestamp,
+        "x-clipforge-signature": signature,
     }
 
 

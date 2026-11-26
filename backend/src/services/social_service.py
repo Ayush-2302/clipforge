@@ -83,6 +83,51 @@ MAX_CAPTION_LENGTH = 2200
 _HASHTAG_RE = re.compile(r"[^0-9A-Za-z_À-￿]+")
 
 
+def _upload_to_imagekit(file_path: str, private_key: str) -> tuple[str, Optional[str]]:
+    """Upload a local clip file to ImageKit so Instagram can fetch it over public HTTPS."""
+    import requests
+
+    path = Path(file_path)
+    with path.open("rb") as handle:
+        response = requests.post(
+            "https://upload.imagekit.io/api/v1/files/upload",
+            auth=(private_key, ""),
+            files={"file": (path.name, handle, "video/mp4")},
+            data={
+                "fileName": path.name,
+                "folder": "/clipforge-reels",
+                "useUniqueFileName": "true",
+            },
+            timeout=120,
+        )
+    if response.status_code >= 400:
+        raise SocialProviderError(
+            f"Public media upload to ImageKit failed ({response.status_code}).",
+            retryable=response.status_code >= 500,
+        )
+    payload = response.json() or {}
+    url = payload.get("url")
+    if not url:
+        raise SocialProviderError("ImageKit upload did not return a public media URL.")
+    return url, payload.get("fileId")
+
+
+def _delete_from_imagekit(file_id: str, private_key: str) -> None:
+    """Best-effort cleanup of a temporary ImageKit file after publishing finishes."""
+    import requests
+
+    try:
+        response = requests.delete(
+            f"https://api.imagekit.io/v1/files/{file_id}",
+            auth=(private_key, ""),
+            timeout=30,
+        )
+        if response.status_code >= 400 and response.status_code != 404:
+            logger.warning("ImageKit cleanup returned %s for file %s", response.status_code, file_id)
+    except Exception as exc:  # noqa: BLE001 - never fail a publish on best-effort cleanup
+        logger.warning("ImageKit cleanup failed for file %s (%s)", file_id, type(exc).__name__)
+
+
 class SocialError(Exception):
     """Base class for user-facing social publishing errors."""
 
@@ -497,16 +542,32 @@ class SocialService:
             raise SocialValidationError("Unsupported social platform")
         if not (clip.get("text") or "").strip():
             raise SocialValidationError("This clip has no transcript to draft a caption from.")
-        if not self.config.anthropic_api_key:
-            raise SocialProviderUnavailable("Caption generation requires ANTHROPIC_API_KEY on the server.")
+        has_llm = bool(
+            self.config.google_api_key
+            or self.config.anthropic_api_key
+            or self.config.openrouter_api_key
+            or (self.config.llm or "").startswith("ollama:")
+        )
+        if not has_llm:
+            raise SocialProviderUnavailable(
+                "Caption generation requires an LLM API key (e.g. GOOGLE_API_KEY or ANTHROPIC_API_KEY) on the server."
+            )
         try:
-            caption = await generate_social_caption(self.config.anthropic_api_key, clip, provider)
+            generated = await generate_social_caption(
+                self.config.anthropic_api_key or "",
+                clip,
+                provider,
+                config=self.config,
+                include_hashtags=True,
+            )
         except Exception as exc:
             logger.warning("Social caption generation failed (%s)", type(exc).__name__)
             raise SocialProviderUnavailable(
                 "Couldn't generate a caption. Try again or write your own."
             ) from exc
-        return {"caption": caption}
+        if isinstance(generated, dict):
+            return generated
+        return {"caption": generated}
 
     async def create_post(
         self,
@@ -775,7 +836,11 @@ class SocialService:
         )
 
     async def _resolve_publish_media(
-        self, post: Dict[str, Any], provider: SocialProvider
+        self,
+        post: Dict[str, Any],
+        provider: SocialProvider,
+        *,
+        cleanup_imagekit_ids: Optional[List[str]] = None,
     ) -> tuple[str, Optional[str]]:
         """
         Return ``(local_file, public_url)`` for the claimed clip render.
@@ -816,6 +881,14 @@ class SocialService:
                 f"{self.config.social_public_media_base_url}/api/social/media/"
                 f"{post['media_token']}"
             )
+        if not provider.needs_local_file and self.config.imagekit_private_key:
+            base = (self.config.social_public_media_base_url or "").lower()
+            if not public_url or "localhost" in base or "127.0.0.1" in base:
+                public_url, file_id = await run_in_thread(
+                    _upload_to_imagekit, reference, self.config.imagekit_private_key
+                )
+                if file_id and cleanup_imagekit_ids is not None:
+                    cleanup_imagekit_ids.append(file_id)
         return reference, public_url
 
     # ------------------------------------------------------------------
@@ -883,8 +956,11 @@ class SocialService:
             )
             return await self.repo.get_post(self.db, post_id) or post
 
+        imagekit_file_ids: List[str] = []
         try:
-            file_path, public_url = await self._resolve_publish_media(post, provider)
+            file_path, public_url = await self._resolve_publish_media(
+                post, provider, cleanup_imagekit_ids=imagekit_file_ids
+            )
             access_token = await self._get_valid_access_token(account)
             request = PublishRequest(
                 file_path=file_path,
@@ -912,6 +988,12 @@ class SocialService:
                 attempts,
                 SocialProviderError(f"Unexpected error ({type(exc).__name__}): {exc}", retryable=True),
             )
+        finally:
+            if imagekit_file_ids and self.config.imagekit_private_key:
+                for file_id in imagekit_file_ids:
+                    await run_in_thread(
+                        _delete_from_imagekit, file_id, self.config.imagekit_private_key
+                    )
 
         if not result.pending_handle:
             await self._mark_published(post, account, result.external_post_id, result.external_url)

@@ -558,7 +558,7 @@ def test_fx_clip_job_is_registered_on_the_video_worker_with_one_try():
     (registered,) = [f for f in WorkerSettings.functions if getattr(f, "name", None) == "fx_clip_job"]
     assert registered.max_tries == 1
     assert registered.timeout_s == fx_clip_jobs.FX_CLIP_JOB_TIMEOUT_SECONDS
-    assert WorkerSettings.queue_name == "supoclip_tasks"
+    assert WorkerSettings.queue_name == "clipforge_tasks"
 
 
 async def test_rerender_task_settings_records_cleanup_under_the_lock(isolated_clip_edits):

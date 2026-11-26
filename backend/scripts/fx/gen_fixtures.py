@@ -376,9 +376,9 @@ GENERATORS: dict[str, Callable[[], list[tuple[str, dict]]]] = {
 
 def schemas() -> dict[str, dict]:
     cue_schema = CUE.json_schema()
-    cue_schema["$id"] = "https://supoclip.com/schemas/fx/fx_cue.schema.json"
+    cue_schema["$id"] = "https://clipforge.ai/schemas/fx/fx_cue.schema.json"
     scene_schema = FxScene.model_json_schema()
-    scene_schema["$id"] = "https://supoclip.com/schemas/fx/fx_scene.schema.json"
+    scene_schema["$id"] = "https://clipforge.ai/schemas/fx/fx_scene.schema.json"
     return {"fx_cue.schema.json": cue_schema, "fx_scene.schema.json": scene_schema}
 
 

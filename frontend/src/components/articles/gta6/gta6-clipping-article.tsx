@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ClipForgeEditorScreenshot } from "@/components/clipforge-editor-screenshot";
 import Link from "next/link";
 
 import { ArticleShell, type ArticleFaq } from "@/components/articles/article-shell";
@@ -155,7 +156,9 @@ export function Gta6ClippingArticle({ post }: { post: BlogPost }) {
           viewers and campaign approvals.
         </p>
         <figure className="not-prose space-y-3">
-          <Image src="/blog/supoclip-editor.webp" alt="ClipForge AI caption editor with style controls, a word-level transcript and a safe-area preview" width={1800} height={1109} sizes="(max-width: 768px) 100vw, 768px" className="h-auto w-full rounded-xl border" />
+          <div className="overflow-hidden rounded-xl border">
+            <ClipForgeEditorScreenshot alt="ClipForge AI caption editor with style controls, a word-level transcript and a safe-area preview" />
+          </div>
           <figcaption className="text-sm leading-6 text-muted-foreground">The ClipForge AI editor, shown with a sample video: transcript, caption style and preview side by side.</figcaption>
         </figure>
 

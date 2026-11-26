@@ -17,7 +17,7 @@ from src.services import clip_service
 from tests.fixtures.factories import create_clip, create_source, create_task, create_user
 
 YOUTUBE_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-IOS = {"x-supoclip-client": "ios"}
+IOS = {"x-clipforge-client": "ios"}
 
 
 def headers_for(user_id: str, **extra: str) -> dict[str, str]:
@@ -25,7 +25,7 @@ def headers_for(user_id: str, **extra: str) -> dict[str, str]:
     signature = hmac.new(
         b"test-backend-auth-secret", f"{user_id}:{timestamp}".encode(), hashlib.sha256
     ).hexdigest()
-    return {"x-supoclip-user-id": user_id, "x-supoclip-ts": timestamp, "x-supoclip-signature": signature, **extra}
+    return {"x-clipforge-user-id": user_id, "x-clipforge-ts": timestamp, "x-clipforge-signature": signature, **extra}
 
 
 @pytest.fixture(autouse=True)

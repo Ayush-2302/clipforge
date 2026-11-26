@@ -50,7 +50,7 @@ async def stripe_cancellation_webhook(account_id: str, request: Request):
         raise HTTPException(status_code=400, detail="Event belongs to another account")
     async with AsyncSessionLocal() as db:
         # Another product's customers in a shared Stripe account are never stored.
-        if account_id != config.stripe_source_account_id and not await store.is_supoclip_customer(
+        if account_id != config.stripe_source_account_id and not await store.is_clipforge_customer(
             db, account_id, event.customer_id
         ):
             return {"received": True, "stored": False}

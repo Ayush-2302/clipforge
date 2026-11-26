@@ -21,7 +21,7 @@ services:
     environment:
       PYTHONPATH: /app
       PYTHONUNBUFFERED: "1"
-      SUPOCLIP_SERVICE: worker
+      CLIPFORGE_SERVICE: worker
       TEMP_DIR: /app/uploads
       # Required: with local storage a worker can only serve the API from a shared disk.
       MEDIA_STORAGE: s3

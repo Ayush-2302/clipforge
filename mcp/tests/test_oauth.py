@@ -18,11 +18,11 @@ import pytest
 from starlette.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from supoclip_mcp import server
+from clipforge_mcp import server
 
 BASE = "http://127.0.0.1:9100"
 API = "http://backend.test"
-APP = "https://www.supoclip.test"
+APP = "https://www.clipforge.test"
 SECRET = "test-oauth-secret"
 REDIRECT = "https://claude.ai/api/mcp/auth_callback"
 STREAMABLE = {"Accept": "application/json, text/event-stream"}
@@ -56,7 +56,7 @@ class FakeBackend:
             token = request.headers.get("authorization", "")[7:]
             return httpx.Response(200 if token in self.keys else 401, json={})
         assert path.startswith("/internal/mcp-oauth/")
-        if request.headers.get("x-supoclip-mcp-secret") != SECRET:
+        if request.headers.get("x-clipforge-mcp-secret") != SECRET:
             return httpx.Response(401, json={"detail": "bad secret"})
         sub = path.removeprefix("/internal/mcp-oauth")
         body = httpx.Response(200, content=request.content).json() if request.content else {}
@@ -82,7 +82,7 @@ class FakeBackend:
                 return httpx.Response(400, json={"detail": {"code": "invalid_grant", "message": "invalid or used"}})
             key = "sk_oauth_" + secrets.token_urlsafe(16)
             self.keys.add(key)
-            return httpx.Response(200, json={"access_token": key, "scope": "supoclip"})
+            return httpx.Response(200, json={"access_token": key, "scope": "clipforge"})
         if sub == "/rate-limit":
             count = self.rate[body["bucket"]] = self.rate.get(body["bucket"], 0) + 1
             return httpx.Response(200, json={"allowed": count <= self.limit, "retry_after": 30})
@@ -106,7 +106,7 @@ def fresh_app():
     mcp = server._build_mcp()
 
     @mcp.tool()
-    def supoclip_ping() -> str:
+    def clipforge_ping() -> str:
         """Test tool."""
         return "pong"
 
@@ -162,7 +162,7 @@ def test_discovery_documents(client):
     assert metadata["token_endpoint"] == f"{BASE}/token"
     assert metadata["registration_endpoint"] == f"{BASE}/register"
     assert metadata["code_challenge_methods_supported"] == ["S256"]
-    assert metadata["scopes_supported"] == ["supoclip"]
+    assert metadata["scopes_supported"] == ["clipforge"]
     assert "revocation_endpoint" not in metadata
     assert client.get("/.well-known/oauth-authorization-server/mcp").json() == metadata
 
@@ -170,7 +170,7 @@ def test_discovery_documents(client):
         document = client.get(f"/.well-known/oauth-protected-resource{suffix}").json()
         assert document["resource"] == resource
         assert [url.rstrip("/") for url in document["authorization_servers"]] == [BASE]
-        assert document["scopes_supported"] == ["supoclip"]
+        assert document["scopes_supported"] == ["clipforge"]
 
 
 @pytest.mark.parametrize(
@@ -199,7 +199,7 @@ def test_registration_accepts_https_and_loopback(client, backend, uri):
     response = register(client, redirect_uris=[uri])
     assert response.status_code == 201, response.text
     stored = backend.clients[response.json()["client_id"]]
-    assert stored["scope"] == "supoclip"
+    assert stored["scope"] == "clipforge"
 
 
 @pytest.mark.parametrize("uri", ["http://evil.example/cb", "ftp://claude.ai/cb", "https://claude.ai/cb#frag", "javascript:alert(1)"])
@@ -254,7 +254,7 @@ def test_full_flow_issues_a_key_that_calls_tools(client, backend):
     issued = response.json()
     assert issued["token_type"] == "Bearer"
     assert issued["access_token"].startswith("sk_")
-    assert issued["scope"] == "supoclip"
+    assert issued["scope"] == "clipforge"
     assert "refresh_token" not in issued and "expires_in" not in issued
     assert response.headers["cache-control"] == "no-store"
 
@@ -265,7 +265,7 @@ def test_full_flow_issues_a_key_that_calls_tools(client, backend):
     client.post("/mcp", json={"jsonrpc": "2.0", "method": "notifications/initialized"}, headers={**headers, "mcp-session-id": session})
     called = client.post(
         "/mcp",
-        json={"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "supoclip_ping", "arguments": {}}},
+        json={"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "clipforge_ping", "arguments": {}}},
         headers={**headers, "mcp-session-id": session},
     )
     assert called.status_code == 200
@@ -344,7 +344,7 @@ def test_register_and_token_are_rate_limited(client, backend):
 
 
 def test_rate_limit_caller_is_the_proxied_client(client, backend, monkeypatch):
-    from supoclip_mcp import oauth
+    from clipforge_mcp import oauth
 
     assert oauth.client_ip({"type": "http", "headers": [(b"x-real-ip", b"203.0.113.9")], "client": ("172.18.0.1", 1)}) == "203.0.113.9"
     assert oauth.client_ip({"type": "http", "headers": [(b"x-forwarded-for", b"1.1.1.1, 203.0.113.9")], "client": None}) == "203.0.113.9"

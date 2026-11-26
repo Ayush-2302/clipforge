@@ -67,7 +67,7 @@ function cachedEditor(present: typeof draft, revision = 0, serverRevision = 0, s
     basis: "clip.mp4", revision, saved: JSON.stringify(draft),
     history: { past: [draft], present, future: [draft] },
   };
-  const storage = new Map([["supoclip-editor:/test/editor", JSON.stringify(local)]]);
+  const storage = new Map([["clipforge-editor:/test/editor", JSON.stringify(local)]]);
   vi.stubGlobal("localStorage", {
     getItem: (key: string) => storage.get(key) ?? null,
     setItem: (key: string, value: string) => storage.set(key, value),
@@ -200,10 +200,10 @@ it("keeps a bounded browser copy and marks it saved once the server confirms", a
   serverEditor(storage, new Promise<void>((r) => (release = r)));
   const { result } = renderHook(() => useEditor("/test/editor"));
   await waitFor(() => expect(result.current.document).not.toBeNull());
-  expect(JSON.parse(storage.get("supoclip-editor:/test/editor")!).unsaved).toBe(false);
+  expect(JSON.parse(storage.get("clipforge-editor:/test/editor")!).unsaved).toBe(false);
   for (let step = 1; step <= 30; step++)
     act(() => result.current.update((d) => ({ ...d, volume: step / 100 })));
-  const pending = JSON.parse(storage.get("supoclip-editor:/test/editor")!);
+  const pending = JSON.parse(storage.get("clipforge-editor:/test/editor")!);
   expect(pending.v).toBe(2);
   expect(pending.history.present.volume).toBe(0.3);
   expect(pending.history.past.length).toBeLessThanOrEqual(10);
@@ -211,7 +211,7 @@ it("keeps a bounded browser copy and marks it saved once the server confirms", a
   act(() => { saving = result.current.save(); });
   await act(async () => { release(); await saving; });
   expect(result.current.status).toBe("All changes saved");
-  const confirmed = JSON.parse(storage.get("supoclip-editor:/test/editor")!);
+  const confirmed = JSON.parse(storage.get("clipforge-editor:/test/editor")!);
   expect(confirmed.unsaved).toBe(false);
   expect(confirmed.history.past.length).toBeLessThanOrEqual(10);
   expect(result.current.storageError).toBe(false);
@@ -220,14 +220,14 @@ it("keeps a bounded browser copy and marks it saved once the server confirms", a
 it("shrinks an old full-history copy once the server has it", async () => {
   // The server always returns B-roll, as GET .../editor upgrades drafts.
   const server = { ...draft, broll: [] };
-  const storage = new Map([["supoclip-editor:/test/editor", JSON.stringify({
+  const storage = new Map([["clipforge-editor:/test/editor", JSON.stringify({
     basis: "clip.mp4", revision: 0, saved: JSON.stringify(server),
     history: { past: Array.from({ length: 50 }, () => server), present: server, future: [] },
   })]]);
   serverEditor(storage, undefined, server);
   const { result } = renderHook(() => useEditor("/test/editor"));
   await waitFor(() => expect(result.current.document).not.toBeNull());
-  const stored = JSON.parse(storage.get("supoclip-editor:/test/editor")!);
+  const stored = JSON.parse(storage.get("clipforge-editor:/test/editor")!);
   expect(stored).toMatchObject({ v: 2, unsaved: false });
   expect(stored.history.past).toHaveLength(10);
   expect(result.current.canUndo).toBe(true);
@@ -243,7 +243,7 @@ it("rebuilds the editing copy with the revision it shows and loads the fresh dra
   await waitFor(() => expect(result.current.document?.volume).toBe(0.75));
   expect(result.current.status).toBe("All changes saved");
   expect(result.current.canUndo).toBe(false);
-  expect(JSON.parse(storage.get("supoclip-editor:/test/editor")!).history.present.volume).toBe(0.75);
+  expect(JSON.parse(storage.get("clipforge-editor:/test/editor")!).history.present.volume).toBe(0.75);
 });
 
 const seededFx = {

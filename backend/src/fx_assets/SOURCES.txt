@@ -1,4 +1,4 @@
-SupoClip dynamic-edit built-in assets
+ClipForge dynamic-edit built-in assets
 ===================================
 
 Everything in this directory is committed, so it ships in the Docker image (COPY src/) and the docker-compose bind

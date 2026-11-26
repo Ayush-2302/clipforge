@@ -14,7 +14,7 @@ from tests.fixtures.factories import create_user
 SECRET = "integration-mcp-secret"
 REDIRECT = "https://claude.ai/api/mcp/auth_callback"
 CHALLENGE = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
-INTERNAL = {"x-supoclip-mcp-secret": SECRET}
+INTERNAL = {"x-clipforge-mcp-secret": SECRET}
 
 
 @pytest.fixture

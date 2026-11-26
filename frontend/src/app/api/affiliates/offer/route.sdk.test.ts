@@ -210,7 +210,7 @@ describe("GET /api/affiliates/offer", () => {
       expect(stripeMethods()).not.toContain(`${DESTINATION_KEY} promotionCodes.list`);
     });
 
-    it.each(["", "a", "../admin", "x".repeat(40), "supoclip-team", "ma--ya"])(
+    it.each(["", "a", "../admin", "x".repeat(40), "clipforge-team", "ma--ya"])(
       "404s for the invalid code %j before any database or Stripe work",
       async (code) => {
         migrationEnv();

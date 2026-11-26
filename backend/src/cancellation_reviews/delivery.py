@@ -19,7 +19,7 @@ import httpx
 
 from ..hermes_webhook import signed_headers
 
-PAYLOAD_TYPE = "supoclip.cancellation_report"
+PAYLOAD_TYPE = "clipforge.cancellation_report"
 MAX_MESSAGE_CHARS = 12000
 
 

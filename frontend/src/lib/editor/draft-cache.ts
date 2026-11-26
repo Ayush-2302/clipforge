@@ -11,7 +11,7 @@
  */
 import type { EditDocument } from "./document";
 
-export const DRAFT_CACHE_PREFIX = "supoclip-editor:";
+export const DRAFT_CACHE_PREFIX = "clipforge-editor:";
 /** Undo steps kept in the browser; the in-memory history is longer. */
 export const CACHED_HISTORY_STEPS = 10;
 /** A copy larger than this keeps fewer undo steps (characters of JSON). */

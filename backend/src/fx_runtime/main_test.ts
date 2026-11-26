@@ -700,7 +700,7 @@ Deno.test("measure uses fx-core's font string, so caption layout matches what ra
   const family = host.fontFamily("TikTokSans-Bold");
   const canvas = host.createCanvas(64, 64);
   const ctx = canvas.getContext("2d");
-  for (const text of ["SUPOCLIP selftest", "naïve 東京 مرحبا"]) {
+  for (const text of ["CLIPFORGE selftest", "naïve 東京 مرحبا"]) {
     ctx.font = fxFontCss(family, 64);
     assertEquals(host.measure(text, family, 64), ctx.measureText(text).width);
   }

@@ -85,7 +85,7 @@ it("fills the new key into MCP client config, never into the assistants' setup",
   await screen.findByText("sk_only-once");
   await waitFor(() => expect(fetch).toHaveBeenCalledWith("/api/api-keys", expect.objectContaining({ body: JSON.stringify({ name: "Cursor" }) })));
   const config = JSON.parse(screen.getByText(/"mcpServers"/).textContent ?? "");
-  expect(config.mcpServers.supoclip).toEqual({ url: "https://mcp.clipforge.ai/mcp", headers: { Authorization: "Bearer sk_only-once" } });
+  expect(config.mcpServers.clipforge).toEqual({ url: "https://mcp.clipforge.ai/mcp", headers: { Authorization: "Bearer sk_only-once" } });
   // Chat assistants sign in with OAuth: the new key never reaches their setup or links.
   // (The open dialog hides the page from the accessibility tree, hence `hidden`.)
   const assistants = screen.getByRole("region", { name: "Connect Claude, ChatGPT or Grok", hidden: true });

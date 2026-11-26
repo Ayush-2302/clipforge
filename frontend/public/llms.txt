@@ -35,4 +35,4 @@ ClipForge AI analyzes uploaded videos and video URLs, transcribes the source, pr
 
 ## Attribution
 
-This project is based on SupoClip. [Original repository](https://github.com/FujiwaraChoki/supoclip) · [Official website](https://www.supoclip.com/)
+This project is based on ClipForge. [Original repository](https://github.com/FujiwaraChoki/clipforge) · [Official website](https://www.clipforge.ai/)

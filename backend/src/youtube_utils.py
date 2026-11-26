@@ -8,6 +8,7 @@ from datetime import datetime
 import logging
 import math
 import json
+import os
 import uuid
 import re
 import time
@@ -42,6 +43,44 @@ from .youtube_proxy import (
 from .rapidapi_youtube_downloader import RapidAPIDownloadError, download_video_via_rapidapi
 
 logger = logging.getLogger(__name__)
+
+YOUTUBE_FALLBACK_PLAYER_CLIENTS = (
+    ["android", "ios"],
+    ["mweb"],
+    ["android_vr", "android"],
+    ["web_embedded", "tv_embedded"],
+)
+
+
+def _resolve_youtube_cookiefile() -> Optional[str]:
+    configured = os.getenv("YOUTUBE_COOKIES_FILE", "").strip()
+    candidates = [Path(configured)] if configured else [
+        Path("cookies.txt"),
+        Path("all_cookies.txt"),
+        Path("/app/cookies.txt"),
+        Path("/app/all_cookies.txt"),
+    ]
+    for candidate in candidates:
+        if candidate.is_file():
+            return str(candidate)
+    return None
+
+
+def _is_youtube_bot_check_error(exc: Exception) -> bool:
+    message = str(exc).lower()
+    return (
+        "sign in to confirm" in message
+        or "not a bot" in message
+        or "login required" in message
+    )
+
+
+def _with_player_client(ydl_opts: Dict[str, Any], clients: list[str]) -> Dict[str, Any]:
+    extractor_args = dict(ydl_opts.get("extractor_args") or {})
+    youtube_args = dict(extractor_args.get("youtube") or {})
+    youtube_args["player_client"] = clients
+    extractor_args["youtube"] = youtube_args
+    return {**ydl_opts, "extractor_args": extractor_args}
 
 YOUTUBE_METADATA_PROVIDER_YTDLP = "yt_dlp"
 YOUTUBE_METADATA_PROVIDER_DATA_API = "youtube_data_api"
@@ -106,6 +145,9 @@ class YouTubeDownloader:
             "prefer_insecure": False,
             "age_limit": None,
         }
+        cookiefile = _resolve_youtube_cookiefile()
+        if cookiefile:
+            opts["cookiefile"] = cookiefile
 
         return opts
 
@@ -135,6 +177,10 @@ def _build_info_options(task_id: Optional[str] = None) -> Dict[str, Any]:
         ydl_opts.update(base_proxy_params(task_id))
         ydl_opts["skip_download"] = True
         ydl_opts["quiet"] = True
+    else:
+        cookiefile = _resolve_youtube_cookiefile()
+        if cookiefile:
+            ydl_opts["cookiefile"] = cookiefile
     return ydl_opts
 
 
@@ -336,10 +382,35 @@ def _fetch_video_info_with_ytdlp(
         ydl_opts = _build_info_options(task_id)
         if deadline is not None:
             ydl_opts["_youtube_deadline"] = deadline
-            info = extract_video_info(url, ydl_opts)
-        else:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=False)
+        try:
+            if deadline is not None:
+                info = extract_video_info(url, ydl_opts)
+            else:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    info = ydl.extract_info(url, download=False)
+        except Exception as first_exc:
+            if not _is_youtube_bot_check_error(first_exc):
+                raise
+            info = None
+            last_exc: Exception = first_exc
+            for clients in YOUTUBE_FALLBACK_PLAYER_CLIENTS:
+                if deadline is not None and time.monotonic() >= deadline:
+                    break
+                attempt_opts = _with_player_client(ydl_opts, clients)
+                try:
+                    logger.info("Retrying YouTube metadata for %s with player_client=%s", video_id, clients)
+                    if deadline is not None:
+                        info = extract_video_info(url, attempt_opts)
+                    else:
+                        with yt_dlp.YoutubeDL(attempt_opts) as ydl:
+                            info = ydl.extract_info(url, download=False)
+                    break
+                except Exception as exc:
+                    last_exc = exc
+                    if not _is_youtube_bot_check_error(exc):
+                        raise
+            if info is None:
+                raise last_exc
 
     return {
         "id": info.get("id"),
@@ -652,8 +723,27 @@ def _download_youtube_video_with_ytdlp(
                 video_id, int(quality) if quality else None
             )
 
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([url])
+            except yt_dlp.utils.DownloadError as first_err:
+                if not _is_youtube_bot_check_error(first_err):
+                    raise
+                last_bot_err: Exception = first_err
+                downloaded_via_fallback = False
+                for clients in YOUTUBE_FALLBACK_PLAYER_CLIENTS:
+                    try:
+                        logger.info("Retrying YouTube download for %s with player_client=%s", video_id, clients)
+                        with yt_dlp.YoutubeDL(_with_player_client(ydl_opts, clients)) as ydl:
+                            ydl.download([url])
+                        downloaded_via_fallback = True
+                        break
+                    except yt_dlp.utils.DownloadError as err:
+                        last_bot_err = err
+                        if not _is_youtube_bot_check_error(err):
+                            raise
+                if not downloaded_via_fallback:
+                    raise last_bot_err
 
             logger.info(f"Searching for downloaded file: {video_id}.*")
             downloaded_files = [

@@ -1053,5 +1053,5 @@
       "$ref": "#/$defs/ReactionCue"
     }
   ],
-  "$id": "https://supoclip.com/schemas/fx/fx_cue.schema.json"
+  "$id": "https://clipforge.ai/schemas/fx/fx_cue.schema.json"
 }

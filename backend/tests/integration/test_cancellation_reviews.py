@@ -312,7 +312,7 @@ async def test_failed_delivery_is_retried_and_late_note_becomes_an_update(
 def _session_headers(user_id):
     timestamp = str(int(time.time()))
     signature = hmac.new(b"test-backend-auth-secret", f"{user_id}:{timestamp}".encode(), hashlib.sha256).hexdigest()
-    return {"x-supoclip-user-id": user_id, "x-supoclip-ts": timestamp, "x-supoclip-signature": signature}
+    return {"x-clipforge-user-id": user_id, "x-clipforge-ts": timestamp, "x-clipforge-signature": signature}
 
 
 async def test_cancellation_note_is_stored(client, db_session, app, clean_tables, monkeypatch):

@@ -21,7 +21,7 @@ RELEVANT_EVENT_TYPES = frozenset({"customer.subscription.updated", "customer.sub
 CANCELLATION_FIELDS = frozenset({"cancel_at", "cancel_at_period_end", "canceled_at", "cancellation_details", "status"})
 LIVE_STATUSES = frozenset({"active", "trialing", "past_due"})
 MIGRATION_OPERATION_METADATA = "billing_migration_operation"
-SYNTHETIC_TEST_METADATA = "supoclip_synthetic_test"
+SYNTHETIC_TEST_METADATA = "clipforge_synthetic_test"
 ACCOUNT_ID_PATTERN = re.compile(r"^acct_[A-Za-z0-9]+$")
 
 

@@ -438,7 +438,7 @@ export function selftestScene(w: number, h: number, fontStem: string): FxJobFile
     template: "slam",
     cues: selftestCues() as FxJobFile["scene"]["cues"],
     words: [
-      { id: "w0", start: 0, end: 0.05, text: "SUPOCLIP", highlight: true, run: "r0" },
+      { id: "w0", start: 0, end: 0.05, text: "CLIPFORGE", highlight: true, run: "r0" },
       { id: "w1", start: 0.05, end: 0.1, text: "selftest", highlight: false, run: "r0" },
     ],
     caption: {

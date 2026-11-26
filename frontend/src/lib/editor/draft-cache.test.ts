@@ -73,7 +73,7 @@ describe("draft cache", () => {
     const unsaved = draftCacheKey("/api/tasks/t/clips/unsaved/editor");
     store.setItem(saved, legacy(false));
     store.setItem(unsaved, legacy(true));
-    store.setItem("supoclip-editor:broken", "{not json");
+    store.setItem("clipforge-editor:broken", "{not json");
     store.setItem("unrelated", "kept");
     const before = summarizeDrafts();
     expect(before).toMatchObject({ entries: 3, unsaved: 2 });
@@ -85,7 +85,7 @@ describe("draft cache", () => {
     expect(kept?.unsaved).toBe(true);
     expect(kept?.history.present.volume).toBe(0.9);
     expect(kept?.history.past.length).toBe(CACHED_HISTORY_STEPS);
-    expect(store.getItem("supoclip-editor:broken")).toBe("{not json");
+    expect(store.getItem("clipforge-editor:broken")).toBe("{not json");
     expect(store.getItem("unrelated")).toBe("kept");
     expect(summarizeDrafts().bytes).toBeLessThan(before.bytes);
   });

@@ -3,7 +3,7 @@
 Production deploy runs ``docker compose up --no-build`` for backend, worker,
 and frontend. Cron jobs have to survive that command, and they have to stay
 off the video queue. This module is the worker container's command: one
-process renders, a second drains ``supoclip_cron``.
+process renders, a second drains ``clipforge_cron``.
 
 Set ``EMBED_CRON_WORKER=0`` when the optional Compose ``cron-worker`` service
 (profile ``cron``) is running instead. A stable cron job id makes running

@@ -20,9 +20,9 @@ export async function POST(request: Request) {
   // Stored with the submission in the admin feedback inbox.
   const client: Record<string, string> = {};
   const userAgent = request.headers.get("user-agent");
-  const appVersion = request.headers.get("x-supoclip-app-version");
+  const appVersion = request.headers.get("x-clipforge-app-version");
   if (userAgent) client["User-Agent"] = userAgent.slice(0, 500);
-  if (appVersion) client["x-supoclip-app-version"] = appVersion.slice(0, 50);
+  if (appVersion) client["x-clipforge-app-version"] = appVersion.slice(0, 50);
 
   const upstream = await fetch(`${apiUrl}/feedback`, {
     method: "POST",

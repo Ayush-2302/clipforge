@@ -31,8 +31,8 @@ type RevenueCatEvent = {
 };
 
 const DEFAULT_PRODUCT_IDS: Record<BillingPlan, string[]> = {
-  pro: ["com.samihindi.supoclip.pro.monthly", "com.samihindi.supoclip.pro.annual"],
-  scale: ["com.samihindi.supoclip.scale.monthly", "com.samihindi.supoclip.scale.annual"],
+  pro: ["com.samihindi.clipforge.pro.monthly", "com.samihindi.clipforge.pro.annual"],
+  scale: ["com.samihindi.clipforge.scale.monthly", "com.samihindi.clipforge.scale.annual"],
 };
 // PRODUCT_CHANGE is intentionally excluded: it announces a pending plan switch
 // (App Store downgrades apply at the next renewal), and the effective change

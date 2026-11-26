@@ -90,7 +90,7 @@ def pin_text(name: str, text: str) -> None:
 class Normalizer:
     """Make recorded calls machine-independent: temp paths, uuids and objects become tokens."""
 
-    RENDER_DIR = re.compile(r"/[^\s'\"=:]*?supoclip_render_[A-Za-z0-9_]+")
+    RENDER_DIR = re.compile(r"/[^\s'\"=:]*?clipforge_render_[A-Za-z0-9_]+")
     UNIQUE = re.compile(r"_[0-9a-f]{12}\.mp4")
 
     def __init__(self, tmp_path: Path):

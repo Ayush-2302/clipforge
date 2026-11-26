@@ -23,7 +23,7 @@ from .config import get_config
 FILE_NAME = ".volume-id"
 # Redis key holding the API's volume id, so a worker can tell whether it
 # shares the API's disk.
-API_VOLUME_KEY = "supoclip:media-volume:api"
+API_VOLUME_KEY = "clipforge:media-volume:api"
 _cache: dict[str, str] = {}
 
 

@@ -27,7 +27,7 @@ from .ai_edit_allowance_service import refund_ai_edit_usage
 logger = logging.getLogger(__name__)
 
 AI_EDIT_MODEL = "claude-sonnet-5-5"
-AI_EDIT_QUEUE = "supoclip_ai"
+AI_EDIT_QUEUE = "clipforge_ai"
 AI_EDIT_TIMEOUT_SECONDS = 120
 AI_EDIT_RESULT_TTL_SECONDS = 3600
 MAX_INSTRUCTION_CHARS = 1000

@@ -7,7 +7,7 @@ vi.mock("next/headers", () => ({
   headers: async () => incomingHeaders.current,
   cookies: async () => ({
     get: (name: string) =>
-      name === "supoclip_team_id" && workspaceCookie.current ? { name, value: workspaceCookie.current } : undefined,
+      name === "clipforge_team_id" && workspaceCookie.current ? { name, value: workspaceCookie.current } : undefined,
   }),
 }));
 vi.mock("@/server/prisma", () => ({ getPrismaClient: () => ({ teamMember: membership }) }));
@@ -23,7 +23,7 @@ describe("active workspace", () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response("{}"));
     vi.stubGlobal("fetch", fetchMock);
     await fetchBackend("/tasks/", init);
-    return fetchMock.mock.calls[0][1].headers["x-supoclip-team-id"];
+    return fetchMock.mock.calls[0][1].headers["x-clipforge-team-id"];
   };
 
   it("sends the cookie's team while the caller is still a member", async () => {
@@ -109,11 +109,11 @@ describe("client platform", () => {
     ["web", undefined],
     ["android", undefined],
     [null, undefined],
-  ])("forwards x-supoclip-client %j as %j", async (sent, forwarded) => {
-    incomingHeaders.current = new Headers(sent === null ? {} : { "x-supoclip-client": sent });
+  ])("forwards x-clipforge-client %j as %j", async (sent, forwarded) => {
+    incomingHeaders.current = new Headers(sent === null ? {} : { "x-clipforge-client": sent });
     const fetchMock = vi.fn().mockResolvedValue(new Response("{}"));
     vi.stubGlobal("fetch", fetchMock);
     await fetchBackend("/tasks/workflows", { userId: "owner" });
-    expect(fetchMock.mock.calls[0][1].headers["x-supoclip-client"]).toBe(forwarded);
+    expect(fetchMock.mock.calls[0][1].headers["x-clipforge-client"]).toBe(forwarded);
   });
 });

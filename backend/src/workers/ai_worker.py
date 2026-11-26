@@ -11,7 +11,7 @@ import os
 
 # Before observability reads it: logs and errors from here are the AI worker's.
 os.environ["CLIPFORGE_SERVICE"] = "ai-worker"
-os.environ["SUPOCLIP_SERVICE"] = "ai-worker"
+os.environ["CLIPFORGE_SERVICE"] = "ai-worker"
 
 from arq.worker import func  # noqa: E402
 

@@ -144,7 +144,7 @@ describe("TeamSettingsPage UI & role matrix", () => {
         return new Response(
           JSON.stringify({
             invitation: { id: "inv-2", email: "new@example.com", role: "member", expiresAt: "2026-11-28T00:00:00.000Z", createdAt: "2026-11-20T00:00:00.000Z" },
-            inviteUrl: "https://supoclip.example.com/invite/tok123",
+            inviteUrl: "https://clipforge.example.com/invite/tok123",
             emailSent: false,
           }),
           { status: 201 },
@@ -185,7 +185,7 @@ describe("TeamSettingsPage UI & role matrix", () => {
       target: { value: "new@example.com" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Send invite" }));
-    expect(await screen.findByText("https://supoclip.example.com/invite/tok123")).toBeInTheDocument();
+    expect(await screen.findByText("https://clipforge.example.com/invite/tok123")).toBeInTheDocument();
 
     // Danger Zone is visible to owner
     expect(screen.getByText("Danger zone")).toBeInTheDocument();
@@ -272,7 +272,7 @@ describe("TeamSettingsPage UI & role matrix", () => {
     sessionState.user = { id: "u-editor", email: "editor@example.com", name: "Editor" };
     const fetchMock = vi.fn().mockImplementation(async (url: string, init?: RequestInit) => {
       if (url === "/api/teams/team-1/invitations" && init?.method === "POST") {
-        return new Response(JSON.stringify({ inviteUrl: "https://supoclip.example.com/invite/tok456", emailSent: true }), { status: 201 });
+        return new Response(JSON.stringify({ inviteUrl: "https://clipforge.example.com/invite/tok456", emailSent: true }), { status: 201 });
       }
       return new Response(
         JSON.stringify(makeTeamDetail({

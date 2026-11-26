@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 QUEUE_DELAY_FINGERPRINT = "queue_delay_exceeded"
 # Not an account. The alert is about the queue, not a customer.
-QUEUE_DELAY_DISTINCT_ID = "supoclip-worker"
-QUEUE_DELAY_ALERT_KEY = "queue_delay_alert:supoclip_tasks"
+QUEUE_DELAY_DISTINCT_ID = "clipforge-worker"
+QUEUE_DELAY_ALERT_KEY = "queue_delay_alert:clipforge_tasks"
 
 
 class QueueDelayExceeded(Exception):

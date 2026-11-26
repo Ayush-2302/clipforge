@@ -43,7 +43,7 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from .auth import REQUIRED_SCOPE
 
-INTERNAL_SECRET_HEADER = "x-supoclip-mcp-secret"
+INTERNAL_SECRET_HEADER = "x-clipforge-mcp-secret"
 REGISTRATION_BODY_LIMIT = 64 * 1024
 _LOOPBACK_HOSTS = {"localhost", "127.0.0.1", "::1"}
 

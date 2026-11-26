@@ -73,7 +73,7 @@ export function invalidateWorkspaces() {
 
 // The active workspace is a cookie, so it changes for every tab at once. Tell the other
 // tabs, or they keep showing one workspace while their next request acts in another.
-const WORKSPACE_SWITCH_CHANNEL = "supoclip:workspace-switch";
+const WORKSPACE_SWITCH_CHANNEL = "clipforge:workspace-switch";
 let switchChannel: BroadcastChannel | null | undefined;
 
 function onSwitchedInOtherTab() {

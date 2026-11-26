@@ -14,12 +14,12 @@ const OPUS_SOURCES = {
   watermark: "https://help.opus.pro/docs/article/watermark",
 };
 
-const tocIds = ["verdict", "comparison", "pricing", "choose-supoclip", "choose-opusclip", "test", "sources", "faq"] as const;
+const tocIds = ["verdict", "comparison", "pricing", "choose-clipforge", "choose-opusclip", "test", "sources", "faq"] as const;
 
 export async function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
   const t = await getTranslations("blog");
   const [pro, scale] = getPublicBillingPlans();
-  const slug = "supoclip-vs-opusclip";
+  const slug = "clipforge-vs-opusclip";
   const link = (href: string) => function ArticleLink(chunks: React.ReactNode) {
     return <a href={href}>{chunks}</a>;
   };
@@ -31,37 +31,37 @@ export async function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
   const rows: Array<[string, React.ReactNode, React.ReactNode]> = [
     [
       t(`${slug}.rows.deployment.label`),
-      t.rich(`${slug}.rows.deployment.supoclip`, { compose: link(source("docker-compose.yml")) }),
+      t.rich(`${slug}.rows.deployment.clipforge`, { compose: link(source("docker-compose.yml")) }),
       t(`${slug}.rows.deployment.opusclip`),
     ],
     [
       t(`${slug}.rows.source.label`),
-      t.rich(`${slug}.rows.source.supoclip`, { license: link(source("LICENSE")) }),
+      t.rich(`${slug}.rows.source.clipforge`, { license: link(source("LICENSE")) }),
       t(`${slug}.notCovered`),
     ],
     [
       t(`${slug}.rows.pricing.label`),
-      t(`${slug}.rows.pricing.supoclip`),
+      t(`${slug}.rows.pricing.clipforge`),
       t.rich(`${slug}.rows.pricing.opusclip`, { plans: link(OPUS_SOURCES.plans) }),
     ],
     [
       t(`${slug}.rows.watermark.label`),
-      t.rich(`${slug}.rows.watermark.supoclip`, { pipeline: link(`${GITHUB_URL}/tree/main/backend/src/media`) }),
+      t.rich(`${slug}.rows.watermark.clipforge`, { pipeline: link(`${GITHUB_URL}/tree/main/backend/src/media`) }),
       t.rich(`${slug}.rows.watermark.opusclip`, { watermark: link(OPUS_SOURCES.watermark) }),
     ],
     [
       t(`${slug}.rows.models.label`),
-      t.rich(`${slug}.rows.models.supoclip`, { config: link(source("docs/configuration.md")) }),
+      t.rich(`${slug}.rows.models.clipforge`, { config: link(source("docs/configuration.md")) }),
       t(`${slug}.notCovered`),
     ],
     [
       t(`${slug}.rows.transcription.label`),
-      t(`${slug}.rows.transcription.supoclip`),
+      t(`${slug}.rows.transcription.clipforge`),
       t(`${slug}.notCovered`),
     ],
     [
       t(`${slug}.rows.automation.label`),
-      t.rich(`${slug}.rows.automation.supoclip`, { mcp: link(source("mcp/README.md")) }),
+      t.rich(`${slug}.rows.automation.clipforge`, { mcp: link(source("mcp/README.md")) }),
       t(`${slug}.notCovered`),
     ],
   ];
@@ -75,7 +75,7 @@ export async function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
 
       <h2 id="verdict">{t(`${slug}.verdict.heading`)}</h2>
       <ul>
-        <li>{t.rich(`${slug}.verdict.supoclip`, { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+        <li>{t.rich(`${slug}.verdict.clipforge`, { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         <li>{t.rich(`${slug}.verdict.opusclip`, { strong: (chunks) => <strong>{chunks}</strong> })}</li>
       </ul>
 
@@ -91,10 +91,10 @@ export async function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map(([area, supoclip, opusclip], index) => (
+            {rows.map(([area, clipforge, opusclip], index) => (
               <tr key={index} className="border-t">
                 <th scope="row" className="p-3 align-top">{area}</th>
-                <td className="p-3 align-top text-muted-foreground">{supoclip}</td>
+                <td className="p-3 align-top text-muted-foreground">{clipforge}</td>
                 <td className="p-3 align-top text-muted-foreground">{opusclip}</td>
               </tr>
             ))}
@@ -126,10 +126,10 @@ export async function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
         })}
       </p>
 
-      <h2 id="choose-supoclip">{t(`${slug}.chooseSupoclip.heading`)}</h2>
+      <h2 id="choose-clipforge">{t(`${slug}.chooseClipForge.heading`)}</h2>
       <ul>
         {(["li1", "li2", "li3", "li4"] as const).map((key) => (
-          <li key={key}>{t.rich(`${slug}.chooseSupoclip.${key}`, { strong: (chunks) => <strong>{chunks}</strong> })}</li>
+          <li key={key}>{t.rich(`${slug}.chooseClipForge.${key}`, { strong: (chunks) => <strong>{chunks}</strong> })}</li>
         ))}
       </ul>
 
@@ -161,7 +161,7 @@ export async function OpusClipComparisonArticle({ post }: { post: BlogPost }) {
           })}
         </li>
         <li>
-          {t.rich(`${slug}.sources.supoclip`, {
+          {t.rich(`${slug}.sources.clipforge`, {
             repo: link(GITHUB_URL),
             compose: link(source("docker-compose.yml")),
             config: link(source("docs/configuration.md")),

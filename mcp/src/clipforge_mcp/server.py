@@ -4,15 +4,15 @@ MCP server for ClipForge AI — an AI tool that turns long-form videos into shor
 vertical, subtitled viral clips.
 
 The server talks to the ClipForge AI REST API. By default it targets the official
-hosted instance at ``https://api.clipforge.ai``; set ``SUPOCLIP_API_URL`` to
+hosted instance at ``https://api.clipforge.ai``; set ``CLIPFORGE_API_URL`` to
 use a self-hosted backend. Authenticate by creating an API key in your ClipForge AI
-account and exposing it as ``SUPOCLIP_API_KEY``.
+account and exposing it as ``CLIPFORGE_API_KEY``.
 
 Typical workflow:
-    1. ``supoclip_create_clip_task`` with a YouTube URL  -> returns a task_id
+    1. ``clipforge_create_clip_task`` with a YouTube URL  -> returns a task_id
        (``workflow`` picks highlights, a series, topic clips, a recap or a trailer)
-    2. ``supoclip_wait_for_task`` (or poll ``supoclip_get_task``) until done
-    3. ``supoclip_list_clips`` / ``supoclip_download_clip`` to retrieve results
+    2. ``clipforge_wait_for_task`` (or poll ``clipforge_get_task``) until done
+    3. ``clipforge_list_clips`` / ``clipforge_download_clip`` to retrieve results
 """
 
 from __future__ import annotations
@@ -61,7 +61,7 @@ def _public_url() -> str:
 
 
 def build_app(server: Optional[FastMCP] = None):
-    """The ASGI app for ``SUPOCLIP_MCP_TRANSPORT=http`` (both transports)."""
+    """The ASGI app for ``CLIPFORGE_MCP_TRANSPORT=http`` (both transports)."""
     verifier = (
         ClipForgeApiKeyVerifier(SETTINGS.api_url, SETTINGS.timeout)
         if SETTINGS.mcp_require_bearer_auth
@@ -279,7 +279,7 @@ def _safe_filename(name: str, default: str) -> str:
 # Public, unauthenticated tools
 # --------------------------------------------------------------------------- #
 @mcp.tool(
-    name="supoclip_health",
+    name="clipforge_health",
     annotations={
         "title": "ClipForge AI Health & Config",
         "readOnlyHint": True,
@@ -289,7 +289,7 @@ def _safe_filename(name: str, default: str) -> str:
     },
 )
 @tool_errors
-async def supoclip_health() -> str:
+async def clipforge_health() -> str:
     """Report ClipForge AI API status and how this MCP server is configured.
 
     Use this first to confirm connectivity and that credentials are set up. It
@@ -319,7 +319,7 @@ async def supoclip_health() -> str:
 
 
 @mcp.tool(
-    name="supoclip_list_caption_templates",
+    name="clipforge_list_caption_templates",
     annotations={
         "title": "List Caption Templates",
         "readOnlyHint": True,
@@ -329,12 +329,12 @@ async def supoclip_health() -> str:
     },
 )
 @tool_errors
-async def supoclip_list_caption_templates() -> str:
+async def clipforge_list_caption_templates() -> str:
     """List the caption/subtitle templates available for clip generation.
 
     Each template id (e.g. ``default``, ``hormozi``, ``mrbeast``) can be passed
-    as ``caption_template`` to ``supoclip_create_clip_task``. No auth required.
-    When the configured account has dynamic edits (``supoclip_list_edit_styles``),
+    as ``caption_template`` to ``clipforge_create_clip_task``. No auth required.
+    When the configured account has dynamic edits (``clipforge_list_edit_styles``),
     the list also holds the animated templates (``fx: true``: ``highlighter_swipe``,
     ``emoji_drop``, ``behind_head``; ``requires`` says if one needs a face or a person matte).
 
@@ -352,7 +352,7 @@ async def supoclip_list_caption_templates() -> str:
 
 
 @mcp.tool(
-    name="supoclip_list_transitions",
+    name="clipforge_list_transitions",
     annotations={
         "title": "List Transition Effects",
         "readOnlyHint": True,
@@ -362,7 +362,7 @@ async def supoclip_list_caption_templates() -> str:
     },
 )
 @tool_errors
-async def supoclip_list_transitions() -> str:
+async def clipforge_list_transitions() -> str:
     """List available video transition effects. No auth required.
 
     Returns:
@@ -373,7 +373,7 @@ async def supoclip_list_transitions() -> str:
 
 
 @mcp.tool(
-    name="supoclip_broll_status",
+    name="clipforge_broll_status",
     annotations={
         "title": "B-roll Availability",
         "readOnlyHint": True,
@@ -383,7 +383,7 @@ async def supoclip_list_transitions() -> str:
     },
 )
 @tool_errors
-async def supoclip_broll_status() -> str:
+async def clipforge_broll_status() -> str:
     """Report whether automatic B-roll overlays are configured on the backend.
 
     If ``configured`` is false, passing ``include_broll=true`` when creating a
@@ -400,7 +400,7 @@ async def supoclip_broll_status() -> str:
 # Authenticated tools — discovery & account
 # --------------------------------------------------------------------------- #
 @mcp.tool(
-    name="supoclip_list_fonts",
+    name="clipforge_list_fonts",
     annotations={
         "title": "List Fonts",
         "readOnlyHint": True,
@@ -410,11 +410,11 @@ async def supoclip_broll_status() -> str:
     },
 )
 @tool_errors
-async def supoclip_list_fonts() -> str:
+async def clipforge_list_fonts() -> str:
     """List subtitle fonts available to the authenticated account.
 
     Any returned ``name`` can be used as ``font_family`` in
-    ``supoclip_create_clip_task``. Requires authentication.
+    ``clipforge_create_clip_task``. Requires authentication.
 
     Returns:
         str: JSON ``{"fonts": [{"name", "display_name", ...}]}``.
@@ -424,7 +424,7 @@ async def supoclip_list_fonts() -> str:
 
 
 @mcp.tool(
-    name="supoclip_billing_summary",
+    name="clipforge_billing_summary",
     annotations={
         "title": "Billing & Usage Summary",
         "readOnlyHint": True,
@@ -434,7 +434,7 @@ async def supoclip_list_fonts() -> str:
     },
 )
 @tool_errors
-async def supoclip_billing_summary() -> str:
+async def clipforge_billing_summary() -> str:
     """Get the authenticated account's plan, usage and remaining minutes.
 
     Plans are metered in minutes of source video per month; a video uses its
@@ -456,7 +456,7 @@ async def supoclip_billing_summary() -> str:
 # Authenticated tools — task lifecycle
 # --------------------------------------------------------------------------- #
 @mcp.tool(
-    name="supoclip_create_clip_task",
+    name="clipforge_create_clip_task",
     annotations={
         "title": "Create Clipping Task",
         "readOnlyHint": False,
@@ -466,7 +466,7 @@ async def supoclip_billing_summary() -> str:
     },
 )
 @tool_errors
-async def supoclip_create_clip_task(
+async def clipforge_create_clip_task(
     url: str = "",
     title: str = "",
     processing_mode: str = "fast",
@@ -490,11 +490,11 @@ async def supoclip_create_clip_task(
     """Create a ClipForge AI task that downloads a video and generates viral short clips.
 
     Processing is asynchronous: this returns immediately with a ``task_id``.
-    Track progress with ``supoclip_wait_for_task`` or ``supoclip_get_task``, then
-    fetch results with ``supoclip_list_clips`` / ``supoclip_download_clip``.
+    Track progress with ``clipforge_wait_for_task`` or ``clipforge_get_task``, then
+    fetch results with ``clipforge_list_clips`` / ``clipforge_download_clip``.
 
     Requires authentication. On the hosted service a paid plan / available quota
-    may be required (a 402 error indicates this — see ``supoclip_billing_summary``).
+    may be required (a 402 error indicates this — see ``clipforge_billing_summary``).
 
     workflow: what to make. "highlights" (default) = the best standalone clips.
     "series" = one story split into ordered, numbered parts (Part 1..N) cut on
@@ -517,10 +517,10 @@ async def supoclip_create_clip_task(
     but never placed automatically). Animated caption templates
     (``highlighter_swipe``, ``emoji_drop``, ``behind_head``) work with intensity off too.
     Both need dynamic edits on for the account (403 DYNAMIC_EDITS_NOT_AVAILABLE);
-    ``supoclip_list_edit_styles`` tells you first.
+    ``clipforge_list_edit_styles`` tells you first.
 
     Workflows other than plain highlights may not be enabled for every account
-    (403 WORKFLOW_NOT_AVAILABLE); ``supoclip_list_workflows`` tells you first.
+    (403 WORKFLOW_NOT_AVAILABLE); ``clipforge_list_workflows`` tells you first.
     A failed workflow task ends with ``status: error`` and an ``error_code``
     (e.g. ``topic_not_found``, with ``workflow_plan.error.details.suggested_topics``),
     and its minutes are refunded.
@@ -603,7 +603,7 @@ async def supoclip_create_clip_task(
 
 
 @mcp.tool(
-    name="supoclip_create_clip",
+    name="clipforge_create_clip",
     annotations={
         "title": "Create Clip",
         "readOnlyHint": False,
@@ -613,19 +613,19 @@ async def supoclip_create_clip_task(
     },
 )
 @tool_errors
-async def supoclip_create_clip(url: str = "") -> str:
+async def clipforge_create_clip(url: str = "") -> str:
     """Create a ClipForge AI highlights task from a YouTube or direct video URL.
 
     This is a compatibility alias for clients that fail to pass arguments to
-    the richer ``supoclip_create_clip_task`` tool. Pass the video URL in the
+    the richer ``clipforge_create_clip_task`` tool. Pass the video URL in the
     ``url`` argument. For a series, topic clips, a recap or a trailer, use
-    ``supoclip_create_clip_task`` with ``workflow``.
+    ``clipforge_create_clip_task`` with ``workflow``.
     """
-    return await supoclip_create_clip_task(url=url)
+    return await clipforge_create_clip_task(url=url)
 
 
 @mcp.tool(
-    name="supoclip_list_workflows",
+    name="clipforge_list_workflows",
     annotations={
         "title": "List Workflows",
         "readOnlyHint": True,
@@ -635,11 +635,11 @@ async def supoclip_create_clip(url: str = "") -> str:
     },
 )
 @tool_errors
-async def supoclip_list_workflows() -> str:
+async def clipforge_list_workflows() -> str:
     """List what this account can make and each workflow's limits.
 
     Call this before passing a ``workflow`` other than ``highlights`` (or any
-    ``instructions``) to ``supoclip_create_clip_task``. When ``enabled`` is
+    ``instructions``) to ``clipforge_create_clip_task``. When ``enabled`` is
     false, only plain highlights without instructions are available. Requires
     authentication.
 
@@ -656,7 +656,7 @@ async def supoclip_list_workflows() -> str:
 
 
 @mcp.tool(
-    name="supoclip_list_edit_styles",
+    name="clipforge_list_edit_styles",
     annotations={
         "title": "List Edit Styles",
         "readOnlyHint": True,
@@ -666,11 +666,11 @@ async def supoclip_list_workflows() -> str:
     },
 )
 @tool_errors
-async def supoclip_list_edit_styles() -> str:
+async def clipforge_list_edit_styles() -> str:
     """Whether this account has dynamic edits, and what they offer.
 
     Call this before passing ``intensity``, ``edit_style`` or an animated
-    caption template to ``supoclip_create_clip_task``. When ``enabled`` is
+    caption template to ``clipforge_create_clip_task``. When ``enabled`` is
     false, use intensity "off" and a classic caption template. Requires
     authentication.
 
@@ -685,7 +685,7 @@ async def supoclip_list_edit_styles() -> str:
 
 
 @mcp.tool(
-    name="supoclip_list_tasks",
+    name="clipforge_list_tasks",
     annotations={
         "title": "List Tasks",
         "readOnlyHint": True,
@@ -695,7 +695,7 @@ async def supoclip_list_edit_styles() -> str:
     },
 )
 @tool_errors
-async def supoclip_list_tasks(
+async def clipforge_list_tasks(
     limit: Annotated[
         int,
         Field(default=50, description="Maximum number of tasks to return.", ge=1, le=200),
@@ -716,7 +716,7 @@ async def supoclip_list_tasks(
 
 
 @mcp.tool(
-    name="supoclip_get_task",
+    name="clipforge_get_task",
     annotations={
         "title": "Get Task",
         "readOnlyHint": True,
@@ -726,7 +726,7 @@ async def supoclip_list_tasks(
     },
 )
 @tool_errors
-async def supoclip_get_task(
+async def clipforge_get_task(
     task_id: Annotated[str, Field(description="The task id returned by create_clip_task.", min_length=1)],
 ) -> str:
     """Get a task's status, progress and generated clips.
@@ -750,7 +750,7 @@ async def supoclip_get_task(
 
 
 @mcp.tool(
-    name="supoclip_wait_for_task",
+    name="clipforge_wait_for_task",
     annotations={
         "title": "Wait For Task",
         "readOnlyHint": True,
@@ -760,7 +760,7 @@ async def supoclip_get_task(
     },
 )
 @tool_errors
-async def supoclip_wait_for_task(
+async def clipforge_wait_for_task(
     task_id: Annotated[str, Field(description="The task id to wait on.", min_length=1)],
     timeout_seconds: Annotated[
         int,
@@ -778,7 +778,7 @@ async def supoclip_wait_for_task(
 ) -> str:
     """Poll a task until it finishes (completed/error/cancelled) or times out.
 
-    Convenience wrapper around ``supoclip_get_task`` for the asynchronous
+    Convenience wrapper around ``clipforge_get_task`` for the asynchronous
     pipeline. Reports progress while waiting. Requires authentication.
 
     Edits to clips with dynamic edits (new task settings, captions, trim, split,
@@ -875,7 +875,7 @@ async def _wait_for_clip_job(
 
 
 @mcp.tool(
-    name="supoclip_list_clips",
+    name="clipforge_list_clips",
     annotations={
         "title": "List Clips",
         "readOnlyHint": True,
@@ -885,7 +885,7 @@ async def _wait_for_clip_job(
     },
 )
 @tool_errors
-async def supoclip_list_clips(
+async def clipforge_list_clips(
     task_id: Annotated[str, Field(description="The task id whose clips to list.", min_length=1)],
 ) -> str:
     """List the generated clips for a task. Requires authentication.
@@ -905,7 +905,7 @@ async def supoclip_list_clips(
 # Authenticated tools — retrieval (download to disk)
 # --------------------------------------------------------------------------- #
 @mcp.tool(
-    name="supoclip_download_clip",
+    name="clipforge_download_clip",
     annotations={
         "title": "Download Clip",
         "readOnlyHint": True,
@@ -915,9 +915,9 @@ async def supoclip_list_clips(
     },
 )
 @tool_errors
-async def supoclip_download_clip(
+async def clipforge_download_clip(
     task_id: Annotated[str, Field(description="The task id that owns the clip.", min_length=1)],
-    clip_id: Annotated[str, Field(description="The clip id (from supoclip_list_clips).", min_length=1)],
+    clip_id: Annotated[str, Field(description="The clip id (from clipforge_list_clips).", min_length=1)],
     filename: Annotated[
         Optional[str],
         Field(default=None, description="Optional output filename; '.mp4' is enforced.", max_length=200),
@@ -925,8 +925,8 @@ async def supoclip_download_clip(
 ) -> str:
     """Download a generated clip's MP4 to the local download directory.
 
-    The file is saved under ``SUPOCLIP_DOWNLOAD_DIR`` (default
-    ``./supoclip-downloads``). Requires authentication and task ownership.
+    The file is saved under ``CLIPFORGE_DOWNLOAD_DIR`` (default
+    ``./clipforge-downloads``). Requires authentication and task ownership.
 
     Args:
         task_id: The owning task id.
@@ -945,7 +945,7 @@ async def supoclip_download_clip(
 
 
 @mcp.tool(
-    name="supoclip_export_clip",
+    name="clipforge_export_clip",
     annotations={
         "title": "Export Clip (Platform Preset)",
         "readOnlyHint": True,
@@ -955,7 +955,7 @@ async def supoclip_download_clip(
     },
 )
 @tool_errors
-async def supoclip_export_clip(
+async def clipforge_export_clip(
     task_id: Annotated[str, Field(description="The task id that owns the clip.", min_length=1)],
     clip_id: Annotated[str, Field(description="The clip id to export.", min_length=1)],
     preset: Annotated[
@@ -970,7 +970,7 @@ async def supoclip_export_clip(
     """Export a clip re-encoded for a social platform and save the MP4 locally.
 
     Presets (tiktok/reels/shorts) produce 1080x1920 H.264 with platform-tuned
-    bitrates. Saved under ``SUPOCLIP_DOWNLOAD_DIR``. Requires authentication.
+    bitrates. Saved under ``CLIPFORGE_DOWNLOAD_DIR``. Requires authentication.
 
     Args:
         task_id: The owning task id.
@@ -995,7 +995,7 @@ async def supoclip_export_clip(
 # Authenticated tools — management
 # --------------------------------------------------------------------------- #
 @mcp.tool(
-    name="supoclip_cancel_task",
+    name="clipforge_cancel_task",
     annotations={
         "title": "Cancel Task",
         "readOnlyHint": False,
@@ -1005,7 +1005,7 @@ async def supoclip_export_clip(
     },
 )
 @tool_errors
-async def supoclip_cancel_task(
+async def clipforge_cancel_task(
     task_id: Annotated[str, Field(description="The task id to cancel.", min_length=1)],
 ) -> str:
     """Cancel a queued or processing task. Requires authentication.
@@ -1021,7 +1021,7 @@ async def supoclip_cancel_task(
 
 
 @mcp.tool(
-    name="supoclip_resume_task",
+    name="clipforge_resume_task",
     annotations={
         "title": "Retry Generation",
         "readOnlyHint": False,
@@ -1031,7 +1031,7 @@ async def supoclip_cancel_task(
     },
 )
 @tool_errors
-async def supoclip_resume_task(
+async def clipforge_resume_task(
     task_id: Annotated[str, Field(description="The task id to retry.", min_length=1)],
 ) -> str:
     """Re-queue a cancelled or errored task for processing. Requires authentication.
@@ -1047,7 +1047,7 @@ async def supoclip_resume_task(
 
 
 @mcp.tool(
-    name="supoclip_delete_task",
+    name="clipforge_delete_task",
     annotations={
         "title": "Delete Task",
         "readOnlyHint": False,
@@ -1057,7 +1057,7 @@ async def supoclip_resume_task(
     },
 )
 @tool_errors
-async def supoclip_delete_task(
+async def clipforge_delete_task(
     task_id: Annotated[str, Field(description="The task id to delete.", min_length=1)],
 ) -> str:
     """Permanently delete a task and all of its generated clips.

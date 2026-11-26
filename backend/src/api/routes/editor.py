@@ -506,7 +506,7 @@ async def export_file(
     if job["status"] != "completed":
         raise HTTPException(409, "Export is not ready")
     output = session.directory / f"export-{job_id}.mp4"
-    filename = f"supoclip-{clip_id[:8]}-{job_id[:6]}.mp4"
+    filename = f"clipforge-{clip_id[:8]}-{job_id[:6]}.mp4"
     redirect = await _stored_media(MediaStorage(), session, output.name, filename, attachment=True)
     if redirect is not None:
         capture_clip_export(request, task, surface="editor", format="editor")

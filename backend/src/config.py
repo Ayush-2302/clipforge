@@ -300,6 +300,7 @@ class Config:
         self.instagram_app_secret = self._get_optional_env(
             "INSTAGRAM_APP_SECRET"
         ) or self._get_optional_env("META_APP_SECRET")
+        self.ig_token = self._get_optional_env("IG_TOKEN")
         # OAuth callbacks and public media fetches (Instagram pulls the video
         # from a URL) both go through the frontend, so they default to the
         # public app URL.
@@ -311,6 +312,7 @@ class Config:
             self._get_optional_env("SOCIAL_PUBLIC_MEDIA_BASE_URL")
             or self.app_base_url
         ).rstrip("/")
+        self.imagekit_private_key = self._get_optional_env("IMAGEKIT_PRIVATE_KEY")
         self.social_metrics_refresh_hours = float(
             os.getenv("SOCIAL_METRICS_REFRESH_HOURS", "6")
         )

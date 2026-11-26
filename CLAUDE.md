@@ -554,9 +554,9 @@ high-cap fallback actors are not called. Runbook: `docs/youtube-download.md`.
 (Claude Desktop/Code, Cursor, …). It is a thin client over the REST API.
 
 - **Default target:** the hosted API `https://api.clipforge.ai`. Override with
-  `SUPOCLIP_API_URL` for self-hosting (e.g. `http://localhost:8000`).
-- **Auth:** a per-user API key in `SUPOCLIP_API_KEY` (see API keys above).
-  Self-hosters may instead use `SUPOCLIP_USER_ID` (+ `SUPOCLIP_AUTH_SECRET` when
+  `CLIPFORGE_API_URL` for self-hosting (e.g. `http://localhost:8000`).
+- **Auth:** a per-user API key in `CLIPFORGE_API_KEY` (see API keys above).
+  Self-hosters may instead use `CLIPFORGE_USER_ID` (+ `CLIPFORGE_AUTH_SECRET` when
   signing is enforced).
 - **Tools:** create/list/get/wait/cancel/resume/delete tasks (any workflow),
   list workflows, list/download/export clips, and public discovery

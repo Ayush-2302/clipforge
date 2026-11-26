@@ -95,7 +95,7 @@ export const articleClipGalleries: Record<string, ArticleClipGallery> = {
     ],
   },
   "open-source-video-clippers": {
-    afterSection: "supoclip",
+    afterSection: "clipforge",
     heading: "Actual output from the local ClipForge AI pipeline",
     intro: "We generated these clips with the repository's processing service, local Whisper transcription, and an Ollama model for selection. They demonstrate ClipForge AI on two recordings; they are not a Clips AI or Auto-Editor benchmark.",
     examples: [

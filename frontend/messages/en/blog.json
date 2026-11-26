@@ -34,7 +34,7 @@
     "moreGuides": "More clipping guides",
     "productGuides": "Product guides"
   },
-  "supoclip-vs-supo-live": {
+  "clipforge-vs-supo-live": {
     "title": "ClipForge AI vs supo.live: Why Open Source Wins",
     "description": "Compare ClipForge AI and supo.live for AI video clipping. See why ClipForge AI wins for open-source control, self-hosting, and customizable video workflows.",
     "eyebrow": "Supo.live Alternative",
@@ -64,8 +64,8 @@
     "body": {
       "p1": "Choosing an AI video clipper is also choosing how much control you keep over your production process. If you want to turn podcasts, interviews, talks, and stream recordings into short videos, ClipForge AI makes a compelling case: AI-assisted editing with source code you can inspect and a workflow you can run yourself.",
       "p2": "Our verdict: ClipForge AI is the better alternative for creators, agencies, and developers who prioritize open source, self-hosting, and customization. This is a comparison by the ClipForge AI team, based on documented capabilities, rather than a benchmark of clip quality or processing speed.",
-      "whatSupoclip": "What is ClipForge AI?",
-      "whatSupoclipBody": "ClipForge AI is an open-source AI video clipping tool available through clipforge.ai or as a self-hosted application. It analyzes long videos, selects promising moments, and produces vertical clips with face-centered cropping and word-synced subtitles. Hook titles, clip scoring, and optional B-roll help turn a raw recording into material ready for your final review. The <repo>ClipForge AI repository</repo> documents the features and setup.",
+      "whatClipForge": "What is ClipForge AI?",
+      "whatClipForgeBody": "ClipForge AI is an open-source AI video clipping tool available through clipforge.ai or as a self-hosted application. It analyzes long videos, selects promising moments, and produces vertical clips with face-centered cropping and word-synced subtitles. Hook titles, clip scoring, and optional B-roll help turn a raw recording into material ready for your final review. The <repo>ClipForge AI repository</repo> documents the features and setup.",
       "whatSupo": "What is supo.live?",
       "whatSupoBody": "Supo.live markets a hosted clipping service for both recordings and ongoing broadcasts. Its homepage advertises live clipping, styled captions, face tracking, a browser editor, and scheduled posting to TikTok, YouTube Shorts, and X. That makes live publishing its clearest point of distinction. See the <site>official supo.live feature overview</site>."
     },
@@ -77,27 +77,27 @@
       "rows": {
         "deployment": {
           "label": "Deployment",
-          "supoclip": "Hosted app or self-hosted deployment",
+          "clipforge": "Hosted app or self-hosted deployment",
           "supolive": "Hosted service"
         },
         "source": {
           "label": "Source access",
-          "supoclip": "ClipForge AI Noncommercial Source License",
+          "clipforge": "ClipForge AI Noncommercial Source License",
           "supolive": "No open-source or self-hosting option advertised on its homepage"
         },
         "usecase": {
           "label": "Core use case",
-          "supoclip": "Recorded long videos into vertical shorts",
+          "clipforge": "Recorded long videos into vertical shorts",
           "supolive": "Live broadcasts and recorded videos"
         },
         "customization": {
           "label": "Customization",
-          "supoclip": "Modify the code and configure the LLM provider",
+          "clipforge": "Modify the code and configure the LLM provider",
           "supolive": "Use the service’s editor and settings"
         },
         "usage": {
           "label": "Usage model",
-          "supoclip": "Self-hosting uses your compute and provider budget",
+          "clipforge": "Self-hosting uses your compute and provider budget",
           "supolive": "Subscription plans with processing credits"
         }
       }
@@ -193,7 +193,7 @@
     },
     "closing": "Explore our <openSource>open-source video clipper guide</openSource> or read the <comparison>ClipForge AI vs OpusClip comparison</comparison>."
   },
-  "supoclip-vs-opusclip": {
+  "clipforge-vs-opusclip": {
     "title": "ClipForge AI vs OpusClip: A Sourced Comparison",
     "description": "ClipForge AI vs OpusClip compared on deployment, pricing model, watermarks, model choice, and workflow, with a source linked for every claim.",
     "eyebrow": "OpusClip Comparison",
@@ -206,7 +206,7 @@
       "verdict": "Short answer",
       "comparison": "Side by side",
       "pricing": "Pricing model",
-      "choose-supoclip": "When ClipForge AI fits",
+      "choose-clipforge": "When ClipForge AI fits",
       "choose-opusclip": "When OpusClip fits",
       "test": "Run your own test",
       "sources": "Sources",
@@ -234,7 +234,7 @@
     "introNote": "This page doesn't rate clip quality, caption accuracy, or processing speed. To compare those, see <test>how to run your own test</test>.",
     "verdict": {
       "heading": "The short answer",
-      "supoclip": "<strong>Choose ClipForge AI</strong> if you want to self-host, inspect or modify the code, pick your own AI models (including fully local ones), or export without a watermark.",
+      "clipforge": "<strong>Choose ClipForge AI</strong> if you want to self-host, inspect or modify the code, pick your own AI models (including fully local ones), or export without a watermark.",
       "opusclip": "<strong>Choose OpusClip</strong> if you want a managed product you never have to deploy, and want to start on a free plan."
     },
     "comparison": {
@@ -246,34 +246,34 @@
     "rows": {
       "deployment": {
         "label": "How you run it",
-        "supoclip": "Hosted app, iOS app, or self-hosted with <compose>Docker Compose</compose>",
+        "clipforge": "Hosted app, iOS app, or self-hosted with <compose>Docker Compose</compose>",
         "opusclip": "Hosted service"
       },
       "source": {
         "label": "Source code",
-        "supoclip": "Public, <license>ClipForge AI Noncommercial Source License</license>"
+        "clipforge": "Public, <license>ClipForge AI Noncommercial Source License</license>"
       },
       "pricing": {
         "label": "Pricing model",
-        "supoclip": "Hosted: monthly plans with a fixed number of videos. Self-hosted: no plan limits.",
+        "clipforge": "Hosted: monthly plans with a fixed number of videos. Self-hosted: no plan limits.",
         "opusclip": "Plans with credits for processing minutes, plus a free plan (<plans>help center</plans>)"
       },
       "watermark": {
         "label": "Watermark",
-        "supoclip": "None; the <pipeline>render pipeline</pipeline> has no watermark step",
+        "clipforge": "None; the <pipeline>render pipeline</pipeline> has no watermark step",
         "opusclip": "Free-plan exports can include one (<watermark>help center</watermark>)"
       },
       "models": {
         "label": "AI model choice",
-        "supoclip": "OpenAI, Google, Anthropic, OpenRouter, or local Ollama (<config>config</config>)"
+        "clipforge": "OpenAI, Google, Anthropic, OpenRouter, or local Ollama (<config>config</config>)"
       },
       "transcription": {
         "label": "Transcription",
-        "supoclip": "AssemblyAI, local Whisper, or YouTube captions"
+        "clipforge": "AssemblyAI, local Whisper, or YouTube captions"
       },
       "automation": {
         "label": "Automation",
-        "supoclip": "REST API with per-user keys and an <mcp>MCP server</mcp>"
+        "clipforge": "REST API with per-user keys and an <mcp>MCP server</mcp>"
       }
     },
     "pricing": {
@@ -281,7 +281,7 @@
       "p1": "OpusClip's <plans>plans and credits article</plans> describes paid plans that use credits for processing minutes, plus a free plan. Its <watermark>watermark article</watermark> says free-plan exports can carry an OpusClip watermark. Plan prices and credit amounts change, so check OpusClip's current pricing page instead of relying on numbers copied into a blog post.",
       "p2": "ClipForge AI offers two routes. The hosted app has <pro>{proName}</pro> at ${proPrice}/month for {proLimit} hours of video in 720p and <scale>{scaleName}</scale> at ${scalePrice}/month for {scaleLimit} hours in 1080p, with yearly billing at two months free. There is no free hosted plan; processing requires a subscription. The self-hosted route is free software with no plan limits. You pay for the server and any AI APIs you configure, and the <guide>self-hosting guide</guide> shows a fully local setup with no per-request AI fees."
     },
-    "chooseSupoclip": {
+    "chooseClipForge": {
       "heading": "When ClipForge AI is the better fit",
       "li1": "<strong>You need control over where video goes.</strong> Self-hosting keeps the app, database, and rendered clips on your infrastructure. With Whisper and Ollama, transcription and clip selection run locally too.",
       "li2": "<strong>You have a large back catalog.</strong> Self-hosted installs have no monthly video cap. Throughput depends on your hardware and provider limits.",
@@ -306,10 +306,10 @@
     "sources": {
       "heading": "Sources",
       "opus": "OpusClip help center: <plans>Plans and credits</plans> and <watermark>Watermark</watermark>. Plans can change; confirm current details on <site>opus.pro</site>.",
-      "supoclip": "ClipForge AI: <repo>public repository</repo>, including <compose>docker-compose.yml</compose>, <config>configuration docs</config>, and <billing>billing rules</billing>. Hosted prices are from the pricing section of clipforge.ai."
+      "clipforge": "ClipForge AI: <repo>public repository</repo>, including <compose>docker-compose.yml</compose>, <config>configuration docs</config>, and <billing>billing rules</billing>. Hosted prices are from the pricing section of clipforge.ai."
     }
   },
-  "self-host-supoclip-docker": {
+  "self-host-clipforge-docker": {
     "title": "How to Self-Host ClipForge AI with Docker Compose",
     "description": "Self-host ClipForge AI, the open-source AI video clipper: requirements, .env setup, a fully local Whisper + Ollama option, first-run checks, and a production checklist.",
     "eyebrow": "Self-Hosting Guide",
@@ -435,7 +435,7 @@
       "li2": "<strong>Terminate HTTPS at a reverse proxy</strong> (Caddy, nginx, Traefik) in front of the frontend port.",
       "li3": "<strong>Expose the backend for uploads.</strong> With <code>BACKEND_AUTH_SECRET</code> set, browsers upload video files directly to <code>NEXT_PUBLIC_API_URL</code>. Point that at a public HTTPS backend URL, and add your frontend origin to <code>CORS_ORIGINS</code>.",
       "li4": "<strong>Set your public origin everywhere:</strong> <code>NEXT_PUBLIC_APP_URL</code>, <code>BETTER_AUTH_URL</code>, and <code>CORS_ORIGINS</code>. <code>NEXT_PUBLIC_*</code> values are baked in at build time, so rebuild the frontend after changing them.",
-      "li5": "<strong>Change the database password.</strong> <code>docker-compose.yml</code> hardcodes <code>supoclip_password</code> in four places: <code>POSTGRES_PASSWORD</code> in the <code>postgres</code> service and <code>DATABASE_URL</code> in the <code>frontend</code>, <code>backend</code>, and <code>worker</code> services. Editing <code>POSTGRES_PASSWORD</code> in <code>.env</code> alone changes none of them. Override all four, as shown below.",
+      "li5": "<strong>Change the database password.</strong> <code>docker-compose.yml</code> hardcodes <code>clipforge_password</code> in four places: <code>POSTGRES_PASSWORD</code> in the <code>postgres</code> service and <code>DATABASE_URL</code> in the <code>frontend</code>, <code>backend</code>, and <code>worker</code> services. Editing <code>POSTGRES_PASSWORD</code> in <code>.env</code> alone changes none of them. Override all four, as shown below.",
       "li6": "<strong>Set <code>REDIS_PASSWORD</code></strong>; the Redis container enables AUTH when it is non-empty.",
       "li7": "<strong>Close sign-ups</strong> with <code>DISABLE_SIGN_UP=true</code> if the instance is just for your team.",
       "li8": "<strong>Review the limits:</strong> <code>MAX_VIDEO_DURATION</code> (default 5400 s, 90 minutes) and <code>MAX_VIDEO_UPLOAD_BYTES</code> (default 4 GB).",
@@ -510,22 +510,22 @@
       "rows": {
         "0": {
           "feature": "Free usage model",
-          "supoclip": "Open source and self-hostable with no plan limits. Your costs are your own compute and API keys. The hosted app is paid.",
+          "clipforge": "Open source and self-hostable with no plan limits. Your costs are your own compute and API keys. The hosted app is paid.",
           "opusclip": "Free plan exists, but exports can include an OpusClip watermark."
         },
         "1": {
           "feature": "Clip discovery",
-          "supoclip": "Transcribes long videos, scores segments, and surfaces promising short-form moments.",
+          "clipforge": "Transcribes long videos, scores segments, and surfaces promising short-form moments.",
           "opusclip": "AI clipping workflow built for finding social-ready clips from long videos."
         },
         "2": {
           "feature": "Vertical formatting",
-          "supoclip": "Face-centered 9:16 cropping, subtitles, and platform-ready exports.",
+          "clipforge": "Face-centered 9:16 cropping, subtitles, and platform-ready exports.",
           "opusclip": "Offers short-form exports and AI reframing for social platforms."
         },
         "3": {
           "feature": "Control",
-          "supoclip": "Full source access, editable deployment, and no vendor lock-in.",
+          "clipforge": "Full source access, editable deployment, and no vendor lock-in.",
           "opusclip": "Hosted product with managed workflows and subscription tiers."
         }
       }

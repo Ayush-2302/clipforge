@@ -27,13 +27,13 @@ from starlette.requests import HTTPConnection
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-REQUIRED_SCOPE = "supoclip"
+REQUIRED_SCOPE = "clipforge"
 
 # Placeholders from our own docs and examples. A client sending one of these
 # copied a snippet without pasting a real key in.
 PLACEHOLDER_KEYS = frozenset(
     {
-        "sk_your_supoclip_api_key",
+        "sk_your_clipforge_api_key",
         "sk_your_key_here",
         "sk_your_api_key",
         "sk_...",
@@ -121,7 +121,7 @@ class ClipForgeApiKeyVerifier:
         fingerprint = hashlib.sha256(token.encode("utf-8")).hexdigest()[:16]
         return AccessToken(
             token=token,
-            client_id=f"supoclip-api-key-{fingerprint}",
+            client_id=f"clipforge-api-key-{fingerprint}",
             scopes=[REQUIRED_SCOPE],
         )
 
@@ -172,19 +172,19 @@ class AuthHelp:
     def upgrade_url(self) -> str:
         return f"{self.app_url}/settings#plan"
 
-    docs_url = "https://github.com/FujiwaraChoki/supoclip/blob/main/mcp/README.md"
+    docs_url = "https://github.com/FujiwaraChoki/clipforge/blob/main/mcp/README.md"
 
     def setup(self) -> dict[str, Any]:
         setup: dict[str, Any] = {
             "url": self.endpoint,
             "header": "Authorization: Bearer sk_...",
             "claude_code": (
-                f"claude mcp add --transport http supoclip {self.endpoint} "
+                f"claude mcp add --transport http clipforge {self.endpoint} "
                 '--header "Authorization: Bearer sk_..."'
             ),
             "json": {
                 "mcpServers": {
-                    "supoclip": {
+                    "clipforge": {
                         "url": self.endpoint,
                         "headers": {"Authorization": "Bearer sk_..."},
                     }
@@ -274,7 +274,7 @@ class require_auth:
             }
         )
         description = message.replace('"', "'")
-        challenge = f'Bearer realm="supoclip", error="{error}", error_description="{description}"'
+        challenge = f'Bearer realm="clipforge", error="{error}", error_description="{description}"'
         if self.resource_metadata:
             challenge += f', resource_metadata="{self.resource_metadata}"'
         await send(

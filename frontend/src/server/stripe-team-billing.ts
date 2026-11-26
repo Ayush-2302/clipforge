@@ -384,7 +384,7 @@ export async function createTeamCheckoutSession({
       email: ownerEmail,
       name: `${team.name} (${ownerName || ownerEmail})`,
       metadata: {
-        app: "supoclip",
+        app: "clipforge",
         teamId: team.id,
         ownerId: team.owner_id,
       },
@@ -438,7 +438,7 @@ export async function createTeamCheckoutSession({
     // No `userId` here: the personal-plan checkout handler binds a session's
     // customer and subscription to the user named by that key.
     metadata: {
-      app: "supoclip",
+      app: "clipforge",
       plan: "team",
       teamId: team.id,
       startedBy: actorUserId,
@@ -447,7 +447,7 @@ export async function createTeamCheckoutSession({
     },
     subscription_data: {
       metadata: {
-        app: "supoclip",
+        app: "clipforge",
         plan: "team",
         teamId: team.id,
         ownerId: team.owner_id,

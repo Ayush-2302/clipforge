@@ -34,7 +34,7 @@ services:
     environment:
       PYTHONPATH: /app
       PYTHONUNBUFFERED: "1"
-      SUPOCLIP_SERVICE: worker
+      CLIPFORGE_SERVICE: worker
       TEMP_DIR: /app/uploads
       MEDIA_STORAGE: s3
       DATABASE_URL: ${WORKER_DATABASE_URL:?Set WORKER_DATABASE_URL}

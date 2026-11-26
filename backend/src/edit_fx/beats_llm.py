@@ -288,7 +288,7 @@ def _capture_fallback(reason: str, *, model_name: str, word_count: int) -> None:
             properties["trace_id"] = trace_id
         if not user_id:
             properties["$process_person_profile"] = False   # worker jobs have no bound user: no person profile
-        client.capture(FALLBACK_EVENT, distinct_id=str(user_id or "supoclip-worker"), properties=properties)
+        client.capture(FALLBACK_EVENT, distinct_id=str(user_id or "clipforge-worker"), properties=properties)
     except Exception as error:  # noqa: BLE001 - analytics never breaks planning
         logger.warning("Could not capture %s: %s", FALLBACK_EVENT, type(error).__name__)
 

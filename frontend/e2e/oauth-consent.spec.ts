@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const request = {
   client_name: "Claude",
   redirect_host: "claude.ai",
-  scopes: ["supoclip"],
+  scopes: ["clipforge"],
   email_verified: true,
   at_key_limit: false,
   max_keys: 25,
@@ -24,7 +24,7 @@ test("a connector asks for access and is sent back with a code", async ({ page }
   await page.route("**/oauth-done**", (route) => route.fulfill({ contentType: "text/html", body: "<p>back at the connector</p>" }));
 
   await page.goto("/oauth/consent?request=req-1");
-  await expect(page.getByRole("heading", { name: "Allow Claude to use your SupoClip account?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Allow Claude to use your ClipForge account?" })).toBeVisible();
   await expect(page.getByText("Spend your plan's video minutes")).toBeVisible();
   await page.screenshot({ path: "test-results/oauth-consent.png", fullPage: true });
 

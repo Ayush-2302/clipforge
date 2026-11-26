@@ -1330,7 +1330,7 @@ class VideoService:
         renderer only consumes it.
         """
         if fx_jobs:
-            with tempfile.TemporaryDirectory(prefix="supoclip_fx_") as fx_scratch:
+            with tempfile.TemporaryDirectory(prefix="clipforge_fx_") as fx_scratch:
                 return await VideoService._create_video_clips(
                     video_path, segments, font_family, font_size, font_color, caption_template, output_format,
                     add_subtitles, cleanup_settings, max_short_side, max_clip_seconds, include_broll,
@@ -1539,7 +1539,7 @@ class VideoService:
         sidecar keys; the returned ``clip_info`` then carries ``fx_meta``.
         """
         if fx is not None:
-            with tempfile.TemporaryDirectory(prefix="supoclip_fx_") as fx_scratch:
+            with tempfile.TemporaryDirectory(prefix="clipforge_fx_") as fx_scratch:
                 return await VideoService._create_single_clip(
                     video_path, segment, clip_index, output_dir, font_family, font_size, font_color,
                     caption_template, output_format, add_subtitles, cleanup_settings, max_short_side,

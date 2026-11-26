@@ -91,13 +91,13 @@
       "title": "Open-source video clipper you can control",
       "description": "What self-hosting changes about control, model providers, and infrastructure."
     },
-    "blog_self_host_supoclip_docker": {
+    "blog_self_host_clipforge_docker": {
       "label": "Self-hosting guide",
       "eyebrow": "Self-hosting guide",
       "title": "Self-host ClipForge AI with Docker Compose",
       "description": "Requirements, environment variables, first boot, a fully local setup, and production checks."
     },
-    "blog_supoclip_vs_opusclip": {
+    "blog_clipforge_vs_opusclip": {
       "label": "ClipForge AI vs OpusClip",
       "eyebrow": "Comparison",
       "title": "ClipForge AI vs OpusClip: a sourced comparison",
@@ -109,7 +109,7 @@
       "title": "Free OpusClip alternative: costs and tradeoffs",
       "description": "Understand the compute, provider costs, and maintenance behind a self-hosted workflow."
     },
-    "blog_supoclip_vs_supo_live": {
+    "blog_clipforge_vs_supo_live": {
       "label": "ClipForge AI vs supo.live",
       "eyebrow": "Comparison",
       "title": "ClipForge AI vs supo.live: open-source control",

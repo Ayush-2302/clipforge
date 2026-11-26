@@ -8,7 +8,7 @@ supports three modes, tried in priority order:
    default for the hosted service).
 2. ``signed_headers``  -> the frontend's HMAC scheme, when a user id and the
    backend auth secret are both provided (useful for self-hosting).
-3. ``unsigned_user_id`` -> a bare ``x-supoclip-user-id`` header, for a
+3. ``unsigned_user_id`` -> a bare ``x-clipforge-user-id`` header, for a
    self-hosted backend running with ``ALLOW_UNSIGNED_BACKEND_AUTH=true``.
 """
 
@@ -30,7 +30,7 @@ from .config import DEFAULT_APP_URL, Settings
 
 # Lets the backend tell MCP traffic apart from other API-key clients in its
 # product analytics.
-USER_AGENT = f"supoclip-mcp/{__version__}"
+USER_AGENT = f"clipforge-mcp/{__version__}"
 
 
 class ClipForgeError(Exception):
@@ -46,9 +46,9 @@ def _signed_headers(user_id: str, secret: str) -> Dict[str, str]:
     payload = f"{user_id}:{timestamp}".encode("utf-8")
     signature = hmac.new(secret.encode("utf-8"), payload, hashlib.sha256).hexdigest()
     return {
-        "x-supoclip-user-id": user_id,
-        "x-supoclip-ts": timestamp,
-        "x-supoclip-signature": signature,
+        "x-clipforge-user-id": user_id,
+        "x-clipforge-ts": timestamp,
+        "x-clipforge-signature": signature,
     }
 
 
@@ -66,15 +66,15 @@ class ClipForgeClient:
         if mode == "signed_headers":
             return _signed_headers(self.settings.user_id, self.settings.auth_secret)  # type: ignore[arg-type]
         if mode == "unsigned_user_id":
-            return {"x-supoclip-user-id": self.settings.user_id}  # type: ignore[dict-item]
+            return {"x-clipforge-user-id": self.settings.user_id}  # type: ignore[dict-item]
         return {}
 
     def _require_auth(self) -> None:
         if not self.settings.is_authenticated:
             raise AuthNotConfiguredError(
-                "No credentials configured. Set SUPOCLIP_API_KEY to a key created "
+                "No credentials configured. Set CLIPFORGE_API_KEY to a key created "
                 "in your ClipForge AI account (Settings -> API Keys). For a self-hosted "
-                "backend you may instead set SUPOCLIP_USER_ID (+ SUPOCLIP_AUTH_SECRET "
+                "backend you may instead set CLIPFORGE_USER_ID (+ CLIPFORGE_AUTH_SECRET "
                 "if signing is enforced)."
             )
 

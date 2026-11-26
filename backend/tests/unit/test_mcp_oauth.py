@@ -107,15 +107,15 @@ async def oauth(monkeypatch):
         yield SimpleNamespace(http=http, redis=redis, clients=clients, keys=keys, user=user, notify=notify, config=config)
 
 
-INTERNAL = {"x-supoclip-mcp-secret": SECRET}
+INTERNAL = {"x-clipforge-mcp-secret": SECRET}
 
 
 def signed(user_id="user-1"):
     ts = str(int(time.time()))
     return {
-        "x-supoclip-user-id": user_id,
-        "x-supoclip-ts": ts,
-        "x-supoclip-signature": hmac.new(AUTH_SECRET.encode(), f"{user_id}:{ts}".encode(), hashlib.sha256).hexdigest(),
+        "x-clipforge-user-id": user_id,
+        "x-clipforge-ts": ts,
+        "x-clipforge-signature": hmac.new(AUTH_SECRET.encode(), f"{user_id}:{ts}".encode(), hashlib.sha256).hexdigest(),
     }
 
 
@@ -140,7 +140,7 @@ async def approve(oauth, request_id):
     return query["code"][0], query.get("state", [None])[0]
 
 
-@pytest.mark.parametrize("headers", [{}, {"x-supoclip-mcp-secret": "wrong"}])
+@pytest.mark.parametrize("headers", [{}, {"x-clipforge-mcp-secret": "wrong"}])
 async def test_internal_routes_need_the_mcp_secret(oauth, headers):
     response = await oauth.http.get("/internal/mcp-oauth/clients/client-1", headers=headers)
     assert response.status_code == 401
@@ -223,7 +223,7 @@ async def test_consent_needs_a_signed_session_not_an_api_key(oauth):
     request_id = await start(oauth)
     response = await oauth.http.post(
         f"/oauth/requests/{request_id}/decision",
-        headers={"Authorization": "Bearer sk_leaked", "x-supoclip-user-id": "user-1"},
+        headers={"Authorization": "Bearer sk_leaked", "x-clipforge-user-id": "user-1"},
         json={"approve": True},
     )
     assert response.status_code == 401

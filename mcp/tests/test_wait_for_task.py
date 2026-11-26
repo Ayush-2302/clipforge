@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from supoclip_mcp import server
+from clipforge_mcp import server
 
 
 @pytest.mark.parametrize("stall_request", [False, True], ids=["between-polls", "during-request"])
@@ -23,7 +23,7 @@ def test_wait_for_task_honors_timeout(monkeypatch, stall_request):
 
     async def wait_for_task():
         return await asyncio.wait_for(
-            server.supoclip_wait_for_task("task-1", timeout_seconds=0.05, poll_interval_seconds=60),
+            server.clipforge_wait_for_task("task-1", timeout_seconds=0.05, poll_interval_seconds=60),
             timeout=1,
         )
 
@@ -46,7 +46,7 @@ def test_wait_for_task_returns_terminal_status_when_progress_notification_stalls
 
     async def wait_for_task():
         return await asyncio.wait_for(
-            server.supoclip_wait_for_task(
+            server.clipforge_wait_for_task(
                 "task-1", timeout_seconds=0.05, ctx=SimpleNamespace(report_progress=report_progress)
             ),
             timeout=1,

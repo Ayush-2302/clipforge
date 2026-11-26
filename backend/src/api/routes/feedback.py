@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["feedback"])
 
-APP_VERSION_HEADER = "x-supoclip-app-version"
+APP_VERSION_HEADER = "x-clipforge-app-version"
 
 
 class FeedbackRequest(BaseModel):

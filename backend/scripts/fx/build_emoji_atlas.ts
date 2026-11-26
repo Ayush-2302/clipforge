@@ -17,8 +17,8 @@ import { createCanvas, GlobalFonts } from "npm:@napi-rs/canvas@0.1.80";
 const CELL = 160;
 const COLS = 16;
 const PAD = 6; // px kept clear on every side so neighbouring cells never bleed under bilinear sampling
-const FAMILY = "SupoclipAtlasEmoji";
-const SYMBOL_FAMILY = "SupoclipAtlasSymbol";
+const FAMILY = "ClipForgeAtlasEmoji";
+const SYMBOL_FAMILY = "ClipForgeAtlasSymbol";
 const SYMBOL_FONT = new URL("../../fonts/Inter.ttf", import.meta.url).pathname;
 // Not in Noto Color Emoji: drawn as a coin (fill colour, glyph tilt in degrees).
 const COIN_SYMBOLS: Record<string, { fill: string; rim: string; tilt: number }> = {

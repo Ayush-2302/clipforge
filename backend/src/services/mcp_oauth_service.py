@@ -36,7 +36,7 @@ from ..repositories.api_key_repository import ApiKeyRepository
 from ..repositories.mcp_oauth_repository import McpOAuthClientRepository
 from .api_key_service import MAX_KEYS_PER_USER, ApiKeyLimitExceeded, ApiKeyService
 
-SCOPE = "supoclip"
+SCOPE = "clipforge"
 REQUEST_TTL_SECONDS = 1800
 CODE_TTL_SECONDS = 600
 MAX_REDIRECT_URIS = 10

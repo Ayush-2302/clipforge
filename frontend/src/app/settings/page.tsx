@@ -749,8 +749,8 @@ export default function SettingsPage() {
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
             <a className="underline underline-offset-4" href={GITHUB_URL}>{t("about.repository")}</a>
             <a className="underline underline-offset-4" href={DEFAULT_SITE_URL}>clipforge.ai</a>
-            <a className="underline underline-offset-4" href="https://github.com/FujiwaraChoki/supoclip">Original SupoClip repository</a>
-            <a className="underline underline-offset-4" href="https://www.supoclip.com/">SupoClip website</a>
+            <a className="underline underline-offset-4" href="https://github.com/FujiwaraChoki/clipforge">Original ClipForge repository</a>
+            <a className="underline underline-offset-4" href="https://www.clipforge.ai/">ClipForge website</a>
           </div>
         </Section>
 

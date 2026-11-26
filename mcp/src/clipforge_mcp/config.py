@@ -11,7 +11,7 @@ import os
 from dataclasses import dataclass
 from typing import Optional
 
-# The official hosted ClipForge AI API. Override with SUPOCLIP_API_URL to point at
+# The official hosted ClipForge AI API. Override with CLIPFORGE_API_URL to point at
 # a self-hosted backend (e.g. http://localhost:8000).
 DEFAULT_API_URL = "https://api.clipforge.ai"
 # The web app: where users create API keys and pick a plan.
@@ -70,7 +70,7 @@ class Settings:
 
 
 def _get(key: str) -> Optional[str]:
-    return _clean(os.getenv(f"CLIPFORGE_{key}") or os.getenv(f"SUPOCLIP_{key}"))
+    return _clean(os.getenv(f"CLIPFORGE_{key}") or os.getenv(f"CLIPFORGE_{key}"))
 
 
 def load_settings() -> Settings:

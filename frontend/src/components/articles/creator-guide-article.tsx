@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { ClipForgeEditorScreenshot } from "@/components/clipforge-editor-screenshot";
 import Link from "next/link";
 
 import { ArticleShell } from "@/components/articles/article-shell";
@@ -32,9 +32,9 @@ export function CreatorGuideArticle({ guide }: { guide: CreatorGuide }) {
           {gallery?.afterSection === section.id ? <ArticleClipExamples gallery={gallery} /> : null}
           {section.example === "editor" ? (
             <figure className="not-prose space-y-3">
-              <a href="/blog/supoclip-editor.webp" aria-label="Open the full-size ClipForge AI editor screenshot">
-                <Image src="/blog/supoclip-editor.webp" alt="ClipForge AI caption editor showing style controls, a word-level transcript, and safe-area preview" width={1800} height={1109} sizes="(max-width: 768px) 100vw, 768px" className="h-auto w-full rounded-xl border" />
-              </a>
+              <div className="overflow-hidden rounded-xl border">
+                <ClipForgeEditorScreenshot alt="ClipForge AI caption editor showing style controls, a word-level transcript, and safe-area preview" />
+              </div>
               <figcaption className="text-sm leading-6 text-muted-foreground">Editor screenshot using a sample video. The caption controls and transcript sit beside the preview; open the image to inspect them at full size.</figcaption>
             </figure>
           ) : null}

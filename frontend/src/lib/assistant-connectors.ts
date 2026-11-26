@@ -50,5 +50,5 @@ export const ASSISTANT_CONNECTORS: readonly AssistantConnector[] = [
 
 /** Claude Code signs in with the same OAuth flow when no Authorization header is configured. */
 export function claudeCodeOAuthCommands(url: string) {
-  return `claude mcp add --transport http supoclip ${url}\nclaude mcp login supoclip`;
+  return `claude mcp add --transport http clipforge ${url}\nclaude mcp login clipforge`;
 }

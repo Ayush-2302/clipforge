@@ -19,7 +19,7 @@ from tests.fixtures.factories import create_user
 
 MIGRATION = Path(__file__).parents[2] / "src/migrations/sql/20261117_0001_feedback_inbox.sql"
 DISCORD = "https://discord.com/api/webhooks/987654321/SECRET-DISCORD-TOKEN"
-JSON_URL = "https://hooks.example.com/supoclip/PRIVATE-PATH"
+JSON_URL = "https://hooks.example.com/clipforge/PRIVATE-PATH"
 TABLES = ("feedback_webhook_attempts", "feedback_webhook_deliveries", "feedback_notes", "feedback_submissions",
           "feedback_webhooks", "feedback_webhook_env_imports", "cancellation_notes")
 
@@ -29,7 +29,7 @@ def headers_for(user_id: str, **extra: str) -> dict[str, str]:
     signature = hmac.new(
         b"test-backend-auth-secret", f"{user_id}:{timestamp}".encode(), hashlib.sha256
     ).hexdigest()
-    return {"x-supoclip-user-id": user_id, "x-supoclip-ts": timestamp, "x-supoclip-signature": signature, **extra}
+    return {"x-clipforge-user-id": user_id, "x-clipforge-ts": timestamp, "x-clipforge-signature": signature, **extra}
 
 
 @pytest.fixture
@@ -91,7 +91,7 @@ async def submit(client, user_id, **body):
     payload = {"category": "bug", "message": "Captions drift", **body}
     return await client.post(
         "/feedback",
-        headers={**headers_for(user_id, **{"x-supoclip-client": "ios", "user-agent": "SupoClip/2.4 iOS"}),
+        headers={**headers_for(user_id, **{"x-clipforge-client": "ios", "user-agent": "ClipForge/2.4 iOS"}),
                  "content-type": "application/json"},
         content=json.dumps(payload),
     )
@@ -124,7 +124,7 @@ async def test_submission_is_stored_and_queued_for_matching_enabled_webhooks(cli
     row = (await db_session.execute(text("SELECT * FROM feedback_submissions WHERE id = :id"), {"id": submission_id})).mappings().one()
     assert (row["user_id"], row["email"], row["category"], row["message"]) == (user["id"], "ana@example.com", "bug", "Captions drift")
     assert (row["platform"], row["page_url"], row["locale"], row["app_version"]) == ("ios", "/tasks/abc", "de", "2.4.0")
-    assert row["user_agent"] == "SupoClip/2.4 iOS" and row["status"] == "open"
+    assert row["user_agent"] == "ClipForge/2.4 iOS" and row["status"] == "open"
     queued = await deliveries(db_session, submission_id=submission_id)
     assert [d["webhook_id"] for d in queued] == [bug_hook["id"]]
     assert no_immediate == [submission_id]
@@ -270,7 +270,7 @@ async def test_json_webhooks_get_a_signed_payload(client, db_session, clean, rec
     [call] = receiver.calls
     assert call["url"] == JSON_URL and call["kind"] == "json"
     assert call["body"]["type"] == "feedback.created" and call["body"]["submission"]["id"] == submission_id
-    timestamp, signature = (part.split("=", 1)[1] for part in call["headers"]["X-SupoClip-Signature"].split(","))
+    timestamp, signature = (part.split("=", 1)[1] for part in call["headers"]["X-ClipForge-Signature"].split(","))
     body = json.dumps(call["body"], separators=(",", ":"), ensure_ascii=False).encode()
     assert signature == hmac.new(secret.encode(), f"{timestamp}.".encode() + body, hashlib.sha256).hexdigest()
 
@@ -761,7 +761,7 @@ async def test_deletion_waits_for_submission_and_scrubs_snapshot(db_session, cle
 
 # --- Hermes assistant (server-configured) ----------------------------------------------
 
-HERMES_URL = "http://127.0.0.1:8644/p/supoclip/webhooks/feedback-supoclip"
+HERMES_URL = "http://127.0.0.1:8644/p/clipforge/webhooks/feedback-clipforge"
 HERMES_SECRET = "HERMES-ROUTE-SECRET"
 
 
@@ -827,7 +827,7 @@ async def test_hermes_receives_every_category_signed_and_filed(client, db_sessio
     assert call["url"] == HERMES_URL
     [stored] = await deliveries(db_session, submission_id=call["body"]["submission"]["id"])
     assert call["body"]["delivery_id"] == stored["id"] == call["headers"]["X-Request-ID"]
-    assert set(call["body"]) == {"type", "version", "delivery_id", "submission"} and call["body"]["type"] == "supoclip.feedback"
+    assert set(call["body"]) == {"type", "version", "delivery_id", "submission"} and call["body"]["type"] == "clipforge.feedback"
     assert set(call["body"]["submission"]) == {
         "id", "category", "message", "user_id", "email", "page_url", "platform", "app_version", "created_at"}
     assert call["body"]["submission"]["email"] == user["email"] and call["body"]["submission"]["platform"] == "ios"
@@ -872,7 +872,7 @@ async def test_admins_can_only_switch_test_and_read_the_hermes_webhook(
     tested = await client.post(f"{hook}/test", headers=auth_headers)
     assert tested.status_code == 200 and tested.json()["delivery"]["status"] == "delivered"
     sample = hermes.calls[-1]["body"]
-    assert sample["submission"]["category"] == "test" and sample["submission"]["message"] == "Test from SupoClip admin"
+    assert sample["submission"]["category"] == "test" and sample["submission"]["message"] == "Test from ClipForge admin"
     assert sample["delivery_id"] == tested.json()["delivery"]["id"]
     log = (await client.get(f"{hook}/deliveries", headers=auth_headers)).json()["deliveries"]
     assert log[0]["is_test"] and log[0]["status"] == "delivered"
@@ -897,13 +897,13 @@ async def test_a_failed_hermes_test_is_reported(client, db_session, clean, app, 
 
 async def test_admin_entered_webhooks_still_cannot_point_at_the_gateway(client, db_session, clean, app, admin, auth_headers):
     await webhooks.sync_hermes_webhook(db_session, hermes_config(app))
-    for url in (HERMES_URL, "https://127.0.0.1:8644/p/supoclip/webhooks/feedback-supoclip"):
+    for url in (HERMES_URL, "https://127.0.0.1:8644/p/clipforge/webhooks/feedback-clipforge"):
         response = await client.post("/admin/feedback-webhooks", headers=auth_headers,
                                       json={"name": "x", "kind": "json", "url": url, "categories": ["bug"]})
         assert response.status_code == 422 and response.json()["detail"]["code"] in ("url_not_https", "url_private_address")
     hook = (await make_webhook(db_session, kind="json", url=JSON_URL))[0]
     response = await client.patch(f"/admin/feedback-webhooks/{hook['id']}", headers=auth_headers,
-                                  json={"url": "https://127.0.0.1:8644/p/supoclip/webhooks/feedback-supoclip"})
+                                  json={"url": "https://127.0.0.1:8644/p/clipforge/webhooks/feedback-clipforge"})
     assert response.status_code == 422 and response.json()["detail"]["code"] == "url_private_address"
 
 

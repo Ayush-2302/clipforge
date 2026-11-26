@@ -13,7 +13,7 @@ import pytest
 from starlette.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from supoclip_mcp import auth, config, server
+from clipforge_mcp import auth, config, server
 
 VALID = "sk_transport_test_key"
 BASE = "http://127.0.0.1:9100"
@@ -39,7 +39,7 @@ def settings(monkeypatch):
         mcp_require_bearer_auth=True,
         mcp_public_url=BASE,
         mcp_mount_path="/",
-        app_url="https://www.supoclip.test",
+        app_url="https://www.clipforge.test",
     ))
     calls = []
 
@@ -49,7 +49,7 @@ def settings(monkeypatch):
             raise auth.BackendUnavailable("down")
         return token == VALID
 
-    monkeypatch.setattr(auth.SupoClipApiKeyVerifier, "_is_valid_key", is_valid)
+    monkeypatch.setattr(auth.ClipForgeApiKeyVerifier, "_is_valid_key", is_valid)
     return calls
 
 
@@ -87,16 +87,16 @@ def test_every_transport_refuses_a_missing_key_the_same_way(client, method, path
     assert response.status_code == 401
     body = response.json()
     assert body["error"] == "invalid_token"
-    assert "https://www.supoclip.test/settings/api-keys" in body["error_description"]
+    assert "https://www.clipforge.test/settings/api-keys" in body["error_description"]
     assert body["setup"]["url"] == f"{BASE}/mcp"
-    assert "claude mcp add --transport http supoclip" in body["setup"]["claude_code"]
+    assert "claude mcp add --transport http clipforge" in body["setup"]["claude_code"]
     assert response.headers["www-authenticate"].startswith("Bearer ")
 
 
 @pytest.mark.parametrize("path", ["/mcp", "/sse"])
 def test_placeholder_key_is_called_out(client, settings, path):
     method = "POST" if path == "/mcp" else "GET"
-    response = client.request(method, path, json=INIT, headers=bearer("sk_your_supoclip_api_key"))
+    response = client.request(method, path, json=INIT, headers=bearer("sk_your_clipforge_api_key"))
     assert response.status_code == 401
     assert "placeholder" in response.json()["error_description"]
     assert settings == []  # never sent to the backend
@@ -104,7 +104,7 @@ def test_placeholder_key_is_called_out(client, settings, path):
 
 @pytest.mark.parametrize(
     ("token", "expected"),
-    [("invalid-format", "not a SupoClip API key"), ("sk_rejected_key", "invalid or was revoked")],
+    [("invalid-format", "not a ClipForge AI API key"), ("sk_rejected_key", "invalid or was revoked")],
 )
 def test_bad_keys_are_explained(client, token, expected):
     response = client.post("/mcp", json=INIT, headers=bearer(token))
@@ -147,7 +147,7 @@ def test_root_get_is_a_help_page(client):
     "path",
     [
         "/sse%20Transport%3ASSE",
-        "/sse%20Transport%3A%20SSE%20Authentication%3A%20Bearer%20Token%20Token%3A%20sk_your_supoclip_api_key",
+        "/sse%20Transport%3A%20SSE%20Authentication%3A%20Bearer%20Token%20Token%3A%20sk_your_clipforge_api_key",
     ],
 )
 def test_pasted_doc_text_in_the_url_gets_a_hint(client, path):
@@ -183,18 +183,18 @@ def test_put_on_sse_is_method_not_allowed(client):
 
 
 def test_mount_path_prefixes_every_route(settings, monkeypatch):
-    monkeypatch.setattr(server, "SETTINGS", replace(server.SETTINGS, mcp_mount_path="/supoclip/"))
+    monkeypatch.setattr(server, "SETTINGS", replace(server.SETTINGS, mcp_mount_path="/clipforge/"))
     with TestClient(server.build_app(server._build_mcp()), base_url=BASE) as prefixed:
-        assert prefixed.post("/supoclip/mcp", json=INIT, headers=bearer(VALID)).status_code == 200
-        assert prefixed.post("/supoclip/sse", json=INIT, headers=bearer(VALID)).status_code == 200
-        assert prefixed.get("/supoclip/health").status_code == 200
+        assert prefixed.post("/clipforge/mcp", json=INIT, headers=bearer(VALID)).status_code == 200
+        assert prefixed.post("/clipforge/sse", json=INIT, headers=bearer(VALID)).status_code == 200
+        assert prefixed.get("/clipforge/health").status_code == 200
         assert prefixed.post("/mcp", json=INIT, headers=bearer(VALID)).status_code == 404
 
 
 @pytest.mark.parametrize(
     ("token", "expected"),
     [
-        ("sk_your_supoclip_api_key", True),
+        ("sk_your_clipforge_api_key", True),
         ("sk_your_key_here", True),
         ("sk_xxxxxxxxxxxxxxxxxxxx", True),
         ("sk_...", True),
@@ -214,7 +214,7 @@ def test_placeholder_detection(token, expected):
     ],
 )
 def test_transport_values(monkeypatch, value, expected):
-    monkeypatch.setenv("SUPOCLIP_MCP_TRANSPORT", value)
+    monkeypatch.setenv("CLIPFORGE_MCP_TRANSPORT", value)
     assert config.load_settings().mcp_transport == expected
 
 
@@ -266,6 +266,6 @@ def test_real_clients_list_tools_over_both_transports(settings, monkeypatch):
         uv.should_exit = True
         thread.join(timeout=10)
 
-    assert "supoclip_create_clip_task" in streamable
+    assert "clipforge_create_clip_task" in streamable
     assert streamable == legacy == redirected
     assert refused.status_code == 401

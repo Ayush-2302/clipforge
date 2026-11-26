@@ -1,13 +1,13 @@
 # ClipForge AI MCP Server
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server for
-[ClipForge AI](https://clipforge.com) — turn long-form videos (YouTube links or
+[ClipForge AI](https://clipforge.ai) — turn long-form videos (YouTube links or
 direct URLs) into short, vertical, subtitled viral clips from any MCP client
 (Claude Desktop, Claude Code, Cursor, etc.).
 
 By default it talks to the **official hosted ClipForge AI API** at
-`https://api.clipforge.com`. Point it at your own deployment by setting
-`SUPOCLIP_API_URL`.
+`https://api.clipforge.ai`. Point it at your own deployment by setting
+`CLIPFORGE_API_URL`.
 
 ## What it can do
 
@@ -34,8 +34,8 @@ Tools marked ✓ require an API key (or self-host credentials, see below).
 
 ## Getting an API key
 
-1. Sign in at [clipforge.com](https://www.clipforge.com).
-2. Go to [**Settings → API Keys**](https://www.clipforge.com/settings/api-keys).
+1. Sign in at [clipforge.ai](https://www.clipforge.ai).
+2. Go to [**Settings → API Keys**](https://www.clipforge.ai/settings/api-keys).
 3. Create a key and copy it (it's shown only once). It looks like `sk_…`.
 
 Making clips needs a paid plan (Pro or Creator). On a free account the
@@ -44,16 +44,16 @@ link instead of a clip.
 
 ## Connect to the hosted server
 
-The hosted server is at `https://mcp.clipforge.com/mcp` (Streamable HTTP). Send
+The hosted server is at `https://mcp.clipforge.ai/mcp` (Streamable HTTP). Send
 your key in the `Authorization` header. In every example below, replace
 `sk_...` with your own key, and put **only the URL** in a client's URL field.
 
 ### Claude, ChatGPT, Grok and other apps with custom connectors
 
-Add `https://mcp.clipforge.com/mcp` as a custom connector. The app sends you to
-clipforge.com to sign in and allow access; no key to copy. Allowing creates an
+Add `https://mcp.clipforge.ai/mcp` as a custom connector. The app sends you to
+clipforge.ai to sign in and allow access; no key to copy. Allowing creates an
 API key named after the app (for example "Claude connector"), listed at
-[Settings → API Keys](https://www.clipforge.com/settings/api-keys); revoke it
+[Settings → API Keys](https://www.clipforge.ai/settings/api-keys); revoke it
 there to disconnect. The connection uses your plan's minutes like any key.
 The same page has these steps under "Connect Claude, ChatGPT or Grok". None of
 these apps can prefill a server URL from a link, so paste it yourself.
@@ -74,13 +74,13 @@ these apps can prefill a server URL from a link, so paste it yourself.
   paste the URL and sign in. xAI doesn't document which sign-in methods custom
   connectors support, so this one is not confirmed end to end.
 - **Claude Code** can use the same sign-in instead of a pasted key:
-  `claude mcp add --transport http clipforge https://mcp.clipforge.com/mcp`, then
+  `claude mcp add --transport http clipforge https://mcp.clipforge.ai/mcp`, then
   `claude mcp login clipforge` (or `/mcp` inside Claude Code).
 
 ### Claude Code
 
 ```bash
-claude mcp add --transport http clipforge https://mcp.clipforge.com/mcp --header "Authorization: Bearer sk_..."
+claude mcp add --transport http clipforge https://mcp.clipforge.ai/mcp --header "Authorization: Bearer sk_..."
 ```
 
 ### Cursor, Windsurf and other clients with remote URL support
@@ -89,7 +89,7 @@ claude mcp add --transport http clipforge https://mcp.clipforge.com/mcp --header
 {
   "mcpServers": {
     "clipforge": {
-      "url": "https://mcp.clipforge.com/mcp",
+      "url": "https://mcp.clipforge.ai/mcp",
       "headers": {
         "Authorization": "Bearer sk_..."
       }
@@ -114,12 +114,12 @@ Node.js). Add to `claude_desktop_config.json`:
       "args": [
         "-y",
         "mcp-remote",
-        "https://mcp.clipforge.com/mcp",
+        "https://mcp.clipforge.ai/mcp",
         "--header",
-        "Authorization:${SUPOCLIP_AUTH}"
+        "Authorization:${CLIPFORGE_AUTH}"
       ],
       "env": {
-        "SUPOCLIP_AUTH": "Bearer sk_..."
+        "CLIPFORGE_AUTH": "Bearer sk_..."
       }
     }
   }
@@ -132,7 +132,7 @@ server locally (below) or download clips from the task page.
 
 ### Older clients that only speak SSE
 
-Use `https://mcp.clipforge.com/sse` as the URL, with the same
+Use `https://mcp.clipforge.ai/sse` as the URL, with the same
 `Authorization: Bearer sk_...` header. Clients already configured with the
 `/sse` URL keep working; Streamable HTTP requests sent there are answered too.
 
@@ -142,15 +142,15 @@ The server answers errors in plain words. `401` with "Missing ClipForge AI API
 key" means the header didn't arrive; "placeholder" means `sk_...` (or
 `sk_your_clipforge_api_key`) was not replaced with a real key; "invalid or was
 revoked" means the key was deleted, so create a new one. Opening
-`https://mcp.clipforge.com/` in a browser shows the endpoints and setup.
+`https://mcp.clipforge.ai/` in a browser shows the endpoints and setup.
 
 ## Run it locally (stdio)
 
 Requires Python 3.10+ and [uv](https://docs.astral.sh/uv/). Clips you
-download are saved on your machine (`SUPOCLIP_DOWNLOAD_DIR`).
+download are saved on your machine (`CLIPFORGE_DOWNLOAD_DIR`).
 
 ```bash
-claude mcp add clipforge -e SUPOCLIP_API_KEY=sk_... \
+claude mcp add clipforge -e CLIPFORGE_API_KEY=sk_... \
   -- uvx --from "git+https://github.com/FujiwaraChoki/clipforge#subdirectory=mcp" clipforge-mcp
 ```
 
@@ -163,7 +163,7 @@ Or in a client's JSON config:
       "command": "uvx",
       "args": ["--from", "git+https://github.com/FujiwaraChoki/clipforge#subdirectory=mcp", "clipforge-mcp"],
       "env": {
-        "SUPOCLIP_API_KEY": "sk_..."
+        "CLIPFORGE_API_KEY": "sk_..."
       }
     }
   }
@@ -171,7 +171,7 @@ Or in a client's JSON config:
 ```
 
 From a checkout, use `"command": "uv", "args": ["--directory", "/absolute/path/to/clipforge/mcp", "run", "clipforge-mcp"]`
-instead. For a self-hosted backend, add `"SUPOCLIP_API_URL": "http://localhost:8000"` to `env`.
+instead. For a self-hosted backend, add `"CLIPFORGE_API_URL": "http://localhost:8000"` to `env`.
 
 ## Configuration
 
@@ -179,35 +179,35 @@ All configuration is via environment variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SUPOCLIP_API_KEY` | – | Your API key (stdio; recommended auth). |
-| `SUPOCLIP_API_URL` | `https://api.clipforge.com` | Backend base URL. Set for self-hosting. |
-| `SUPOCLIP_APP_URL` | `https://www.clipforge.com` | Web app, used in links to create keys and pick a plan. |
-| `SUPOCLIP_DOWNLOAD_DIR` | `./clipforge-downloads` | Where downloaded/exported clips are written. |
-| `SUPOCLIP_TIMEOUT` | `60` | HTTP timeout (seconds) for non-download requests. |
-| `SUPOCLIP_USER_ID` | – | Self-host only: authenticate by user id (see below). |
-| `SUPOCLIP_AUTH_SECRET` | – | Self-host only: backend `BACKEND_AUTH_SECRET` for HMAC signing. |
-| `SUPOCLIP_MCP_TRANSPORT` | `stdio` | `stdio`, or `http` to serve Streamable HTTP and SSE (`sse` and `streamable-http` mean the same as `http`). |
-| `SUPOCLIP_MCP_HOST` / `SUPOCLIP_MCP_PORT` | `127.0.0.1` / `9100` | Listen address for `http`. |
-| `SUPOCLIP_MCP_PUBLIC_URL` | `http://HOST:PORT` | Public base URL (including any mount path), shown in setup help and errors. |
-| `SUPOCLIP_MCP_REQUIRE_BEARER_AUTH` | `false` | Require each client's own API key as a Bearer token. |
-| `SUPOCLIP_MCP_MOUNT_PATH` | `/` | Serve every route under this prefix (OAuth discovery assumes `/`). |
+| `CLIPFORGE_API_KEY` | – | Your API key (stdio; recommended auth). |
+| `CLIPFORGE_API_URL` | `https://api.clipforge.ai` | Backend base URL. Set for self-hosting. |
+| `CLIPFORGE_APP_URL` | `https://www.clipforge.ai` | Web app, used in links to create keys and pick a plan. |
+| `CLIPFORGE_DOWNLOAD_DIR` | `./clipforge-downloads` | Where downloaded/exported clips are written. |
+| `CLIPFORGE_TIMEOUT` | `60` | HTTP timeout (seconds) for non-download requests. |
+| `CLIPFORGE_USER_ID` | – | Self-host only: authenticate by user id (see below). |
+| `CLIPFORGE_AUTH_SECRET` | – | Self-host only: backend `BACKEND_AUTH_SECRET` for HMAC signing. |
+| `CLIPFORGE_MCP_TRANSPORT` | `stdio` | `stdio`, or `http` to serve Streamable HTTP and SSE (`sse` and `streamable-http` mean the same as `http`). |
+| `CLIPFORGE_MCP_HOST` / `CLIPFORGE_MCP_PORT` | `127.0.0.1` / `9100` | Listen address for `http`. |
+| `CLIPFORGE_MCP_PUBLIC_URL` | `http://HOST:PORT` | Public base URL (including any mount path), shown in setup help and errors. |
+| `CLIPFORGE_MCP_REQUIRE_BEARER_AUTH` | `false` | Require each client's own API key as a Bearer token. |
+| `CLIPFORGE_MCP_MOUNT_PATH` | `/` | Serve every route under this prefix (OAuth discovery assumes `/`). |
 | `MCP_OAUTH_SECRET` | – | Shared with the backend. With bearer auth on, turns on OAuth sign-in for connectors. |
 
 ### Self-hosting auth
 
 If you run your own backend you have three options:
 
-- **API key** (same as hosted): create a key and set `SUPOCLIP_API_KEY`.
-- **Signed headers**: set `SUPOCLIP_USER_ID` + `SUPOCLIP_AUTH_SECRET` (your
+- **API key** (same as hosted): create a key and set `CLIPFORGE_API_KEY`.
+- **Signed headers**: set `CLIPFORGE_USER_ID` + `CLIPFORGE_AUTH_SECRET` (your
   backend's `BACKEND_AUTH_SECRET`).
 - **Unsigned**: if the backend runs with `ALLOW_UNSIGNED_BACKEND_AUTH=true`,
-  just set `SUPOCLIP_USER_ID`.
+  just set `CLIPFORGE_USER_ID`.
 
 Auth precedence is: API key → signed headers → unsigned user id.
 
 ## Hosting the HTTP server
 
-`SUPOCLIP_MCP_TRANSPORT=http` serves both transports from one process:
+`CLIPFORGE_MCP_TRANSPORT=http` serves both transports from one process:
 
 | Path | What |
 |------|------|
@@ -218,16 +218,16 @@ Auth precedence is: API key → signed headers → unsigned user id.
 | `/.well-known/oauth-protected-resource` (also `/mcp`, `/sse` suffixes), `/.well-known/oauth-authorization-server`, `/register`, `/authorize`, `/token` | OAuth for connectors, when `MCP_OAUTH_SECRET` is set (see [docs/mcp-oauth.md](../docs/mcp-oauth.md)) |
 
 ```bash
-SUPOCLIP_API_URL=https://api.clipforge.com \
-SUPOCLIP_MCP_TRANSPORT=http \
-SUPOCLIP_MCP_HOST=0.0.0.0 \
-SUPOCLIP_MCP_PORT=9100 \
-SUPOCLIP_MCP_PUBLIC_URL=https://mcp.clipforge.com \
-SUPOCLIP_MCP_REQUIRE_BEARER_AUTH=true \
+CLIPFORGE_API_URL=https://api.clipforge.ai \
+CLIPFORGE_MCP_TRANSPORT=http \
+CLIPFORGE_MCP_HOST=0.0.0.0 \
+CLIPFORGE_MCP_PORT=9100 \
+CLIPFORGE_MCP_PUBLIC_URL=https://mcp.clipforge.ai \
+CLIPFORGE_MCP_REQUIRE_BEARER_AUTH=true \
 clipforge-mcp
 ```
 
-With `SUPOCLIP_MCP_REQUIRE_BEARER_AUTH=true` every path except `/`, `/health`
+With `CLIPFORGE_MCP_REQUIRE_BEARER_AUTH=true` every path except `/`, `/health`
 and the help pages needs a ClipForge AI API key (`Authorization: Bearer sk_...`,
 or `x-api-key`), checked against the backend the same way on both transports.
 Behind a reverse proxy, pass the `Authorization` header through and turn off
@@ -333,7 +333,7 @@ Pass the `job_id` to `clipforge_wait_for_task` as `clip_job_id` to wait for it.
 
 [ClipForge AI Noncommercial Source License](LICENSE), issued by Shiori LLC. Individual creators may self-host for their own monetized channels; other commercial use, including by companies and agencies, requires prior written permission.
 
-Based on ClipForge AI. [Original repository](https://github.com/FujiwaraChoki/clipforge) · [Official website](https://www.clipforge.com/)
+Based on ClipForge. [Original repository](https://github.com/FujiwaraChoki/clipforge) · [Official website](https://www.clipforge.ai/)
 
 ### Clip length
 

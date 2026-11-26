@@ -20,11 +20,6 @@ TEAM_ID_HEADER = "x-clipforge-team-id"
 TIMESTAMP_HEADER = "x-clipforge-ts"
 SIGNATURE_HEADER = "x-clipforge-signature"
 
-LEGACY_USER_ID_HEADER = "x-supoclip-user-id"
-LEGACY_TEAM_ID_HEADER = "x-supoclip-team-id"
-LEGACY_TIMESTAMP_HEADER = "x-supoclip-ts"
-LEGACY_SIGNATURE_HEADER = "x-supoclip-signature"
-
 # Programmatic clients (e.g. the MCP server) authenticate with a per-user API
 # key instead of the frontend's HMAC-signed session headers.
 API_KEY_HEADER = "x-api-key"
@@ -93,12 +88,10 @@ def _expected_signature(
 def get_signed_identity(
     request: Request, config: Config
 ) -> tuple[str, Optional[str]]:
-    user_id = request.headers.get(USER_ID_HEADER) or request.headers.get(LEGACY_USER_ID_HEADER)
-    team_id = _normalize_team_id(
-        request.headers.get(TEAM_ID_HEADER) or request.headers.get(LEGACY_TEAM_ID_HEADER)
-    )
-    timestamp = request.headers.get(TIMESTAMP_HEADER) or request.headers.get(LEGACY_TIMESTAMP_HEADER)
-    signature = request.headers.get(SIGNATURE_HEADER) or request.headers.get(LEGACY_SIGNATURE_HEADER)
+    user_id = request.headers.get(USER_ID_HEADER)
+    team_id = _normalize_team_id(request.headers.get(TEAM_ID_HEADER))
+    timestamp = request.headers.get(TIMESTAMP_HEADER)
+    signature = request.headers.get(SIGNATURE_HEADER)
 
     if not user_id or not timestamp or not signature:
         raise HTTPException(status_code=401, detail="Signed authentication required")
@@ -217,7 +210,7 @@ async def resolve_auth_context(
     Resolve verified user + optional active team workspace.
 
     Team membership is ALWAYS verified against ``team_members`` in PostgreSQL;
-    a signed ``x-supoclip-team-id`` header or team-scoped API key is never
+    a signed ``x-clipforge-team-id`` header or team-scoped API key is never
     trusted without an active membership row.
     """
     from .repositories.team_repository import TeamRepository

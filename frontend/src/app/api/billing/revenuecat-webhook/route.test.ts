@@ -45,7 +45,7 @@ describe("/api/billing/revenuecat-webhook", () => {
         id: "rc_evt_1",
         type: "INITIAL_PURCHASE",
         app_user_id: "user-1",
-        product_id: "com.samihindi.supoclip.pro.monthly",
+        product_id: "com.samihindi.clipforge.pro.monthly",
         period_type: "NORMAL",
         purchased_at_ms: 1770000000000,
         expiration_at_ms: 1772592000000,
@@ -195,7 +195,7 @@ describe("/api/billing/revenuecat-webhook", () => {
       createRequest(
         event({
           type: "PRODUCT_CHANGE",
-          product_id: "com.samihindi.supoclip.scale.monthly",
+          product_id: "com.samihindi.clipforge.scale.monthly",
         }),
       ),
     );
@@ -305,7 +305,7 @@ describe("/api/billing/revenuecat-webhook analytics", () => {
           id: "rc_evt_analytics",
           type: "INITIAL_PURCHASE",
           app_user_id: "user-1",
-          product_id: "com.samihindi.supoclip.scale.annual",
+          product_id: "com.samihindi.clipforge.scale.annual",
           period_type: "NORMAL",
           purchased_at_ms: 1770000000000,
           expiration_at_ms: 1801536000000,

@@ -913,7 +913,10 @@ export default function HomeApp() {
           setStatusMessage("");
           return;
         }
-        throw new Error(formatSupportMessage({ ...info, message: workflowErrorMessage(info) ?? info.message }));
+        setError(formatSupportMessage({ ...info, message: workflowErrorMessage(info) ?? info.message }));
+        setIsLoading(false);
+        setStatusMessage("");
+        return;
       }
 
       const startResult = await startResponse.json();

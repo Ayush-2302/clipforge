@@ -124,7 +124,7 @@ async def test_create_rejects_a_bad_edit_style_with_422_before_any_charge(user, 
     ],
 )
 async def test_create_turning_fx_on_needs_the_flag(user, billing, flag, body):
-    response = await _create(body, headers={"x-supoclip-client": "ios"})
+    response = await _create(body, headers={"x-clipforge-client": "ios"})
 
     assert response.status_code == 403, response.text
     assert response.json()["detail"] == {
@@ -176,7 +176,7 @@ async def test_edit_styles_reports_the_flag_and_the_choices(user, flag, monkeypa
     flag.value = enabled
     monkeypatch.setattr(tasks, "_reactions_available", lambda: False)
 
-    response = await _request("GET", "/tasks/edit-styles", headers={"x-supoclip-client": "ios"})
+    response = await _request("GET", "/tasks/edit-styles", headers={"x-clipforge-client": "ios"})
 
     assert response.status_code == 200, response.text
     assert response.json() == {

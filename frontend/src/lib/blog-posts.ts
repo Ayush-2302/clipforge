@@ -69,7 +69,7 @@ export const blogPosts: BlogPost[] = [
       "For creators and teams who want control over their clipping workflow, ClipForge AI is the better open-source alternative to supo.live.",
   },
   {
-    slug: "supoclip-vs-opusclip",
+    slug: "clipforge-vs-opusclip",
     title: "ClipForge AI vs OpusClip: A Sourced Comparison",
     description:
       "ClipForge AI vs OpusClip compared on deployment, pricing model, watermarks, model choice, and workflow, with a source linked for every claim.",
@@ -90,7 +90,7 @@ export const blogPosts: BlogPost[] = [
       "A side-by-side of what each product documents, where the two differ, and which one fits your workflow.",
   },
   {
-    slug: "self-host-supoclip-docker",
+    slug: "self-host-clipforge-docker",
     title: "How to Self-Host ClipForge AI with Docker Compose",
     description:
       "Self-host ClipForge AI, the open-source AI video clipper: requirements, .env setup, a fully local Whisper + Ollama option, first-run checks, and a production checklist.",
@@ -139,7 +139,7 @@ export function getBlogPost(slug: string) {
 /** Overlay translated title, description, and listing copy. Keywords stay English. */
 export function applyBlogCopy(post: BlogPost, translate: (key: string) => string): BlogPost {
   if (post.language) return post;
-  const slug = post.slug === "clipforge-vs-supo-live" ? "supoclip-vs-supo-live" : post.slug === "clipforge-vs-opusclip" ? "supoclip-vs-opusclip" : post.slug;
+  const slug = post.slug === "clipforge-vs-supo-live" ? "clipforge-vs-supo-live" : post.slug === "clipforge-vs-opusclip" ? "clipforge-vs-opusclip" : post.slug;
   return {
     ...post,
     title: translate(`${slug}.title`),

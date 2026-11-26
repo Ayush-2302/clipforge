@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read-only ClipForge AI production health, job, and OpenRouter balance snapshot.
 
-Run from this checkout using Python 3 with SUPOCLIP_PROD_SSH_HOST set to the
+Run from this checkout using Python 3 with CLIPFORGE_PROD_SSH_HOST set to the
 production SSH alias. No purchases, job submissions, or service
 changes. API keys are read on the production host and never returned.
 """
@@ -60,12 +60,12 @@ asyncio.run(main())
 '''
 
 def main():
-    HOST=os.environ.get('SUPOCLIP_PROD_SSH_HOST','').strip()
+    HOST=os.environ.get('CLIPFORGE_PROD_SSH_HOST','').strip()
     if not HOST:
-        sys.exit('Set SUPOCLIP_PROD_SSH_HOST to the SSH alias or host of the production server.')
+        sys.exit('Set CLIPFORGE_PROD_SSH_HOST to the SSH alias or host of the production server.')
     snapshot={}
     try:
-        with urllib.request.urlopen('https://www.clipforge.com/',timeout=20) as response:
+        with urllib.request.urlopen('https://www.clipforge.ai/',timeout=20) as response:
             snapshot['public_site_status']=response.status
     except Exception as error:
         snapshot['public_site_error']=type(error).__name__

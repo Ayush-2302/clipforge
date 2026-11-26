@@ -26,7 +26,7 @@ PRODUCT_UPDATE = "product_update"
 class InlineImage:
     """An image shown in the body via ``<img src="cid:{content_id}">``.
 
-    Use an address-like id (``clip0@supoclip``), as RFC 2392 expects.
+    Use an address-like id (``clip0@clipforge``), as RFC 2392 expects.
     """
 
     content_id: str
